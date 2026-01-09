@@ -39,9 +39,11 @@ Ejemplo de organización (puede crecer con el tiempo):
 
 ## Licencia
 
-El contenido de este repositorio (código, Dockerfiles y docker-compose) se publica bajo licencia MIT (ver archivo `LICENSE`).
+El contenido de este repositorio (código, Dockerfiles y docker-compose) se publica bajo la **Apache License 2.0** (ver archivo `LICENSE`).
 
 Este laboratorio utiliza imágenes de terceros (por ejemplo: php, mariadb, phpmyadmin, node, python), las cuales mantienen sus propias licencias y marcas registradas.
+
+Contribuciones y roadmap: consulta `CONTRIBUTING.md` y `ROADMAP.md` para cómo contribuir y las prioridades del proyecto.
 
 
 
