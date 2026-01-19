@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'node-api'
+    static_configs:
+      - targets: ['dashboard-node-api:3000']
+  - job_name: 'python-api'
+    static_configs:
+      - targets: ['dashboard-python-api:5000']
+  - job_name: 'postgres-api'
+    static_configs:
+      - targets: ['dashboard-postgres-api:8000']
+  - job_name: 'redis-cache-api'
+    static_configs:
+      - targets: ['dashboard-redis-cache-api:3000']

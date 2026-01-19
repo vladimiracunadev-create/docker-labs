@@ -115,3 +115,80 @@ services:
     container_name: dashboard-rabbitmq-consumer
     depends_on:
       - rabbitmq
+
+  prometheus:
+    image: prom/prometheus
+    container_name: dashboard-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus-dashboard.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: dashboard-grafana
+    ports:
+      - "3002:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+
+  multi-frontend:
+    image: nginx:alpine
+    container_name: dashboard-multi-frontend
+    ports:
+      - "8083:80"
+    volumes:
+      - ./09-multi-service-app/frontend/index.html:/usr/share/nginx/html/index.html
+
+  multi-backend:
+    image: node:20-alpine
+    container_name: dashboard-multi-backend
+    ports:
+      - "3003:3000"
+    volumes:
+      - ./09-multi-service-app/backend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - multi-db
+
+  multi-db:
+    image: mongo:7
+    container_name: dashboard-multi-db
+    ports:
+      - "27018:27017"
+
+  go-api:
+    build: ./10-go-api
+    container_name: dashboard-go-api
+    ports:
+      - "8084:8080"
+
+  elasticsearch-api:
+    build: ./11-elasticsearch-search
+    container_name: dashboard-elasticsearch-api
+    ports:
+      - "8001:8000"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:8.11.0
+    container_name: dashboard-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: false
+    ports:
+      - "9200:9200"
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: dashboard-jenkins
+    ports:
+      - "8085:8080"
+      - "50001:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+volumes:
+  jenkins_home:
