@@ -8,13 +8,13 @@ Referencia completa de todos los laboratorios disponibles en **docker-labs**.
 
 | Laboratorio | Stack | Puerto(s) | Objetivo | BD | Complejidad |
 |-------------|-------|-----------|----------|-------|-------------|
-| [node-api](#-node-api) | Node.js 18 + Express | 3000 | API REST básica | ❌ No | ⭐ Básico |
-| [php-lamp](#-php-lamp) | PHP 8.1 + Apache + MariaDB | 8080, 8081 | CRUD clásico LAMP | ✅ MariaDB | ⭐⭐ Intermedio |
-| [python-api](#-python-api) | Python 3.10 + Flask | 5000 | API REST Python | ❌ No | ⭐ Básico |
+| [01-node-api](#-01-node-api) | Node.js 18 + Express | 3000 | API REST básica | ❌ No | ⭐ Básico |
+| [02-php-lamp](#-02-php-lamp) | PHP 8.1 + Apache + MariaDB | 8080, 8081 | CRUD clásico LAMP | ✅ MariaDB | ⭐⭐ Intermedio |
+| [03-python-api](#-03-python-api) | Python 3.10 + Flask | 5000 | API REST Python | ❌ No | ⭐ Básico |
 
 ---
 
-## 🟢 node-api
+## 🟢 01-node-api
 
 ### Descripción
 
@@ -30,7 +30,7 @@ API REST básica construida con **Node.js** y **Express**, ideal para aprender l
 ### Estructura de Archivos
 
 ```
-node-api/
+01-node-api/
 ├── Dockerfile              # Imagen Node 18 Alpine
 ├── docker-compose.yml      # Servicio web único
 ├── .dockerignore          # Excluye node_modules
@@ -63,7 +63,7 @@ services:
 ### Inicio Rápido
 
 ```bash
-cd node-api
+cd 01-node-api
 docker-compose up
 ```
 
@@ -110,7 +110,7 @@ docker-compose exec web npm install axios
 
 ---
 
-## 🐘 php-lamp
+## 🐘 02-php-lamp
 
 ### Descripción
 
@@ -126,7 +126,7 @@ Stack LAMP completo (**Linux, Apache, MariaDB, PHP**) para desarrollo de aplicac
 ### Estructura de Archivos
 
 ```
-php-lamp/
+02-php-lamp/
 ├── docker-compose.yml       # 3 servicios: web, db, phpmyadmin
 ├── .env                     # Variables de BD (no en git)
 ├── .env.example             # Template de configuración
@@ -184,7 +184,7 @@ volumes:
 ### Inicio Rápido
 
 ```bash
-cd php-lamp
+cd 02-php-lamp
 cp .env.example .env    # Primera vez
 docker-compose up -d
 ```
@@ -247,7 +247,7 @@ docker-compose up -d
 
 **Importar SQL**:
 ```bash
-docker cp dump.sql php-lamp-db-1:/dump.sql
+docker cp dump.sql 02-php-lamp-db-1:/dump.sql
 docker-compose exec db mysql -u devuser -pdevpass123 testdb < /dump.sql
 ```
 
@@ -263,7 +263,7 @@ docker-compose exec db mysql -u devuser -pdevpass123 testdb < /dump.sql
 
 ---
 
-## 🐍 python-api
+## 🐍 03-python-api
 
 ### Descripción
 
@@ -279,7 +279,7 @@ API REST construida con **Python** y **Flask**, perfecta para aprender desarroll
 ### Estructura de Archivos
 
 ```
-python-api/
+03-python-api/
 ├── Dockerfile              # Imagen Python 3.10 Alpine
 ├── docker-compose.yml      # Servicio web único
 ├── .dockerignore          # Excluye __pycache__, .venv
@@ -315,7 +315,7 @@ Flask==2.3.0
 ### Inicio Rápido
 
 ```bash
-cd python-api
+cd 03-python-api
 docker-compose up
 ```
 
@@ -385,19 +385,19 @@ Laboratorios planeados para futuras versiones:
 ### ¿Cuál elegir?
 
 **Si quieres aprender Docker básico**:
-- → `node-api` o `python-api` (1 servicio, simple)
+- → `01-node-api` o `03-python-api` (1 servicio, simple)
 
 **Si necesitas base de datos**:
-- → `php-lamp` (stack completo)
+- → `02-php-lamp` (stack completo)
 
 **Si prefieres JavaScript**:
-- → `node-api`
+- → `01-node-api`
 
 **Si prefieres Python**:
-- → `python-api`
+- → `03-python-api`
 
 **Si vienes de desarrollo web tradicional**:
-- → `php-lamp` (similar a XAMPP/WAMP)
+- → `02-php-lamp` (similar a XAMPP/WAMP)
 
 ---
 

@@ -24,7 +24,7 @@ Hacer de `docker-labs` un **repositorio didáctico de referencia** con laborator
 | Componente | Estado | Notas |
 |------------|--------|-------|
 | **Documentación** | ✅ Completa | 11 guías + políticas |
-| **Labs básicos** | ✅ 3 labs | node-api, php-lamp, python-api |
+| **Labs básicos** | ✅ 3 labs | 01-node-api, 02-php-lamp, 03-python-api |
 | **CI/CD** | ❌ Pendiente | GitHub Actions planeado |
 | **Tests automatizados** | ❌ Pendiente | Q1 2026 |
 

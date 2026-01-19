@@ -163,9 +163,9 @@ Deberías ver:
 ```
 .git/
 docs/
-node-api/
-php-lamp/
-python-api/
+01-node-api/
+02-php-lamp/
+03-python-api/
 README.md
 LICENSE
 ...
@@ -173,9 +173,9 @@ LICENSE
 
 ### 3. Configurar variables de entorno (si aplica)
 
-Para `php-lamp`:
+Para `02-php-lamp`:
 ```bash
-cd php-lamp
+cd 02-php-lamp
 cp .env.example .env
 ```
 
@@ -190,7 +190,7 @@ DB_PASS=tu-password-seguro
 ### 4. Levantar tu primer laboratorio
 
 ```bash
-cd node-api
+cd 01-node-api
 docker-compose up
 ```
 

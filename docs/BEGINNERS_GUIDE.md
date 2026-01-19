@@ -107,16 +107,16 @@ docker-labs/
 │   ├── USER_MANUAL.md
 │   ├── LABS_CATALOG.md
 │   └── ...
-├── node-api/              # 🟢 Laboratorio Node.js
+├── 01-node-api/              # 🟢 Laboratorio Node.js
 │   ├── Dockerfile
 │   ├── docker-compose.yml
 │   ├── package.json
 │   └── src/
-├── php-lamp/              # 🐘 Laboratorio PHP + Apache + MariaDB
+├── 02-php-lamp/              # 🐘 Laboratorio PHP + Apache + MariaDB
 │   ├── docker-compose.yml
 │   ├── docker/
 │   └── src/
-└── python-api/            # 🐍 Laboratorio Python Flask
+└── 03-python-api/            # 🐍 Laboratorio Python Flask
     ├── Dockerfile
     ├── docker-compose.yml
     └── app/
@@ -124,14 +124,14 @@ docker-labs/
 
 ### ¿Por qué esta estructura?
 
-Cada carpeta (`node-api/`, `php-lamp/`, etc.) es un **laboratorio independiente**:
+Cada carpeta (`01-node-api/`, `02-php-lamp/`, etc.) es un **laboratorio independiente**:
 - ✅ Puedes trabajar en uno sin afectar los demás
 - ✅ Cada uno tiene su propio `docker-compose.yml`
 - ✅ Puedes eliminar los que no te interesen
 
 ---
 
-## 🚀 Tu Primer Laboratorio: node-api
+## 🚀 Tu Primer Laboratorio: 01-node-api
 
 Vamos a levantar tu primer contenedor paso a paso.
 
@@ -145,7 +145,7 @@ cd docker-labs
 ### Paso 2: Navegar al laboratorio
 
 ```bash
-cd node-api
+cd 01-node-api
 ```
 
 ### Paso 3: Levantar el contenedor

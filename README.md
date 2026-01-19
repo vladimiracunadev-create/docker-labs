@@ -36,7 +36,7 @@ git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 
 # 2. Entra a un laboratorio
-cd node-api
+cd 01-node-api
 
 # 3. Levanta el contenedor
 docker-compose up
@@ -53,11 +53,11 @@ docker-compose up
 
 | Laboratorio | Stack | Puerto | Complejidad | Objetivo |
 |-------------|-------|--------|-------------|----------|
-| [**node-api**](node-api/) | Node.js + Express | 3000 | ⭐ Básico | API REST básica |
-| [**php-lamp**](php-lamp/) | PHP + Apache + MariaDB | 8080, 8081 | ⭐⭐ Intermedio | CRUD con base de datos |
-| [**python-api**](python-api/) | Python + Flask | 5000 | ⭐ Básico | API REST con Python |
+| [**01-node-api**](01-node-api/) | Node.js + Express | 3000 | ⭐ Básico | API REST básica |
+| [**02-php-lamp**](02-php-lamp/) | PHP + Apache + MariaDB | 8080, 8081 | ⭐⭐ Intermedio | CRUD con base de datos |
+| [**03-python-api**](03-python-api/) | Python + Flask | 5000 | ⭐ Básico | API REST con Python |
 
-> 💡 **¿Nuevo en Docker?** Empieza con `node-api` o `python-api`. Son los más simples.
+> 💡 **¿Nuevo en Docker?** Empieza con `01-node-api` o `03-python-api`. Son los más simples.
 
 ---
 
@@ -175,9 +175,9 @@ docker-labs/
 │   ├── USER_MANUAL.md
 │   ├── ARCHITECTURE.md
 │   └── ...
-├── node-api/                # 🟢 Lab Node.js
-├── php-lamp/                # 🐘 Lab PHP+MySQL
-├── python-api/              # 🐍 Lab Python
+├── 01-node-api/                # 🟢 Lab Node.js
+├── 02-php-lamp/                # 🐘 Lab PHP+MySQL
+├── 03-python-api/              # 🐍 Lab Python
 ├── README.md                # ← Estás aquí
 ├── CONTRIBUTING.md          # Guía de contribución
 ├── CODE_OF_CONDUCT.md       # Código de conducta

@@ -23,9 +23,9 @@
 [Describe claramente el problema]
 
 **Lab afectado**:
-- [ ] node-api
-- [ ] php-lamp  
-- [ ] python-api
+- [ ] 01-node-api
+- [ ] 02-php-lamp  
+- [ ] 03-python-api
 
 **Pasos para reproducir**:
 1. Ejecuta `docker-compose up`
@@ -112,8 +112,8 @@ git checkout -b tipo/descripcion
 ### 4. Prueba Localmente
 
 ```bash
-# Ejemplo para node-api
-cd node-api
+# Ejemplo para 01-node-api
+cd 01-node-api
 docker-compose up --build
 
 # Verifica que funcione
@@ -128,8 +128,8 @@ docker-compose down
 Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```bash
-git commit -m "feat(node-api): agregar endpoint /users"
-git commit -m "fix(php-lamp): corregir conexión a BD"
+git commit -m "feat(01-node-api): agregar endpoint /users"
+git commit -m "fix(02-php-lamp): corregir conexión a BD"
 git commit -m "docs(readme): actualizar instrucciones de instalación"
 ```
 

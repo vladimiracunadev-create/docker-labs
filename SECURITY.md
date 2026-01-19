@@ -26,7 +26,7 @@ Por favor proporciona:
 - ✅ **Descripción clara** del problema de seguridad
 - ✅ **Pasos para reproducir** la vulnerabilidad
 - ✅ **Impacto estimado** (bajo/medio/alto/crítico)
-- ✅ **Laboratorio afectado** (node-api, php-lamp, etc.)
+- ✅ **Laboratorio afectado** (01-node-api, 02-php-lamp, etc.)
 - ✅ **Versión afectada** (si la conoces)
 - ✅ **Posible parche o mitigación** (si tienes alguno)
 - ✅ **CVE ID** (si ya existe uno asignado)
@@ -121,7 +121,7 @@ Al usar docker-labs en entornos reales (no recomendado para producción):
 
 ```bash
 # Escanea imagen con Docker Scan
-docker scan node-api:latest
+docker scan 01-node-api:latest
 
 # Escanea con Trivy
 trivy image php:8.1-apache

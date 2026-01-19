@@ -1,5 +1,5 @@
 {
-  "name": "node-api",
+  "name": "01-node-api",
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {

@@ -45,9 +45,9 @@ Este release marca la transformación de docker-labs a un proyecto con documenta
 - **SECURITY.md**: Política de seguridad más detallada
 
 #### 🧪 Laboratorios
-- **node-api**: API REST con Node.js y Express
-- **php-lamp**: Stack LAMP completo (PHP + Apache + MariaDB + phpMyAdmin)
-- **python-api**: API REST con Python y Flask
+- **01-node-api**: API REST con Node.js y Express
+- **02-php-lamp**: Stack LAMP completo (PHP + Apache + MariaDB + phpMyAdmin)
+- **03-python-api**: API REST con Python y Flask
 
 ### Changed
 - README principal ahora con sección hero atractiva
@@ -66,7 +66,7 @@ Este release marca la transformación de docker-labs a un proyecto con documenta
 
 ### Added
 - Estructura inicial del repositorio
-- Laboratorios básicos: node-api, php-lamp, python-api
+- Laboratorios básicos: 01-node-api, 02-php-lamp, 03-python-api
 - Archivos básicos: README, LICENSE, CONTRIBUTING, ROADMAP, SECURITY
 - Configuración de .gitignore y .dockerignore
 

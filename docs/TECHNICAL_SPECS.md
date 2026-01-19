@@ -21,7 +21,7 @@ docker-compose --version
 
 ---
 
-## 🟢 node-api: Especificaciones
+## 🟢 01-node-api: Especificaciones
 
 ### Imagen Base
 - **Base**: `node:18-alpine`
@@ -45,7 +45,7 @@ docker-compose --version
 ### Estructura Obligatoria
 
 ```
-node-api/
+01-node-api/
 ├── Dockerfile          ✅ Obligatorio
 ├── docker-compose.yml  ✅ Obligatorio
 ├── .dockerignore       ✅ Obligatorio
@@ -64,7 +64,7 @@ node-api/
 
 ---
 
-## 🐘 php-lamp: Especificaciones
+## 🐘 02-php-lamp: Especificaciones
 
 ### Imágenes Base
 - **PHP**: `php:8.1-apache` (Debian Bullseye)
@@ -87,7 +87,7 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 ### Estructura Obligatoria
 
 ```
-php-lamp/
+02-php-lamp/
 ├── docker-compose.yml  ✅ Obligatorio
 ├── .env.example        ✅ Obligatorio
 ├── .gitignore          ✅ Obligatorio
@@ -116,7 +116,7 @@ php-lamp/
 
 ---
 
-## 🐍 python-api: Especificaciones
+## 🐍 03-python-api: Especificaciones
 
 ### Imagen Base
 - **Base**: `python:3.10-alpine`
@@ -134,7 +134,7 @@ Werkzeug==2.3.0
 ### Estructura Obligatoria
 
 ```
-python-api/
+03-python-api/
 ├── Dockerfile          ✅ Obligatorio
 ├── docker-compose.yml  ✅ Obligatorio
 ├── .dockerignore       ✅ Obligatorio
@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
 **Propósito**: Excluir archivos del contexto de build
 
-**node-api**:
+**01-node-api**:
 ```
 node_modules
 npm-debug.log
@@ -240,7 +240,7 @@ npm-debug.log
 *.md
 ```
 
-**python-api**:
+**03-python-api**:
 ```
 __pycache__
 *.pyc
@@ -345,11 +345,11 @@ Disk image size: 20 GB
 
 | Lab | Servicio | Puerto Host | Puerto Contenedor |
 |-----|----------|-------------|-------------------|
-| node-api | Web | 3000 | 3000 |
-| php-lamp | Web | 8080 | 80 |
-| php-lamp | MariaDB | (interno) | 3306 |
-| php-lamp | phpMyAdmin | 8081 | 80 |
-| python-api | Web | 5000 | 5000 |
+| 01-node-api | Web | 3000 | 3000 |
+| 02-php-lamp | Web | 8080 | 80 |
+| 02-php-lamp | MariaDB | (interno) | 3306 |
+| 02-php-lamp | phpMyAdmin | 8081 | 80 |
+| 03-python-api | Web | 5000 | 5000 |
 
 **Conflictos comunes**:
 - Puerto `3000`: Usado por macOS AirPlay
@@ -385,7 +385,7 @@ volumes:
 
 ```
 repositorio/nombre:tag
-vladimiracuna/node-api:v1.0.0
+vladimiracuna/01-node-api:v1.0.0
 ```
 
 ---

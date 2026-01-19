@@ -19,9 +19,9 @@ docker-labs sigue tres principios fundamentales:
 ```mermaid
 graph TD
     A[docker-labs] --> B[docs/]
-    A --> C[node-api/]
-    A --> D[php-lamp/]
-    A --> E[python-api/]
+    A --> C[01-node-api/]
+    A --> D[02-php-lamp/]
+    A --> E[03-python-api/]
     
     B --> B1[Guías para usuarios]
     B --> B2[Documentación técnica]
@@ -112,7 +112,7 @@ graph TD
 
 ---
 
-## 🟢 Arquitectura: node-api
+## 🟢 Arquitectura: 01-node-api
 
 ### Diagrama de Componentes
 
@@ -123,7 +123,7 @@ flowchart LR
     C --> D[Express App]
     D --> E[src/index.js]
     
-    F[Host: node-api/] -.->|bind mount| E
+    F[Host: 01-node-api/] -.->|bind mount| E
     
     style C fill:#68a063,color:#fff
     style D fill:#303030,color:#fff
@@ -162,7 +162,7 @@ services:
 
 ---
 
-## 🐘 Arquitectura: php-lamp
+## 🐘 Arquitectura: 02-php-lamp
 
 ### Diagrama de Componentes
 
@@ -231,7 +231,7 @@ volumes:
 
 ---
 
-## 🐍 Arquitectura: python-api
+## 🐍 Arquitectura: 03-python-api
 
 ### Diagrama de Componentes
 

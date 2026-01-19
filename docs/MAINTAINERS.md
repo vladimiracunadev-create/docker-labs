@@ -156,7 +156,7 @@ git checkout -b release/v1.2.0
 - Actualizado Node.js a v18.16
 
 ### Fixed
-- Corregido error de permisos en php-lamp
+- Corregido error de permisos en 02-php-lamp
 ```
 
 3. **Commit y Tag**:
@@ -297,8 +297,8 @@ Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 tipo(scope): mensaje
 
-feat(node-api): agregar endpoint /users
-fix(php-lamp): corregir conexión a BD
+feat(01-node-api): agregar endpoint /users
+fix(02-php-lamp): corregir conexión a BD
 docs(readme): actualizar instrucciones
 chore(deps): actualizar dependencias
 ```

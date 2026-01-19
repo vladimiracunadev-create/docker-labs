@@ -118,7 +118,7 @@ sudo docker-compose up
 
 ---
 
-## 🟢 node-api: Problemas Específicos
+## 🟢 01-node-api: Problemas Específicos
 
 ### Contenedor inicia pero responde 404
 
@@ -184,7 +184,7 @@ docker-compose up
 
 ---
 
-## 🐘 php-lamp: Problemas Específicos
+## 🐘 02-php-lamp: Problemas Específicos
 
 ### No conecta a la base de datos
 
@@ -270,7 +270,7 @@ volumes:
 
 ---
 
-## 🐍 python-api: Problemas Específicos
+## 🐍 03-python-api: Problemas Específicos
 
 ### Puerto 5000 ocupado (macOS)
 
@@ -598,9 +598,9 @@ Al crear un issue, incluye:
 [Describe qué no funciona]
 
 **Laboratorio afectado**:
-- [ ] node-api
-- [ ] php-lamp
-- [ ] python-api
+- [ ] 01-node-api
+- [ ] 02-php-lamp
+- [ ] 03-python-api
 
 **Pasos para reproducir**:
 1. Ejecuté `docker-compose up`

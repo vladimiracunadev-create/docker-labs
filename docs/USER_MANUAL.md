@@ -90,13 +90,13 @@ docker-compose down -v
 
 ## 🧪 Uso de Cada Laboratorio
 
-### 🟢 node-api (Node.js + Express)
+### 🟢 01-node-api (Node.js + Express)
 
 **Objetivo**: API REST básica con Node.js
 
 **Inicio rápido**:
 ```bash
-cd node-api
+cd 01-node-api
 docker-compose up
 ```
 
@@ -128,13 +128,13 @@ docker-compose build
 
 ---
 
-### 🐘 php-lamp (PHP + Apache + MariaDB)
+### 🐘 02-php-lamp (PHP + Apache + MariaDB)
 
 **Objetivo**: Stack LAMP clásico para apps PHP con base de datos
 
 **Inicio rápido**:
 ```bash
-cd php-lamp
+cd 02-php-lamp
 docker-compose up -d
 ```
 
@@ -169,7 +169,7 @@ $conn = new mysqli(
 **Importar SQL**:
 ```bash
 # Copia el archivo al contenedor
-docker cp midb.sql php-lamp-db-1:/midb.sql
+docker cp midb.sql 02-php-lamp-db-1:/midb.sql
 
 # Importa
 docker-compose exec db mysql -u devuser -pdevpass123 testdb < /midb.sql
@@ -177,13 +177,13 @@ docker-compose exec db mysql -u devuser -pdevpass123 testdb < /midb.sql
 
 ---
 
-### 🐍 python-api (Python + Flask)
+### 🐍 03-python-api (Python + Flask)
 
 **Objetivo**: API REST con Python y framework Flask
 
 **Inicio rápido**:
 ```bash
-cd python-api
+cd 03-python-api
 docker-compose up
 ```
 
@@ -301,7 +301,7 @@ DB_PASSWORD=mi-password-seguro
 
 ### Agregar más servicios
 
-Ejemplo: Agregar Redis a node-api
+Ejemplo: Agregar Redis a 01-node-api
 
 ```yaml
 services:
@@ -401,7 +401,7 @@ docker-compose up --build
 
 ## 📦 Gestión de Dependencias
 
-### Node.js (node-api)
+### Node.js (01-node-api)
 
 **Agregar paquete**:
 ```bash
@@ -411,16 +411,16 @@ docker-compose exec web npm install --save-dev <paquete-dev>
 
 **Actualizar package.json en host**:
 ```bash
-docker cp node-api-web-1:/app/package.json ./package.json
+docker cp 01-node-api-web-1:/app/package.json ./package.json
 ```
 
-### Python (python-api)
+### Python (03-python-api)
 
 **Agregar paquete**:
 1. Edita `requirements.txt` directamente
 2. Reconstruye: `docker-compose up --build`
 
-### PHP (php-lamp)
+### PHP (02-php-lamp)
 
 **Extensiones PHP**:
 Edita `docker/Dockerfile`:
