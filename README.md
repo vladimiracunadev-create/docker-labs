@@ -67,6 +67,7 @@ docker-compose up
 ✅ **Aislamiento Total**: Sin contaminar tu sistema  
 ✅ **Hot Reload**: Edita código y ve cambios al instante  
 ✅ **Multi-Stack**: Node.js, PHP, Python, MySQL y más  
+✅ **Soporte Kubernetes**: Despliega en clusters K8s con manifiestos incluidos  
 ✅ **Buenas Prácticas**: Aprende Docker correctamente desde el inicio  
 ✅ **Documentación Completa**: Guías para todos los niveles  
 
@@ -84,6 +85,7 @@ docker-compose up
 
 - 📖 **[Manual de Usuario](docs/USER_MANUAL.md)**: Domina el flujo de trabajo completo
 - 📋 **[Catálogo de Laboratorios](docs/LABS_CATALOG.md)**: Detalles técnicos de cada lab
+- ☸️ **[Despliegue con Kubernetes](docs/KUBERNETES_DEPLOYMENT.md)**: Migra tus labs a orquestación nativa
 - 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Soluciones a problemas comunes
 
 ### 🏗️ Para Desarrolladores

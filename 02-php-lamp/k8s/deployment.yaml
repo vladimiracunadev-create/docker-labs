@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-lamp-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-lamp-web
+  template:
+    metadata:
+      labels:
+        app: php-lamp-web
+    spec:
+      containers:
+      - name: web
+        image: php-lamp-web:latest  # Cambia a tu imagen subida
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: src-volume
+          mountPath: /var/www/html
+      volumes:
+      - name: src-volume
+        hostPath:
+          path: /c/docker-labs/docker-labs/02-php-lamp/src  # Ajusta la ruta absoluta
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+      - name: pma
+        image: phpmyadmin:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: PMA_HOST
+          value: "php-lamp-db-service"
+        - name: PMA_PORT
+          value: "3306"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: php-lamp-db
+spec:
+  serviceName: php-lamp-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-lamp-db
+  template:
+    metadata:
+      labels:
+        app: php-lamp-db
+    spec:
+      containers:
+      - name: db
+        image: mariadb:11
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MARIADB_DATABASE
+          value: "lamp_db"  # Ajusta
+        - name: MARIADB_USER
+          value: "lamp_user"
+        - name: MARIADB_PASSWORD
+          value: "lamp_pass"
+        - name: MARIADB_ROOT_PASSWORD
+          value: "root_pass"
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: db-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi

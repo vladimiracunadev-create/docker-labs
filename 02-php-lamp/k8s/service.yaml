@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-lamp-web-service
+spec:
+  selector:
+    app: php-lamp-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-service
+spec:
+  selector:
+    app: phpmyadmin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-lamp-db-service
+spec:
+  selector:
+    app: php-lamp-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  type: ClusterIP
