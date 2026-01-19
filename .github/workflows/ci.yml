@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and test Node API
+      run: |
+        cd 01-node-api
+        docker build -t node-api .
+        docker run -d -p 3000:3000 --name node-api-test node-api
+        sleep 10
+        curl -f http://localhost:3000 || exit 1
+        docker stop node-api-test
+
+    - name: Build and test Python API
+      run: |
+        cd 03-python-api
+        docker build -t python-api .
+        docker run -d -p 5000:5000 --name python-api-test python-api
+        sleep 10
+        curl -f http://localhost:5000 || exit 1
+        docker stop python-api-test
+
+    - name: Build PHP LAMP
+      run: |
+        cd 02-php-lamp
+        docker build -t php-lamp-web ./docker/php
+        docker run -d -p 8080:80 --name php-test php-lamp-web
+        sleep 10
+        curl -f http://localhost:8080 || exit 1
+        docker stop php-test
