@@ -11,6 +11,15 @@ Referencia completa de todos los laboratorios disponibles en **docker-labs**.
 | [01-node-api](#-01-node-api) | Node.js 18 + Express | 3000 | API REST básica | ❌ No | ⭐ Básico |
 | [02-php-lamp](#-02-php-lamp) | PHP 8.1 + Apache + MariaDB | 8080, 8081 | CRUD clásico LAMP | ✅ MariaDB | ⭐⭐ Intermedio |
 | [03-python-api](#-03-python-api) | Python 3.10 + Flask | 5000 | API REST Python | ❌ No | ⭐ Básico |
+| [04-redis-cache](#-04-redis-cache) | Node.js 18 + Redis | 3001 | API con caching | ✅ Redis | ⭐⭐ Intermedio |
+| [05-postgres-api](#-05-postgres-api) | Python 3.12 + FastAPI + PostgreSQL | 8000 | API con Postgres | ✅ PostgreSQL | ⭐⭐ Intermedio |
+| [06-nginx-proxy](#-06-nginx-proxy) | Nginx | 8080 | Reverse proxy | ❌ No | ⭐ Básico |
+| [07-rabbitmq-messaging](#-07-rabbitmq-messaging) | Node.js 18 + RabbitMQ | 5672, 15672 | Mensajería asíncrona | ✅ RabbitMQ | ⭐⭐⭐ Avanzado |
+| [08-prometheus-grafana](#-08-prometheus-grafana) | Prometheus + Grafana | 9090, 3000 | Monitoreo | ❌ No | ⭐⭐ Intermedio |
+| [09-multi-service-app](#-09-multi-service-app) | React + Node.js + MongoDB | 8080, 3000 | Microservicios | ✅ MongoDB | ⭐⭐⭐ Avanzado |
+| [10-go-api](#-10-go-api) | Go 1.21 | 8080 | API en Go | ❌ No | ⭐⭐ Intermedio |
+| [11-elasticsearch-search](#-11-elasticsearch-search) | Python 3.12 + Elasticsearch | 8000, 9200 | Búsqueda full-text | ✅ Elasticsearch | ⭐⭐ Intermedio |
+| [12-jenkins-ci](#-12-jenkins-ci) | Jenkins | 8080 | CI/CD | ❌ No | ⭐⭐⭐ Avanzado |
 
 ---
 
@@ -401,7 +410,198 @@ Laboratorios planeados para futuras versiones:
 
 ---
 
-## 📖 Recursos Relacionados
+## � 04-redis-cache
+
+### Descripción
+API REST con caching usando Redis para mejorar rendimiento y reducir carga en bases de datos.
+
+### Stack Tecnológico
+- **Runtime**: Node.js 18 (Alpine)
+- **Framework**: Express
+- **Cache**: Redis 7
+- **Cliente**: redis npm package
+
+### Estructura de Archivos
+```
+04-redis-cache/
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── server.js
+└── k8s/
+    └── deployment.yaml
+```
+
+### Inicio Rápido
+```bash
+cd 04-redis-cache
+docker-compose up
+```
+**Acceso**: http://localhost:3001
+
+### Endpoints
+- `GET /data/:key` - Obtiene datos con cache
+
+---
+
+## 🐘 05-postgres-api
+
+### Descripción
+API REST con PostgreSQL usando FastAPI, enfocada en ORMs y queries avanzadas.
+
+### Stack Tecnológico
+- **Runtime**: Python 3.12
+- **Framework**: FastAPI + Uvicorn
+- **DB**: PostgreSQL 15
+- **ORM**: SQLAlchemy
+
+### Inicio Rápido
+```bash
+cd 05-postgres-api
+docker-compose up
+```
+**Acceso**: http://localhost:8000/docs (Swagger)
+
+### Endpoints
+- `GET /items` - Lista items
+- `POST /items` - Crear item
+
+---
+
+## 🌐 06-nginx-proxy
+
+### Descripción
+Reverse proxy con Nginx para balanceo de carga entre múltiples servicios.
+
+### Stack Tecnológico
+- **Servidor**: Nginx (Alpine)
+- **Config**: nginx.conf personalizado
+
+### Inicio Rápido
+```bash
+cd 06-nginx-proxy
+docker-compose up
+```
+**Acceso**: http://localhost:8080
+
+---
+
+## 🐰 07-rabbitmq-messaging
+
+### Descripción
+Sistema de mensajería asíncrona con producer/consumer usando RabbitMQ.
+
+### Stack Tecnológico
+- **Runtime**: Node.js 18
+- **Message Broker**: RabbitMQ 3
+- **Cliente**: amqplib
+
+### Inicio Rápido
+```bash
+cd 07-rabbitmq-messaging
+docker-compose up -d
+npm run producer
+npm run consumer
+```
+**Management UI**: http://localhost:15672
+
+---
+
+## 📊 08-prometheus-grafana
+
+### Descripción
+Stack de monitoreo con métricas de contenedores usando Prometheus y dashboards en Grafana.
+
+### Stack Tecnológico
+- **Metrics**: Prometheus
+- **Visualization**: Grafana
+- **Config**: prometheus.yml
+
+### Inicio Rápido
+```bash
+cd 08-prometheus-grafana
+docker-compose up
+```
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (admin/admin)
+
+---
+
+## 🔧 09-multi-service-app
+
+### Descripción
+Aplicación multi-servicio básica con frontend, backend y base de datos.
+
+### Stack Tecnológico
+- **Frontend**: Nginx (HTML simple)
+- **Backend**: Node.js + Express
+- **DB**: MongoDB
+
+### Inicio Rápido
+```bash
+cd 09-multi-service-app
+docker-compose up
+```
+- **Frontend**: http://localhost:8080
+- **Backend**: http://localhost:3000/api
+
+---
+
+## 🐹 10-go-api
+
+### Descripción
+API REST ligera construida en Go, enfocada en performance.
+
+### Stack Tecnológico
+- **Lenguaje**: Go 1.21
+- **Framework**: Built-in net/http
+
+### Inicio Rápido
+```bash
+cd 10-go-api
+docker-compose up
+```
+**Acceso**: http://localhost:8080
+
+---
+
+## 🔍 11-elasticsearch-search
+
+### Descripción
+API de búsqueda usando Elasticsearch para indexación y queries full-text.
+
+### Stack Tecnológico
+- **Runtime**: Python 3.12 + FastAPI
+- **Search Engine**: Elasticsearch 8
+
+### Inicio Rápido
+```bash
+cd 11-elasticsearch-search
+docker-compose up
+```
+**Acceso**: http://localhost:8000/docs
+
+---
+
+## 🤖 12-jenkins-ci
+
+### Descripción
+Pipeline de CI/CD básico usando Jenkins para automatizar builds y tests.
+
+### Stack Tecnológico
+- **CI/CD**: Jenkins LTS
+- **Container**: Docker-in-Docker
+
+### Inicio Rápido
+```bash
+cd 12-jenkins-ci
+docker-compose up
+```
+**Acceso**: http://localhost:8080 (setup inicial requerido)
+
+---
+
+## �📖 Recursos Relacionados
 
 - 🎓 [Guía para Principiantes](BEGINNERS_GUIDE.md) - Cómo empezar
 - 📚 [Manual de Usuario](USER_MANUAL.md) - Uso avanzado

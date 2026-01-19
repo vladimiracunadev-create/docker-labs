@@ -52,6 +52,66 @@ docker build -t tuusuario/python-api:v1 .
 docker push tuusuario/python-api:v1
 ```
 
+### 04-redis-cache
+
+```bash
+cd 04-redis-cache
+docker build -t tuusuario/redis-cache-api:v1 .
+docker push tuusuario/redis-cache-api:v1
+```
+
+### 05-postgres-api
+
+```bash
+cd 05-postgres-api
+docker build -t tuusuario/postgres-api:v1 .
+docker push tuusuario/postgres-api:v1
+```
+
+### 06-nginx-proxy
+
+```bash
+cd 06-nginx-proxy
+docker build -t tuusuario/nginx-proxy:v1 .
+docker push tuusuario/nginx-proxy:v1
+```
+
+### 07-rabbitmq-messaging
+
+Usa imágenes oficiales: `rabbitmq:3-management`
+
+### 08-prometheus-grafana
+
+Usa imágenes oficiales: `prom/prometheus`, `grafana/grafana`
+
+### 09-multi-service-app
+
+```bash
+cd 09-multi-service-app/backend
+docker build -t tuusuario/multi-backend:v1 .
+docker push tuusuario/multi-backend:v1
+```
+
+### 10-go-api
+
+```bash
+cd 10-go-api
+docker build -t tuusuario/go-api:v1 .
+docker push tuusuario/go-api:v1
+```
+
+### 11-elasticsearch-search
+
+```bash
+cd 11-elasticsearch-search
+docker build -t tuusuario/elasticsearch-api:v1 .
+docker push tuusuario/elasticsearch-api:v1
+```
+
+### 12-jenkins-ci
+
+Usa imagen oficial: `jenkins/jenkins:lts`
+
 > **Nota**: Reemplaza `tuusuario` con tu nombre de usuario en Docker Hub. Para MariaDB y phpMyAdmin, usa las imágenes oficiales (`mariadb:11`, `phpmyadmin:latest`).
 
 ## 🚀 Despliegue por Laboratorio
@@ -90,6 +150,75 @@ kubectl apply -f deployment.yaml
 
 **Acceso**:
 - `minikube service python-api-service`
+
+### 04-redis-cache
+
+```bash
+cd 04-redis-cache/k8s
+kubectl apply -f deployment.yaml
+```
+
+**Acceso**:
+- `minikube service redis-cache-api-service`
+
+### 05-postgres-api
+
+```bash
+cd 05-postgres-api/k8s
+kubectl apply -f deployment.yaml
+```
+
+**Acceso**:
+- `minikube service postgres-api-service`
+
+### 06-nginx-proxy
+
+```bash
+cd 06-nginx-proxy/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 07-rabbitmq-messaging
+
+```bash
+cd 07-rabbitmq-messaging/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 08-prometheus-grafana
+
+```bash
+cd 08-prometheus-grafana/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 09-multi-service-app
+
+```bash
+cd 09-multi-service-app/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 10-go-api
+
+```bash
+cd 10-go-api/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 11-elasticsearch-search
+
+```bash
+cd 11-elasticsearch-search/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
+
+### 12-jenkins-ci
+
+```bash
+cd 12-jenkins-ci/k8s
+kubectl apply -f deployment.yaml  # Crear si no existe
+```
 
 ## 🔧 Comandos Útiles
 
