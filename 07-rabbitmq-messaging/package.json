@@ -1,0 +1,11 @@
+{
+  "name": "rabbitmq-messaging",
+  "version": "1.0.0",
+  "scripts": {
+    "producer": "node producer.js",
+    "consumer": "node consumer.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3"
+  }
+}

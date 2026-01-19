@@ -1,0 +1,24 @@
+services:
+  frontend:
+    image: nginx:alpine
+    container_name: multi_frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html
+
+  backend:
+    image: node:20-alpine
+    container_name: multi_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+
+  db:
+    image: mongo:7
+    container_name: multi_db
+    ports:
+      - "27017:27017"

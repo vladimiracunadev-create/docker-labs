@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    container_name: redis_cache_api
+    ports:
+      - "3001:3000"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache_redis
+    ports:
+      - "6379:6379"
