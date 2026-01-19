@@ -40,7 +40,7 @@ cd docker-labs
 docker-compose -f docker-compose-dashboard.yml up
 
 # 3. Abre tu navegador
-# http://localhost
+# http://localhost:8080
 ```
 
 **¡Listo!** Ya tienes un dashboard para explorar todos los labs. 🎉
@@ -76,7 +76,7 @@ docker-compose -f docker-compose-dashboard.yml up
 ✅ **Multi-Stack**: Node.js, PHP, Python, MySQL y más  
 ✅ **Soporte Kubernetes**: Despliega en clusters K8s con manifiestos incluidos  
 ✅ **Buenas Prácticas**: Aprende Docker correctamente desde el inicio  
-✅ **Dashboard Interactivo**: Verifica el estado de todos los labs en http://localhost  
+✅ **Dashboard Interactivo**: Verifica el estado de todos los labs en http://localhost:8080  
 ✅ **Documentación Completa**: Guías para todos los niveles  
 
 ---
