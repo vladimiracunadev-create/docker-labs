@@ -17,6 +17,7 @@ docker-labs es una colección curada de **laboratorios Docker independientes**, 
 - 🎓 **Educativo**: Del nivel básico al avanzado
 - 💻 **Práctico**: Código real, no tutoriales abstractos
 - 🚀 **Rápido**: Levanta un entorno en menos de 30 segundos
+- ☸️ **Kubernetes Ready**: Despliega en clusters K8s con manifiestos incluidos (ver [Guía de Kubernetes](docs/KUBERNETES_DEPLOYMENT.md))
 
 ---
 
