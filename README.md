@@ -36,17 +36,14 @@ docker-labs es una colección curada de **laboratorios Docker independientes**, 
 git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 
-# 2. Entra a un laboratorio
-cd 01-node-api
+# 2. Levanta el dashboard
+docker-compose -f docker-compose-dashboard.yml up
 
-# 3. Levanta el contenedor
-docker-compose up
-
-# 4. Abre tu navegador
-# http://localhost:3000
+# 3. Abre tu navegador
+# http://localhost
 ```
 
-**¡Listo!** Ya tienes un servidor Node.js corriendo sin instalar Node en tu máquina. 🎉
+**¡Listo!** Ya tienes un dashboard para explorar todos los labs. 🎉
 
 ---
 
@@ -79,6 +76,7 @@ docker-compose up
 ✅ **Multi-Stack**: Node.js, PHP, Python, MySQL y más  
 ✅ **Soporte Kubernetes**: Despliega en clusters K8s con manifiestos incluidos  
 ✅ **Buenas Prácticas**: Aprende Docker correctamente desde el inicio  
+✅ **Dashboard Interactivo**: Verifica el estado de todos los labs en http://localhost  
 ✅ **Documentación Completa**: Guías para todos los niveles  
 
 ---

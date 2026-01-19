@@ -1,0 +1,83 @@
+services:
+  dashboard:
+    image: nginx:alpine
+    container_name: docker-labs-dashboard
+    ports:
+      - "80:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+      - ./nginx-dashboard.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      # Optionally depend on other services if running all together
+      - node-api
+      - python-api
+      - redis-cache-api
+      - postgres-api
+      - go-api
+      - elasticsearch-api
+
+  # Include other labs for full testing
+  node-api:
+    build: ./01-node-api
+    container_name: dashboard-node-api
+    ports:
+      - "3000:3000"
+
+  python-api:
+    build: ./03-python-api
+    container_name: dashboard-python-api
+    ports:
+      - "5000:5000"
+
+  redis-cache-api:
+    build: ./04-redis-cache
+    container_name: dashboard-redis-cache-api
+    ports:
+      - "3001:3000"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: dashboard-redis
+
+  postgres-api:
+    build: ./05-postgres-api
+    container_name: dashboard-postgres-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://user:pass@postgres/db
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: dashboard-postgres
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+
+  go-api:
+    build: ./10-go-api
+    container_name: dashboard-go-api
+    ports:
+      - "8080:8080"
+
+  elasticsearch-api:
+    build: ./11-elasticsearch-search
+    container_name: dashboard-elasticsearch-api
+    ports:
+      - "8001:8000"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:8.11.0
+    container_name: dashboard-elasticsearch
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: false
+    ports:
+      - "9200:9200"

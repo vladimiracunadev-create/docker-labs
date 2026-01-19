@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Labs Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .lab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .lab-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .lab-card:hover {
+            transform: translateY(-5px);
+        }
+        .lab-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .lab-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .lab-stack {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 15px;
+        }
+        .lab-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        .status-online {
+            background-color: #28a745;
+        }
+        .status-offline {
+            background-color: #dc3545;
+        }
+        .status-unknown {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐳 Docker Labs Dashboard</h1>
+    <p>Panel de control para verificar el estado de todos los laboratorios. Asegúrate de tener corriendo los contenedores antes de verificar.</p>
+
+    <div class="lab-grid" id="labs-container">
+        <!-- Labs will be loaded here -->
+    </div>
+
+    <script>
+        const labs = [
+            {
+                id: '01-node-api',
+                name: 'Node.js API',
+                description: 'API REST básica con Node.js y Express',
+                stack: 'Node.js 18 + Express',
+                ports: [{ port: 3000, name: 'API' }],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '02-php-lamp',
+                name: 'PHP LAMP Stack',
+                description: 'Stack completo LAMP con PHP, Apache y MariaDB',
+                stack: 'PHP 8.1 + Apache + MariaDB',
+                ports: [
+                    { port: 8081, name: 'Web' },
+                    { port: 8082, name: 'phpMyAdmin' }
+                ],
+                healthEndpoint: null // No health check
+            },
+            {
+                id: '03-python-api',
+                name: 'Python API',
+                description: 'API REST con Python y Flask',
+                stack: 'Python 3.10 + Flask',
+                ports: [{ port: 5000, name: 'API' }],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '04-redis-cache',
+                name: 'Redis Cache API',
+                description: 'API con caching usando Redis',
+                stack: 'Node.js 18 + Redis',
+                ports: [{ port: 3001, name: 'API' }],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '05-postgres-api',
+                name: 'PostgreSQL API',
+                description: 'API con PostgreSQL usando FastAPI',
+                stack: 'Python 3.12 + FastAPI + PostgreSQL',
+                ports: [{ port: 8000, name: 'API' }],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '06-nginx-proxy',
+                name: 'Nginx Proxy',
+                description: 'Reverse proxy con Nginx',
+                stack: 'Nginx',
+                ports: [{ port: 8080, name: 'Proxy' }],
+                healthEndpoint: null
+            },
+            {
+                id: '07-rabbitmq-messaging',
+                name: 'RabbitMQ Messaging',
+                description: 'Mensajería asíncrona con RabbitMQ',
+                stack: 'Node.js 18 + RabbitMQ',
+                ports: [
+                    { port: 5672, name: 'AMQP' },
+                    { port: 15672, name: 'Management' }
+                ],
+                healthEndpoint: null
+            },
+            {
+                id: '08-prometheus-grafana',
+                name: 'Prometheus + Grafana',
+                description: 'Monitoreo con métricas y dashboards',
+                stack: 'Prometheus + Grafana',
+                ports: [
+                    { port: 9090, name: 'Prometheus' },
+                    { port: 3000, name: 'Grafana' }
+                ],
+                healthEndpoint: null
+            },
+            {
+                id: '09-multi-service-app',
+                name: 'Multi-Service App',
+                description: 'App con frontend, backend y DB',
+                stack: 'React + Node.js + MongoDB',
+                ports: [
+                    { port: 8080, name: 'Frontend' },
+                    { port: 3000, name: 'Backend' }
+                ],
+                healthEndpoint: null
+            },
+            {
+                id: '10-go-api',
+                name: 'Go API',
+                description: 'API REST en Go',
+                stack: 'Go 1.21',
+                ports: [{ port: 8080, name: 'API' }],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '11-elasticsearch-search',
+                name: 'Elasticsearch Search',
+                description: 'Búsqueda con Elasticsearch',
+                stack: 'Python 3.12 + Elasticsearch',
+                ports: [
+                    { port: 8000, name: 'API' },
+                    { port: 9200, name: 'Elasticsearch' }
+                ],
+                healthEndpoint: '/health'
+            },
+            {
+                id: '12-jenkins-ci',
+                name: 'Jenkins CI/CD',
+                description: 'Pipeline de CI/CD con Jenkins',
+                stack: 'Jenkins',
+                ports: [{ port: 8080, name: 'Jenkins' }],
+                healthEndpoint: null
+            }
+        ];
+
+        function createLabCard(lab) {
+            const card = document.createElement('div');
+            card.className = 'lab-card';
+
+            const title = document.createElement('div');
+            title.className = 'lab-title';
+            title.textContent = `${lab.id}: ${lab.name}`;
+
+            const status = document.createElement('span');
+            status.className = 'status status-unknown';
+            status.title = 'Checking...';
+            title.appendChild(status);
+
+            const description = document.createElement('div');
+            description.className = 'lab-description';
+            description.textContent = lab.description;
+
+            const stack = document.createElement('div');
+            stack.className = 'lab-stack';
+            stack.textContent = `Stack: ${lab.stack}`;
+
+            const links = document.createElement('div');
+            links.className = 'lab-links';
+
+            lab.ports.forEach(p => {
+                const link = document.createElement('a');
+                link.className = 'btn btn-primary';
+                link.href = `http://localhost:${p.port}`;
+                link.target = '_blank';
+                link.textContent = `${p.name} (${p.port})`;
+                links.appendChild(link);
+            });
+
+            const checkBtn = document.createElement('button');
+            checkBtn.className = 'btn btn-secondary';
+            checkBtn.textContent = 'Verificar Estado';
+            checkBtn.onclick = () => checkLabStatus(lab, status);
+            links.appendChild(checkBtn);
+
+            card.appendChild(title);
+            card.appendChild(description);
+            card.appendChild(stack);
+            card.appendChild(links);
+
+            return card;
+        }
+
+        async function checkLabStatus(lab, statusElement) {
+            if (!lab.healthEndpoint) {
+                statusElement.className = 'status status-unknown';
+                statusElement.title = 'No health check disponible';
+                return;
+            }
+
+            const port = lab.ports[0].port; // Use first port for health check
+            try {
+                const response = await fetch(`http://localhost:${port}${lab.healthEndpoint}`, {
+                    method: 'GET',
+                    mode: 'no-cors' // Allow cross-origin for local checks
+                });
+                // Since no-cors doesn't give us response details, assume online if no error
+                statusElement.className = 'status status-online';
+                statusElement.title = 'Online';
+            } catch (error) {
+                statusElement.className = 'status status-offline';
+                statusElement.title = 'Offline - ' + error.message;
+            }
+        }
+
+        // Load labs
+        const container = document.getElementById('labs-container');
+        labs.forEach(lab => {
+            container.appendChild(createLabCard(lab));
+        });
+    </script>
+</body>
+</html>
