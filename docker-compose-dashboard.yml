@@ -3,7 +3,7 @@ services:
     image: nginx:alpine
     container_name: docker-labs-dashboard
     ports:
-      - "8080:80"
+      - "9090:80"
     volumes:
       - ./index.html:/usr/share/nginx/html/index.html
       - ./nginx-dashboard.conf:/etc/nginx/conf.d/default.conf
