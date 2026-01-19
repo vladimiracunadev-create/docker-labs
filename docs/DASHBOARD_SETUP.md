@@ -51,11 +51,11 @@ El dashboard incluye los siguientes laboratorios, todos ejecutándose simultáne
 | 05-postgres-api | API con PostgreSQL | 8000 | ✅ Activo |
 | 06-nginx-proxy | Reverse proxy con balanceo | 8080 | ✅ Activo |
 | 07-rabbitmq-messaging | Mensajería con RabbitMQ | 5672 (AMQP), 15672 (Management) | ✅ Activo |
-| 08-prometheus-grafana | Monitoreo (pendiente) | - | ⏳ Próximo |
-| 09-multi-service-app | App full-stack (pendiente) | - | ⏳ Próximo |
-| 10-go-api | API en Go (pendiente) | - | ⏳ Próximo |
-| 11-elasticsearch-search | Búsqueda con Elasticsearch (pendiente) | - | ⏳ Próximo |
-| 12-jenkins-ci | CI/CD con Jenkins (pendiente) | - | ⏳ Próximo |
+| 08-prometheus-grafana | Monitoreo con Prometheus y Grafana | 9091 (Prometheus), 3002 (Grafana) | ✅ Activo |
+| 09-multi-service-app | App full-stack React/Node.js/MongoDB | 8083 (Frontend), 3003 (Backend) | ✅ Activo |
+| 10-go-api | API REST en Go | 8084 | ✅ Activo |
+| 11-elasticsearch-search | Búsqueda con Elasticsearch | 8001 (API), 9200 (ES) | ✅ Activo |
+| 12-jenkins-ci | CI/CD con Jenkins | 8085 (Web), 50001 (Slave) | ✅ Activo |
 
 ## 🔍 Verificación de Estado
 
