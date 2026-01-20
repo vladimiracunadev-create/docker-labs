@@ -3,51 +3,88 @@ name: CI
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - ".github/workflows/ci.yml"
+      - "01-node-api/**"
+      - "02-php-lamp/**"
+      - "03-python-api/**"
   pull_request:
     branches: [ main, master ]
+    paths:
+      - ".github/workflows/ci.yml"
+      - "01-node-api/**"
+      - "02-php-lamp/**"
+      - "03-python-api/**"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Build and test Node API
-      run: |
-        cd 01-node-api
-        docker build -t node-api .
-        docker run -d -p 3000:3000 --name node-api-test node-api
-        sleep 10
-        curl -f http://localhost:3000 || exit 1
-        docker stop node-api-test
+      - name: Build & smoke test Node API
+        working-directory: 01-node-api
+        run: |
+          set -euo pipefail
+          docker build -t node-api .
+          docker run --rm -d -p 3000:3000 --name node-api-test node-api
 
-    - name: Build and test Python API
-      run: |
-        cd 03-python-api
-        docker build -t python-api .
-        docker run -d -p 5000:5000 --name python-api-test python-api
-        sleep 10
-        curl -f http://localhost:5000 || exit 1
-        docker stop python-api-test
+          # Espera activa (evita “sleep fijo”)
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000 >/dev/null; then
+              echo "Node OK"
+              break
+            fi
+            sleep 2
+          done
 
-    - name: Build PHP LAMP
-      run: |
-        cd 02-php-lamp
-        docker build -t php-lamp-web ./docker/php
-        docker run -d -p 8080:80 --name php-test-8080 php-lamp-web
-        docker run -d -p 8081:80 --name php-test-8081 php-lamp-web
-        docker run -d -p 8082:80 --name php-test-8082 php-lamp-web # Cambiado a 8082 para evitar conflictos
-        docker run -d -p 8083:80 --name php-test-8083 php-lamp-web # Cambiado a 8083 para evitar conflictos
-        sleep 60 # Incrementar aún más el tiempo de espera para asegurar que los contenedores estén listos
-        curl -f http://localhost:8080 || exit 1
-        curl -f http://localhost:8081 || exit 1
-        docker stop php-test-8080
-        docker stop php-test-8081
-        curl -f http://localhost:8082 || exit 1
-        curl -f http://localhost:8083 || exit 1
-        docker stop php-test-8082
-        docker stop php-test-8083
+          curl -fsS http://localhost:3000 >/dev/null || (docker logs node-api-test && exit 1)
+          docker stop node-api-test
+
+      - name: Build & smoke test Python API
+        working-directory: 03-python-api
+        run: |
+          set -euo pipefail
+          docker build -t python-api .
+          docker run --rm -d -p 5000:5000 --name python-api-test python-api
+
+          for i in {1..30}; do
+            if curl -fsS http://localhost:5000 >/dev/null; then
+              echo "Python OK"
+              break
+            fi
+            sleep 2
+          done
+
+          curl -fsS http://localhost:5000 >/dev/null || (docker logs python-api-test && exit 1)
+          docker stop python-api-test
+
+      - name: Build & smoke test PHP (web)
+        working-directory: 02-php-lamp
+        run: |
+          set -euo pipefail
+          docker build -t php-lamp-web ./docker/php
+          docker run --rm -d -p 8080:80 --name php-test php-lamp-web
+
+          for i in {1..45}; do
+            if curl -fsS http://localhost:8080 >/dev/null; then
+              echo "PHP OK"
+              break
+            fi
+            sleep 2
+          done
+
+          curl -fsS http://localhost:8080 >/dev/null || (docker logs php-test && exit 1)
+          docker stop php-test
