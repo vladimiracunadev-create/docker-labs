@@ -3,4 +3,4 @@ services:
     build: .
     container_name: nginx_proxy
     ports:
-      - "8080:80"
+      - "8082:80"

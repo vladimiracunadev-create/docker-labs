@@ -11,6 +11,6 @@ services:
     image: grafana/grafana
     container_name: grafana_monitoring
     ports:
-      - "3000:3000"
+      - "3002:3000" # Cambiado para evitar conflicto con el backend de 09-multi-service-app
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin

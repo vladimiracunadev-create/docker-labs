@@ -3,7 +3,7 @@ services:
     image: nginx:alpine
     container_name: multi_frontend
     ports:
-      - "8080:80"
+      - "8083:80" # Cambiado para evitar conflicto con 06-nginx-proxy
     volumes:
       - ./frontend/index.html:/usr/share/nginx/html/index.html
 
@@ -11,7 +11,7 @@ services:
     image: node:20-alpine
     container_name: multi_backend
     ports:
-      - "3000:3000"
+      - "3003:3000" # Cambiado para evitar conflicto con grafana en 08-prometheus-grafana
     volumes:
       - ./backend:/app
     working_dir: /app

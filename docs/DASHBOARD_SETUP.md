@@ -49,9 +49,9 @@ El dashboard incluye los siguientes laboratorios, todos ejecutándose simultáne
 | 03-python-api | API REST con Flask | 5000 | ✅ Activo |
 | 04-redis-cache | API con caching Redis | 3001 | ✅ Activo |
 | 05-postgres-api | API con PostgreSQL | 8000 | ✅ Activo |
-| 06-nginx-proxy | Reverse proxy con balanceo | 8080 | ✅ Activo |
+| 06-nginx-proxy | Reverse proxy con balanceo | 8082 | ✅ Activo |
 | 07-rabbitmq-messaging | Mensajería con RabbitMQ | 5672 (AMQP), 15672 (Management) | ✅ Activo |
-| 08-prometheus-grafana | Monitoreo con Prometheus y Grafana | 9091 (Prometheus), 3002 (Grafana) | ✅ Activo |
+| 08-prometheus-grafana | Monitoreo con Prometheus y Grafana | 9090 (Prometheus), 3002 (Grafana) | ✅ Activo |
 | 09-multi-service-app | App full-stack React/Node.js/MongoDB | 8083 (Frontend), 3003 (Backend) | ✅ Activo |
 | 10-go-api | API REST en Go | 8084 | ✅ Activo |
 | 11-elasticsearch-search | Búsqueda con Elasticsearch | 8001 (API), 9200 (ES) | ✅ Activo |
