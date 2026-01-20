@@ -38,10 +38,10 @@ jobs:
       run: |
         cd 02-php-lamp
         docker build -t php-lamp-web ./docker/php
-        docker run -d -p 8080:80 --name php-test-8080 php-lamp-web
-        docker run -d -p 8081:80 --name php-test-8081 php-lamp-web
+        docker run -d -p 8082:80 --name php-test-8082 php-lamp-web # Cambiado a 8082 para evitar conflictos
+        docker run -d -p 8083:80 --name php-test-8083 php-lamp-web # Cambiado a 8083 para evitar conflictos
         sleep 10
-        curl -f http://localhost:8080 || exit 1
-        curl -f http://localhost:8081 || exit 1
-        docker stop php-test-8080
-        docker stop php-test-8081
+        curl -f http://localhost:8082 || exit 1
+        curl -f http://localhost:8083 || exit 1
+        docker stop php-test-8082
+        docker stop php-test-8083
