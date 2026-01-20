@@ -57,6 +57,62 @@ El dashboard incluye los siguientes laboratorios, todos ejecutándose simultáne
 | 11-elasticsearch-search | Búsqueda con Elasticsearch | 8001 (API), 9200 (ES) | ✅ Activo |
 | 12-jenkins-ci | CI/CD con Jenkins | 8085 (Web), 50001 (Slave) | ✅ Activo |
 
+## Configuración del entorno PHP LAMP
+
+El entorno PHP LAMP incluye los siguientes servicios:
+
+1. **Web**:
+   - Imagen base: `php:8.3-apache`
+   - Extensiones instaladas: `pdo`, `pdo_mysql`, `mysqli`
+   - Puerto mapeado: `8081:80`
+   - Volumen: `./src:/var/www/html`
+
+2. **Base de datos (MariaDB)**:
+   - Imagen: `mariadb:11`
+   - Puerto mapeado: `3307:3306`
+   - Variables de entorno:
+     - `MARIADB_DATABASE`: `appdb`
+     - `MARIADB_USER`: `appuser`
+     - `MARIADB_PASSWORD`: `apppass`
+     - `MARIADB_ROOT_PASSWORD`: `rootpass`
+
+3. **phpMyAdmin**:
+   - Imagen: `phpmyadmin:latest`
+   - Puerto mapeado: `8082:80`
+   - Variables de entorno:
+     - `PMA_HOST`: `db`
+     - `PMA_PORT`: `3306`
+
+### Pasos para iniciar el entorno:
+
+1. Asegúrate de tener Docker y Docker Compose instalados.
+2. Navega al directorio `02-php-lamp`.
+3. Crea el archivo `.env` con las siguientes variables:
+
+   ```dotenv
+   DB_NAME=appdb
+   DB_USER=appuser
+   DB_PASS=apppass
+   DB_ROOT=rootpass
+   ```
+
+4. Ejecuta los siguientes comandos:
+
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
+
+5. Accede a los servicios:
+   - Aplicación web: [http://localhost:8081](http://localhost:8081)
+   - phpMyAdmin: [http://localhost:8082](http://localhost:8082)
+
+6. Para detener los servicios, ejecuta:
+
+   ```bash
+   docker-compose down
+   ```
+
 ## 🔍 Verificación de Estado
 
 ### Contenedores Activos
