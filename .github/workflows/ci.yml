@@ -6,10 +6,17 @@ on:
   pull_request:
     branches: [main, master]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -20,21 +27,26 @@ jobs:
           docker version
           docker compose version
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       # -----------------------
-      # 01 - Node API
+      # 01 - Node API (solo si existe)
       # -----------------------
-      - name: Build & test Node API
+      - name: Build & smoke test Node API
+        if: ${{ hashFiles('01-node-api/Dockerfile') != '' }}
         working-directory: 01-node-api
         run: |
+          set -euo pipefail
           docker build -t node-api .
-          docker run -d -p 3000:3000 --name node-api-test node-api
+          docker run --rm -d -p 3000:3000 --name node-api-test node-api
 
           for i in {1..30}; do
             if curl -fsS http://localhost:3000 >/dev/null; then
               echo "Node OK"
               exit 0
             fi
-            sleep 1
+            sleep 2
           done
 
           echo "Node no respondió"
@@ -42,25 +54,27 @@ jobs:
           exit 1
 
       - name: Cleanup Node
-        if: always()
+        if: ${{ always() && hashFiles('01-node-api/Dockerfile') != '' }}
         run: |
           docker rm -f node-api-test || true
 
       # -----------------------
-      # 03 - Python API
+      # 03 - Python API (solo si existe)
       # -----------------------
-      - name: Build & test Python API
+      - name: Build & smoke test Python API
+        if: ${{ hashFiles('03-python-api/Dockerfile') != '' }}
         working-directory: 03-python-api
         run: |
+          set -euo pipefail
           docker build -t python-api .
-          docker run -d -p 5000:5000 --name python-api-test python-api
+          docker run --rm -d -p 5000:5000 --name python-api-test python-api
 
           for i in {1..45}; do
             if curl -fsS http://localhost:5000 >/dev/null; then
               echo "Python OK"
               exit 0
             fi
-            sleep 1
+            sleep 2
           done
 
           echo "Python no respondió"
@@ -68,52 +82,72 @@ jobs:
           exit 1
 
       - name: Cleanup Python
-        if: always()
+        if: ${{ always() && hashFiles('03-python-api/Dockerfile') != '' }}
         run: |
           docker rm -f python-api-test || true
 
       # -----------------------
-      # 02 - PHP LAMP (con Compose)
+      # 02 - PHP LAMP (compose) (solo si existe compose)
       # -----------------------
-      - name: Build & test PHP LAMP (compose)
+      - name: Build & smoke test PHP LAMP (compose)
+        id: php_lamp
+        if: ${{ hashFiles('02-php-lamp/docker-compose.yml', '02-php-lamp/docker-compose.yaml', '02-php-lamp/compose.yml', '02-php-lamp/compose.yaml') != '' }}
         working-directory: 02-php-lamp
         run: |
+          set -euo pipefail
+
           docker compose up -d --build
           docker ps -a
 
-          # Espera web (8080)
+          # Detecta puertos reales publicados (evita hardcode 8081/8082)
+          WEB_PORT="$(docker port php_lamp_web 80/tcp | head -n1 | sed -E 's/.*:([0-9]+)$/\1/' || true)"
+          PMA_PORT="$(docker port php_lamp_pma 80/tcp | head -n1 | sed -E 's/.*:([0-9]+)$/\1/' || true)"
+
+          if [ -z "${WEB_PORT}" ] || [ -z "${PMA_PORT}" ]; then
+            echo "No pude detectar puertos. WEB_PORT='${WEB_PORT}' PMA_PORT='${PMA_PORT}'"
+            echo "Revisa que los contenedores se llamen EXACTO: php_lamp_web y php_lamp_pma"
+            docker ps -a
+            exit 1
+          fi
+
+          echo "WEB_PORT=${WEB_PORT}"
+          echo "PMA_PORT=${PMA_PORT}"
+
+          # Espera activa para que la web deje de estar (health: starting)
           for i in {1..60}; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || true)
-            if [ "$code" != "000" ]; then
-              echo "Web HTTP $code"
+            code="$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:${WEB_PORT}" || true)"
+            if [ "${code}" != "000" ]; then
+              echo "Web HTTP ${code}"
               break
             fi
             sleep 2
           done
 
-          # Acepta 2xx-4xx (si devuelve 5xx es error real)
-          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || true)
-          if [ "$code" -ge 500 ] || [ "$code" = "000" ]; then
-            echo "Web falló (HTTP $code)"
+          # Validación Web: acepta 2xx-4xx, falla 5xx o sin conexión
+          code="$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:${WEB_PORT}" || true)"
+          if [ "${code}" = "000" ] || [ "${code}" -ge 500 ]; then
+            echo "Web falló (HTTP ${code})"
+            docker logs php_lamp_web || true
             exit 1
           fi
 
-          # phpMyAdmin (8081) suele responder 200/302, igual lo validamos sin exigir 200 exacto
-          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081 || true)
-          if [ "$code" -ge 500 ] || [ "$code" = "000" ]; then
-            echo "phpMyAdmin falló (HTTP $code)"
+          # Validación phpMyAdmin: suele responder 200/302
+          code="$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:${PMA_PORT}" || true)"
+          if [ "${code}" = "000" ] || [ "${code}" -ge 500 ]; then
+            echo "phpMyAdmin falló (HTTP ${code})"
+            docker logs php_lamp_pma || true
             exit 1
           fi
 
       - name: Logs PHP LAMP (si falla)
-        if: failure()
+        if: ${{ failure() && hashFiles('02-php-lamp/docker-compose.yml', '02-php-lamp/docker-compose.yaml', '02-php-lamp/compose.yml', '02-php-lamp/compose.yaml') != '' }}
         working-directory: 02-php-lamp
         run: |
           docker compose ps || true
           docker compose logs --no-color --tail=250 || true
 
       - name: Cleanup PHP LAMP
-        if: always()
+        if: ${{ always() && hashFiles('02-php-lamp/docker-compose.yml', '02-php-lamp/docker-compose.yaml', '02-php-lamp/compose.yml', '02-php-lamp/compose.yaml') != '' }}
         working-directory: 02-php-lamp
         run: |
           docker compose down -v --remove-orphans || true
