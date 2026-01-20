@@ -145,3 +145,7 @@ Si encuentras problemas:
 3. Abre un issue en el repositorio con detalles del error.
 
 ¡Disfruta explorando Docker Labs! 🐳
+
+# Actualización menor para probar GitHub Actions
+
+Este cambio es para verificar que los workflows de GitHub Actions se ejecuten correctamente.
