@@ -42,7 +42,7 @@ jobs:
         docker run -d -p 8081:80 --name php-test-8081 php-lamp-web
         docker run -d -p 8082:80 --name php-test-8082 php-lamp-web # Cambiado a 8082 para evitar conflictos
         docker run -d -p 8083:80 --name php-test-8083 php-lamp-web # Cambiado a 8083 para evitar conflictos
-        sleep 30 # Incrementar tiempo de espera para asegurar que los contenedores estén listos
+        sleep 60 # Incrementar aún más el tiempo de espera para asegurar que los contenedores estén listos
         curl -f http://localhost:8080 || exit 1
         curl -f http://localhost:8081 || exit 1
         docker stop php-test-8080
