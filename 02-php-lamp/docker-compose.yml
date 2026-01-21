@@ -15,7 +15,7 @@ services:
       - db_data:/var/lib/mysql
 
   web:
-    build: .
+    build: ./docker/php
     container_name: php_lamp_web
     restart: always
     ports:
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     volumes:
-      - .:/var/www/html
+      - ./src:/var/www/html
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME:-appdb}

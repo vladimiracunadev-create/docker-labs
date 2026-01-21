@@ -32,10 +32,12 @@ services:
       - "5000:5000"
 
   php-lamp:
-    build: ./02-php-lamp
+    build: ./02-php-lamp/docker/php
     container_name: dashboard-php-lamp
     ports:
       - "8081:80"
+    volumes:
+      - ./02-php-lamp/src:/var/www/html
     depends_on:
       - mariadb
     environment:
