@@ -38,6 +38,16 @@ services:
       - "8081:80"
     depends_on:
       - mariadb
+    environment:
+      DB_HOST: mariadb
+      DB_NAME: app
+      DB_USER: user
+      DB_PASS: pass
+    environment:
+      DB_HOST: mariadb
+      DB_NAME: app
+      DB_USER: user
+      DB_PASS: pass
 
   mariadb:
     image: mariadb:10.6
