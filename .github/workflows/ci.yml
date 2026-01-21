@@ -75,10 +75,10 @@ jobs:
       - name: Ensure test script is executable
         shell: bash
         run: |
-          test -f script/ci-compose-test.sh
-          chmod +x script/ci-compose-test.sh
+          test -f scripts/ci-compose-test.sh
+          chmod +x scripts/ci-compose-test.sh
 
       - name: Compose up + health/run check
         shell: bash
         run: |
-          ./script/ci-compose-test.sh "${{ matrix.target.dir }}" "${{ matrix.target.file }}"
+          ./scripts/ci-compose-test.sh "${{ matrix.target.dir }}" "${{ matrix.target.file }}"
