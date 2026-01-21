@@ -43,11 +43,7 @@ services:
       DB_NAME: app
       DB_USER: user
       DB_PASS: pass
-    environment:
-      DB_HOST: mariadb
-      DB_NAME: app
-      DB_USER: user
-      DB_PASS: pass
+
 
   mariadb:
     image: mariadb:10.6
