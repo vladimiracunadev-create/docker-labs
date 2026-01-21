@@ -1,37 +1,57 @@
 services:
-  web:
-    build: ./docker/php
-    container_name: php_lamp_web
-    ports:
-      - "8081:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - db
-
   db:
     image: mariadb:11
     container_name: php_lamp_db
     environment:
-      MARIADB_DATABASE: ${DB_NAME}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASS}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT}
-    volumes:
-      - db_data:/var/lib/mysql
+      # Defaults para CI (evitas variables vacías)
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT:-root}
+      MARIADB_DATABASE: ${DB_NAME:-app}
+      MARIADB_USER: ${DB_USER:-app}
+      MARIADB_PASSWORD: ${DB_PASS:-app}
     ports:
       - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -p$$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  web:
+    build:
+      context: .
+    container_name: php_lamp_web
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-app}
+      DB_USER: ${DB_USER:-app}
+      DB_PASS: ${DB_PASS:-app}
+    ports:
+      - "8081:80"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 30
 
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: php_lamp_pma
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
+      PMA_USER: ${DB_USER:-app}
+      PMA_PASSWORD: ${DB_PASS:-app}
+      PMA_ARBITRARY: 0
     ports:
       - "8082:80"
-    depends_on:
-      - db
 
 volumes:
   db_data:
