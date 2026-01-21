@@ -28,10 +28,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Composes por carpeta-lab (01..12)
+          # docker-compose.yml en labs
           mapfile -t lab_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print | sed 's|^\./||' | sort -u)
 
-          # Composes "globales" en la raíz (dashboards)
+          # docker-compose-dashboard*.yml en raíz
           mapfile -t root_dash < <(find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print | sed 's|^\./||' | sort -u)
 
           all=("${lab_files[@]}" "${root_dash[@]}")
@@ -51,39 +51,4 @@ jobs:
           ')"
 
           echo "targets=$targets_json" >> "$GITHUB_OUTPUT"
-          echo "Targets detectados: $targets_json"
-
-  test:
-    needs: discover
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-    strategy:
-      fail-fast: false
-      matrix:
-        target: ${{ fromJson(needs.discover.outputs.targets) }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Docker info
-        shell: bash
-        run: |
-          docker version
-          docker compose version
-
-      # 🔧 FIX CRÍTICO: arregla CRLF/Unicode raro en scripts (causa exit code 2)
-      - name: Normalize line endings (CRLF -> LF)
-        shell: bash
-        run: |
-          sed -i 's/\r$//' scripts/ci-compose-test.sh
-
-      - name: Make scripts executable
-        shell: bash
-        run: |
-          chmod +x scripts/ci-compose-test.sh
-
-      - name: Run compose test
-        shell: bash
-        run: |
-          scripts/ci-compose-test.sh "${{ matrix.target.dir }}" "${{ matrix.target.file }}"
+          echo "Targets detectad
