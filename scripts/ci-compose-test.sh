@@ -5,7 +5,7 @@ DIR="${1:-}"
 FILE="${2:-}"
 
 if [[ -z "${DIR}" || -z "${FILE}" ]]; then
-  echo "Uso: $0 <dir> <file>"
+  echo "Uso: $0 <DIR> <FILE>"
   echo "Ej:  $0 02-php-lamp docker-compose.yml"
   echo "Ej:  $0 . docker-compose-dashboard-simple.yml"
   exit 2
@@ -22,54 +22,56 @@ if [[ ! -f "${COMPOSE_PATH}" ]]; then
   exit 2
 fi
 
-# --- Defaults de variables típicas (NO pisan si ya vienen definidas)
+# --- Defaults (NO pisan si ya vienen definidas)
 export DB_NAME="${DB_NAME:-appdb}"
 export DB_USER="${DB_USER:-appuser}"
 export DB_PASS="${DB_PASS:-apppass}"
 export DB_ROOT="${DB_ROOT:-rootpass}"
-# Si algún compose usa directamente vars estándar MySQL/MariaDB, esto ayuda sin romper nada:
+
+# Compat MySQL/MariaDB (ayuda a stacks que exigen root password)
 export MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$DB_ROOT}"
 export MARIADB_ROOT_PASSWORD="${MARIADB_ROOT_PASSWORD:-$DB_ROOT}"
 export MARIADB_ALLOW_EMPTY_ROOT_PASSWORD="${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD:-1}"
 
-# --- Project name seguro (sin "___" que rompe nombres de imagen)
-# slug desde el path: solo [a-z0-9-] y colapsa separadores
-slug="$(echo "${COMPOSE_PATH}" \
-  | tr '[:upper:]' '[:lower:]' \
-  | sed -E 's|[^a-z0-9]+|-|g; s/^-+//; s/-+$//; s/-+/-/g')"
-
+# --- Project name seguro (sin underscores raros)
+slug="$(
+  echo "${COMPOSE_PATH}" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed -E 's|[^a-z0-9]+|-|g; s/^-+//; s/-+$//; s/-+/-/g'
+)"
 run_id="${GITHUB_RUN_ID:-local}"
 attempt="${GITHUB_RUN_ATTEMPT:-0}"
 
 PROJECT="ci-${run_id}-${attempt}-${slug}"
-# Limitar longitud por seguridad (nombres de red/contener pueden crecer mucho)
 PROJECT="${PROJECT:0:60}"
 PROJECT="$(echo "${PROJECT}" | sed -E 's/-+$//')"
 
 TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-240}"
 
-echo "==> 🧪 Compose test"
-echo "    - path   : ${COMPOSE_PATH}"
-echo "    - project: ${PROJECT}"
-echo "    - timeout: ${TIMEOUT_SECONDS}s"
+echo "==> Compose test"
+echo " - path   : ${COMPOSE_PATH}"
+echo " - project: ${PROJECT}"
+echo " - timeout: ${TIMEOUT_SECONDS}s"
 
 cleanup() {
-  echo "==> 🧹 Cleanup (${COMPOSE_PATH})"
+  echo "==> Cleanup (${COMPOSE_PATH})"
   docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" down -v --remove-orphans >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
-echo "==> 🚀 Up (build)"
+echo "==> Validando config"
+docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" config >/dev/null
+
+echo "==> Up (build)"
 docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" up -d --build
 
-echo "==> 📦 Estado"
+echo "==> Estado"
 docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
 
 echo "==> ⏳ Esperando contenedores RUNNING/HEALTHY (máx ${TIMEOUT_SECONDS}s)"
 start="$(date +%s)"
 
-# Servicios cuyo healthcheck NO queremos convertir en FAIL (caso dashboard nginx-proxy)
-# - “unhealthy” se deja como warning si el contenedor sigue RUNNING.
+# Servicios cuyo healthcheck NO queremos convertir en FAIL (warning si está RUNNING)
 ALLOW_UNHEALTHY_SERVICES=("nginx-proxy")
 
 is_allow_unhealthy() {
@@ -100,7 +102,7 @@ while true; do
     name="$(docker inspect -f '{{.Name}}' "${cid}" 2>/dev/null | sed 's|^/||' || true)"
     svc="$(docker inspect -f '{{index .Config.Labels "com.docker.compose.service"}}' "${cid}" 2>/dev/null || echo "")"
 
-    # Si algún contenedor se cayó -> FAIL inmediato
+    # si se cayó -> FAIL
     if [[ "${status}" != "running" ]]; then
       echo "❌ Contenedor no está RUNNING: name=${name:-?} service=${svc:-?} status=${status} health=${health}"
       hard_fail="true"
@@ -108,7 +110,7 @@ while true; do
       continue
     fi
 
-    # Si tiene healthcheck:
+    # si tiene healthcheck
     if [[ "${health}" == "starting" ]]; then
       all_ok="false"
       continue
@@ -116,8 +118,7 @@ while true; do
 
     if [[ "${health}" == "unhealthy" ]]; then
       if is_allow_unhealthy "${svc}"; then
-        # warning, pero no bloquea
-        echo "⚠️  Healthcheck UNHEALTHY permitido: service=${svc} name=${name}"
+        echo "⚠️ Healthcheck UNHEALTHY permitido: service=${svc} name=${name}"
       else
         echo "❌ Healthcheck UNHEALTHY: service=${svc} name=${name}"
         hard_fail="true"
@@ -127,7 +128,7 @@ while true; do
   done
 
   if [[ "${hard_fail}" == "true" ]]; then
-    echo "==> 🧾 ps"
+    echo "==> ps"
     docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
     echo "==> Logs (últimas 200 líneas)"
     docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" logs --no-color --tail=200 || true

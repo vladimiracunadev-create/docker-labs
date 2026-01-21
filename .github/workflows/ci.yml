@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   discover:
     name: Discover compose targets
@@ -23,13 +26,15 @@ jobs:
           # docker-compose.yml en labs (maxdepth 2)
           mapfile -t lab_files < <(
             find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
-            | sed 's|^\./||' | sort -u
+              | sed 's|^\./||' \
+              | sort -u
           )
 
-          # docker-compose-dashboard*.yml en raíz (maxdepth 1)
+          # docker-compose-dashboard*.yml en raíz
           mapfile -t root_dash < <(
             find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print \
-            | sed 's|^\./||' | sort -u
+              | sed 's|^\./||' \
+              | sort -u
           )
 
           all=("${lab_files[@]}" "${root_dash[@]}")
@@ -80,5 +85,9 @@ jobs:
 
       - name: Compose up + health/run check
         shell: bash
+        env:
+          DOCKER_BUILDKIT: "1"
+          COMPOSE_DOCKER_CLI_BUILD: "1"
+          TIMEOUT_SECONDS: "240"
         run: |
           ./scripts/ci-compose-test.sh "${{ matrix.target.dir }}" "${{ matrix.target.file }}"
