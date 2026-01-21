@@ -1,41 +1,38 @@
-name: CI
+name: CI - Docker Compose Labs
 
 on:
   push:
   pull_request:
-
-permissions:
-  contents: read
 
 jobs:
   discover:
     name: Discover compose targets
     runs-on: ubuntu-latest
     outputs:
-      targets: ${{ steps.discover.outputs.targets }}
+      targets: ${{ steps.set-matrix.outputs.targets }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Discover docker compose files
-        id: discover
+      - name: Ensure jq
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - id: set-matrix
+        name: Build matrix (docker-compose.yml + dashboard)
         shell: bash
         run: |
           set -euo pipefail
 
-          # docker-compose.yml en labs (maxdepth 2)
-          mapfile -t lab_files < <(
-            find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
-              | sed 's|^\./||' \
-              | sort -u
-          )
+          # docker-compose.yml dentro de labs (ej: 02-php-lamp/docker-compose.yml)
+          mapfile -t lab_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
+            | sed 's|^\./||' | sort -u)
 
           # docker-compose-dashboard*.yml en raíz
-          mapfile -t root_dash < <(
-            find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print \
-              | sed 's|^\./||' \
-              | sort -u
-          )
+          mapfile -t root_dash < <(find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print \
+            | sed 's|^\./||' | sort -u)
 
           all=("${lab_files[@]}" "${root_dash[@]}")
 
@@ -56,38 +53,44 @@ jobs:
           echo "targets=$targets_json" >> "$GITHUB_OUTPUT"
 
           echo "Targets detectados:"
-          printf ' - %s\n' "${all[@]}"
+          echo "$targets_json" | jq .
 
   test:
-    name: test (${{ matrix.target.path }})
-    runs-on: ubuntu-latest
+    name: Compose test (${{ matrix.target.path }})
     needs: discover
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         target: ${{ fromJson(needs.discover.outputs.targets) }}
 
+    # Defaults para evitar que 02-php-lamp falle por variables DB_* vacías
+    env:
+      DB_NAME: lamp_db
+      DB_USER: lamp_user
+      DB_PASS: lamp_pass
+      DB_ROOT: root_pass
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show docker versions
-        shell: bash
+      - name: Ensure jq
         run: |
-          docker version
-          docker compose version
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Ensure test script is executable
+      - name: Verify CI script exists
         shell: bash
         run: |
+          set -euo pipefail
           test -f scripts/ci-compose-test.sh
           chmod +x scripts/ci-compose-test.sh
 
-      - name: Compose up + health/run check
+      - name: Run compose test
         shell: bash
-        env:
-          DOCKER_BUILDKIT: "1"
-          COMPOSE_DOCKER_CLI_BUILD: "1"
-          TIMEOUT_SECONDS: "240"
         run: |
-          ./scripts/ci-compose-test.sh "${{ matrix.target.dir }}" "${{ matrix.target.file }}"
+          set -euo pipefail
+          scripts/ci-compose-test.sh "${{ matrix.target.path }}"

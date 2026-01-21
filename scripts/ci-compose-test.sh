@@ -1,153 +1,129 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DIR="${1:-}"
-FILE="${2:-}"
+COMPOSE_PATH="${1:-}"
 
-if [[ -z "${DIR}" || -z "${FILE}" ]]; then
-  echo "Uso: $0 <DIR> <FILE>"
-  echo "Ej:  $0 02-php-lamp docker-compose.yml"
-  echo "Ej:  $0 . docker-compose-dashboard-simple.yml"
+if [[ -z "${COMPOSE_PATH}" ]]; then
+  echo "Uso: $0 <ruta/compose.yml>"
   exit 2
-fi
-
-if [[ "${DIR}" == "." ]]; then
-  COMPOSE_PATH="${FILE}"
-else
-  COMPOSE_PATH="${DIR%/}/${FILE}"
 fi
 
 if [[ ! -f "${COMPOSE_PATH}" ]]; then
-  echo "❌ No existe el compose: ${COMPOSE_PATH}"
+  echo "No existe el compose: ${COMPOSE_PATH}"
   exit 2
 fi
 
-# --- Defaults (NO pisan si ya vienen definidas)
-export DB_NAME="${DB_NAME:-appdb}"
-export DB_USER="${DB_USER:-appuser}"
-export DB_PASS="${DB_PASS:-apppass}"
-export DB_ROOT="${DB_ROOT:-rootpass}"
+DIR="$(dirname "${COMPOSE_PATH}")"
+FILE="$(basename "${COMPOSE_PATH}")"
 
-# Compat MySQL/MariaDB (ayuda a stacks que exigen root password)
-export MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$DB_ROOT}"
-export MARIADB_ROOT_PASSWORD="${MARIADB_ROOT_PASSWORD:-$DB_ROOT}"
-export MARIADB_ALLOW_EMPTY_ROOT_PASSWORD="${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD:-1}"
+# Slug seguro para proyecto (evita nombres raros que rompen imágenes / refs)
+slugify() {
+  local s="$1"
+  s="${s,,}"                                 # lowercase
+  s="$(echo "$s" | sed 's|^\./||g')"          # remove leading ./
+  s="$(echo "$s" | sed 's|[^a-z0-9]|-|g')"    # non-alnum -> -
+  s="$(echo "$s" | sed 's|-\\{2,\\}|-|g')"    # compress --
+  s="$(echo "$s" | sed 's|^-||; s|-$||')"     # trim - edges
+  [[ -z "$s" ]] && s="root"
+  echo "$s"
+}
 
-# --- Project name seguro (sin underscores raros)
-slug="$(
-  echo "${COMPOSE_PATH}" \
-    | tr '[:upper:]' '[:lower:]' \
-    | sed -E 's|[^a-z0-9]+|-|g; s/^-+//; s/-+$//; s/-+/-/g'
-)"
-run_id="${GITHUB_RUN_ID:-local}"
-attempt="${GITHUB_RUN_ATTEMPT:-0}"
+BASE="$(slugify "${COMPOSE_PATH}")"
+RUN_ID="${GITHUB_RUN_ID:-local}"
+RUN_ATTEMPT="${GITHUB_RUN_ATTEMPT:-0}"
 
-PROJECT="ci-${run_id}-${attempt}-${slug}"
-PROJECT="${PROJECT:0:60}"
-PROJECT="$(echo "${PROJECT}" | sed -E 's/-+$//')"
+PROJECT="ci-${BASE}-${RUN_ID}-${RUN_ATTEMPT}"
 
-TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-240}"
-
-echo "==> Compose test"
-echo " - path   : ${COMPOSE_PATH}"
-echo " - project: ${PROJECT}"
-echo " - timeout: ${TIMEOUT_SECONDS}s"
+compose() {
+  docker compose -p "${PROJECT}" --project-directory "${DIR}" -f "${COMPOSE_PATH}" "$@"
+}
 
 cleanup() {
-  echo "==> Cleanup (${COMPOSE_PATH})"
-  docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" down -v --remove-orphans >/dev/null 2>&1 || true
+  echo "::group::Cleanup ${PROJECT}"
+  compose down -v --remove-orphans || true
+  echo "::endgroup::"
 }
 trap cleanup EXIT
 
-echo "==> Validando config"
-docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" config >/dev/null
+echo "::group::Up ${COMPOSE_PATH}"
+docker version || true
+docker compose version
+compose up -d --build
+compose ps || true
+echo "::endgroup::"
 
-echo "==> Up (build)"
-docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" up -d --build
+TIMEOUT_SEC="${CI_TIMEOUT_SEC:-180}"
+DEADLINE=$(( $(date +%s) + TIMEOUT_SEC ))
 
-echo "==> Estado"
-docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
-
-echo "==> ⏳ Esperando contenedores RUNNING/HEALTHY (máx ${TIMEOUT_SECONDS}s)"
-start="$(date +%s)"
-
-# Servicios cuyo healthcheck NO queremos convertir en FAIL (warning si está RUNNING)
-ALLOW_UNHEALTHY_SERVICES=("nginx-proxy")
-
-is_allow_unhealthy() {
-  local svc="$1"
-  for x in "${ALLOW_UNHEALTHY_SERVICES[@]}"; do
-    [[ "${svc}" == "${x}" ]] && return 0
-  done
-  return 1
-}
+echo "Esperando contenedores (timeout ${TIMEOUT_SEC}s) para ${COMPOSE_PATH} ..."
 
 while true; do
-  mapfile -t cids < <(docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps -q || true)
+  ids="$(compose ps -q || true)"
 
-  if [[ "${#cids[@]}" -eq 0 ]]; then
-    echo "❌ No se detectaron contenedores para el proyecto (ps -q vacío)."
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
-    echo "==> Logs (últimas 200 líneas)"
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" logs --no-color --tail=200 || true
-    exit 1
-  fi
+  if [[ -z "${ids}" ]]; then
+    echo "⏳ Aún no aparecen contenedores en el proyecto ${PROJECT}."
+    compose ps || true
+  else
+    bad=0
+    pending=0
 
-  all_ok="true"
-  hard_fail="false"
+    for id in ${ids}; do
+      name="$(docker inspect -f '{{.Name}}' "${id}" | sed 's|^/||')"
+      state="$(docker inspect -f '{{.State.Status}}' "${id}")"
+      health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "${id}")"
 
-  for cid in "${cids[@]}"; do
-    status="$(docker inspect -f '{{.State.Status}}' "${cid}" 2>/dev/null || echo "unknown")"
-    health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}nohealth{{end}}' "${cid}" 2>/dev/null || echo "unknown")"
-    name="$(docker inspect -f '{{.Name}}' "${cid}" 2>/dev/null | sed 's|^/||' || true)"
-    svc="$(docker inspect -f '{{index .Config.Labels "com.docker.compose.service"}}' "${cid}" 2>/dev/null || echo "")"
-
-    # si se cayó -> FAIL
-    if [[ "${status}" != "running" ]]; then
-      echo "❌ Contenedor no está RUNNING: name=${name:-?} service=${svc:-?} status=${status} health=${health}"
-      hard_fail="true"
-      all_ok="false"
-      continue
-    fi
-
-    # si tiene healthcheck
-    if [[ "${health}" == "starting" ]]; then
-      all_ok="false"
-      continue
-    fi
-
-    if [[ "${health}" == "unhealthy" ]]; then
-      if is_allow_unhealthy "${svc}"; then
-        echo "⚠️ Healthcheck UNHEALTHY permitido: service=${svc} name=${name}"
-      else
-        echo "❌ Healthcheck UNHEALTHY: service=${svc} name=${name}"
-        hard_fail="true"
-        all_ok="false"
+      if [[ "${state}" != "running" ]]; then
+        echo "❌ ${name} state=${state} health=${health}"
+        bad=1
+        continue
       fi
+
+      if [[ "${health}" == "unhealthy" ]]; then
+        echo "❌ ${name} state=${state} health=unhealthy"
+        bad=1
+        continue
+      fi
+
+      if [[ "${health}" == "starting" ]]; then
+        echo "⏳ ${name} state=${state} health=starting"
+        pending=1
+        continue
+      fi
+
+      # health=none => no healthcheck definido => OK si está running
+      echo "✅ ${name} state=${state} health=${health}"
+    done
+
+    if [[ "${bad}" -eq 0 && "${pending}" -eq 0 ]]; then
+      echo "OK: contenedores listos para ${COMPOSE_PATH}"
+      break
     fi
-  done
 
-  if [[ "${hard_fail}" == "true" ]]; then
-    echo "==> ps"
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
-    echo "==> Logs (últimas 200 líneas)"
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" logs --no-color --tail=200 || true
+    if [[ "${bad}" -ne 0 ]]; then
+      echo "::group::compose ps"
+      compose ps || true
+      echo "::endgroup::"
+
+      echo "::group::compose logs (tail=200)"
+      compose logs --no-color --tail=200 || true
+      echo "::endgroup::"
+      exit 1
+    fi
+  fi
+
+  if [[ $(date +%s) -ge ${DEADLINE} ]]; then
+    echo "⏰ Timeout esperando health/running para ${COMPOSE_PATH}"
+
+    echo "::group::compose ps"
+    compose ps || true
+    echo "::endgroup::"
+
+    echo "::group::compose logs (tail=200)"
+    compose logs --no-color --tail=200 || true
+    echo "::endgroup::"
+
     exit 1
   fi
 
-  if [[ "${all_ok}" == "true" ]]; then
-    echo "✅ OK: contenedores RUNNING y healthchecks (cuando aplican) resueltos."
-    break
-  fi
-
-  now="$(date +%s)"
-  if (( now - start >= TIMEOUT_SECONDS )); then
-    echo "❌ Timeout esperando contenedores"
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" ps || true
-    echo "==> Logs (últimas 200 líneas)"
-    docker compose -f "${COMPOSE_PATH}" -p "${PROJECT}" logs --no-color --tail=200 || true
-    exit 1
-  fi
-
-  sleep 3
+  sleep 5
 done
