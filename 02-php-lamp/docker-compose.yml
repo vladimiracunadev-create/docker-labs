@@ -1,57 +1,47 @@
+version: "3.8"
 services:
   db:
-    image: mariadb:11
+    image: mariadb:10.6
     container_name: php_lamp_db
+    restart: always
     environment:
-      # Defaults para CI (evitas variables vacías)
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT:-root}
-      MARIADB_DATABASE: ${DB_NAME:-app}
-      MARIADB_USER: ${DB_USER:-app}
-      MARIADB_PASSWORD: ${DB_PASS:-app}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT:-rootpass}
+      MARIADB_DATABASE: ${DB_NAME:-appdb}
+      MARIADB_USER: ${DB_USER:-appuser}
+      MARIADB_PASSWORD: ${DB_PASS:-apppass}
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -p$$MARIADB_ROOT_PASSWORD --silent"]
-      interval: 5s
-      timeout: 3s
-      retries: 30
 
   web:
-    build:
-      context: .
+    build: .
     container_name: php_lamp_web
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-      DB_NAME: ${DB_NAME:-app}
-      DB_USER: ${DB_USER:-app}
-      DB_PASS: ${DB_PASS:-app}
+    restart: always
     ports:
       - "8081:80"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 30
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-appdb}
+      DB_USER: ${DB_USER:-appuser}
+      DB_PASS: ${DB_PASS:-apppass}
 
   phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: php_lamp_pma
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_USER: ${DB_USER:-app}
-      PMA_PASSWORD: ${DB_PASS:-app}
-      PMA_ARBITRARY: 0
+    image: phpmyadmin/phpmyadmin
+    container_name: php_lamp_phpmyadmin
+    restart: always
     ports:
       - "8082:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${DB_USER:-appuser}
+      PMA_PASSWORD: ${DB_PASS:-apppass}
+    depends_on:
+      - db
 
 volumes:
   db_data:

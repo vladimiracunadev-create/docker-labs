@@ -1,194 +1,136 @@
+version: "3.9"
+
 services:
   dashboard:
     image: nginx:alpine
-    container_name: docker-labs-dashboard
+    container_name: docker-labs-dashboard-simple
     ports:
-      - "9090:80"
+      - "8080:80"
     volumes:
-      - ./index.html:/usr/share/nginx/html/index.html
-      - ./nginx-dashboard.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx-dashboard.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - node-api
+      - php-lamp
+      - phpmyadmin
+      - redis-cache-api
+      - postgres-api
+      - go-api
+      - elasticsearch-api
+      - jenkins
+      - nginx-proxy
 
   node-api:
-    build: ./01-node-api
+    build: ./03-node-api
     container_name: dashboard-node-api
     ports:
       - "3000:3000"
 
-  php-lamp:
-    build: ./02-php-lamp/docker/php
-    container_name: dashboard-php-lamp
-    ports:
-      - "8081:80"
-    volumes:
-      - ./02-php-lamp/src:/var/www/html
-    depends_on:
-      - mariadb
-
-  mariadb:
-    image: mariadb:11
-    container_name: dashboard-mariadb
-    environment:
-      MARIADB_DATABASE: lamp_db
-      MARIADB_USER: lamp_user
-      MARIADB_PASSWORD: lamp_pass
-      MARIADB_ROOT_PASSWORD: root_pass
-    ports:
-      - "3307:3306"
-
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: dashboard-phpmyadmin
-    environment:
-      PMA_HOST: mariadb
-      PMA_PORT: 3306
-    ports:
-      - "8082:80"
-    depends_on:
-      - mariadb
-
   python-api:
-    build: ./03-python-api
+    build: ./04-python-api
     container_name: dashboard-python-api
     ports:
       - "5000:5000"
 
+  php-lamp:
+    build: ./02-php-lamp
+    container_name: dashboard-php-lamp
+    ports:
+      - "8081:80"
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: dashboard-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: app
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: dashboard-phpmyadmin
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: user
+      PMA_PASSWORD: pass
+    depends_on:
+      - mariadb
+
   redis-cache-api:
-    build: ./04-redis-cache
+    build: ./05-redis-cache-api
     container_name: dashboard-redis-cache-api
     ports:
-      - "3001:3000"
+      - "7000:7000"
     depends_on:
       - redis
 
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     container_name: dashboard-redis
 
-  postgres-api:
-    build: ./05-postgres-api
-    container_name: dashboard-postgres-api
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://user:pass@postgres/db
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   postgres:
-    image: postgres:15
-    container_name: dashboard-postgres-db
+    image: postgres:alpine
+    container_name: dashboard-postgres
     environment:
       POSTGRES_DB: db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d db"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  nginx-proxy:
-    build: ./06-nginx-proxy
-    container_name: dashboard-nginx-proxy
+  postgres-api:
+    build: ./07-postgres-api
+    container_name: dashboard-postgres-api
     ports:
-      - "8080:80"
-    volumes:
-      - ./nginx-proxy-dashboard.conf:/etc/nginx/nginx.conf
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: dashboard-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "7001:7001"
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: pass
-
-  rabbitmq-consumer:
-    build:
-      context: ./07-rabbitmq-messaging
-      dockerfile: Dockerfile.consumer
-    container_name: dashboard-rabbitmq-consumer
+      DATABASE_URL: postgresql://user:pass@postgres:5432/db
     depends_on:
-      - rabbitmq
-
-  prometheus:
-    image: prom/prometheus
-    container_name: dashboard-prometheus
-    ports:
-      - "9091:9090"
-    volumes:
-      - ./prometheus-dashboard.yml:/etc/prometheus/prometheus.yml
-
-  grafana:
-    image: grafana/grafana
-    container_name: dashboard-grafana
-    ports:
-      - "3002:3000"
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
-
-  multi-frontend:
-    image: nginx:alpine
-    container_name: dashboard-multi-frontend
-    ports:
-      - "8083:80"
-    volumes:
-      - ./09-multi-service-app/frontend/index.html:/usr/share/nginx/html/index.html
-
-  multi-backend:
-    image: node:20-alpine
-    container_name: dashboard-multi-backend
-    ports:
-      - "3003:3000"
-    volumes:
-      - ./09-multi-service-app/backend:/app
-    working_dir: /app
-    command: sh -c "npm install && npm start"
-    depends_on:
-      - multi-db
-
-  multi-db:
-    image: mongo:7
-    container_name: dashboard-multi-db
-    ports:
-      - "27018:27017"
+      postgres:
+        condition: service_healthy
 
   go-api:
-    build: ./10-go-api
+    build: ./08-go-api
     container_name: dashboard-go-api
     ports:
-      - "8084:8080"
-
-  elasticsearch-api:
-    build: ./11-elasticsearch-search
-    container_name: dashboard-elasticsearch-api
-    ports:
-      - "8001:8000"
-    depends_on:
-      - elasticsearch
+      - "7002:7002"
 
   elasticsearch:
-    image: elasticsearch:8.11.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
     container_name: dashboard-elasticsearch
     environment:
-      discovery.type: single-node
-      xpack.security.enabled: false
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
+
+  elasticsearch-api:
+    build: ./09-elasticsearch-api
+    container_name: dashboard-elasticsearch-api
+    ports:
+      - "7003:7003"
+    depends_on:
+      - elasticsearch
 
   jenkins:
     image: jenkins/jenkins:lts
     container_name: dashboard-jenkins
     ports:
-      - "8085:8080"
-      - "50001:50000"
-    volumes:
-      - jenkins_home:/var/jenkins_home
+      - "8083:8080"
 
-volumes:
-  jenkins_home:
+  nginx-proxy:
+    build: ./06-nginx-proxy
+    container_name: dashboard-nginx-proxy
+    ports:
+      - "8084:80"
+    volumes:
+      - ./nginx-proxy-dashboard.conf:/etc/nginx/nginx.conf:ro

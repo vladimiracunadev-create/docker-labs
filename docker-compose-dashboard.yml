@@ -1,14 +1,14 @@
+version: "3.9"
+
 services:
   dashboard:
     image: nginx:alpine
     container_name: docker-labs-dashboard
     ports:
-      - "9090:80"
+      - "8080:80"
     volumes:
-      - ./index.html:/usr/share/nginx/html/index.html
-      - ./nginx-dashboard.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx-dashboard.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      # Optionally depend on other services if running all together
       - node-api
       - python-api
       - redis-cache-api
@@ -16,68 +16,75 @@ services:
       - go-api
       - elasticsearch-api
 
-  # Include other labs for full testing
   node-api:
-    build: ./01-node-api
+    build: ./03-node-api
     container_name: dashboard-node-api
     ports:
       - "3000:3000"
 
   python-api:
-    build: ./03-python-api
+    build: ./04-python-api
     container_name: dashboard-python-api
     ports:
       - "5000:5000"
 
   redis-cache-api:
-    build: ./04-redis-cache
+    build: ./05-redis-cache-api
     container_name: dashboard-redis-cache-api
     ports:
-      - "3001:3000"
+      - "7000:7000"
     depends_on:
       - redis
 
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     container_name: dashboard-redis
 
-  postgres-api:
-    build: ./05-postgres-api
-    container_name: dashboard-postgres-api
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://user:pass@postgres/db
-    depends_on:
-      - postgres
-
   postgres:
-    image: postgres:15
+    image: postgres:alpine
     container_name: dashboard-postgres
     environment:
       POSTGRES_DB: db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  postgres-api:
+    build: ./07-postgres-api
+    container_name: dashboard-postgres-api
+    ports:
+      - "7001:7001"
+    environment:
+      DATABASE_URL: postgresql://user:pass@postgres:5432/db
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   go-api:
-    build: ./10-go-api
+    build: ./08-go-api
     container_name: dashboard-go-api
     ports:
-      - "8080:8080"
-
-  elasticsearch-api:
-    build: ./11-elasticsearch-search
-    container_name: dashboard-elasticsearch-api
-    ports:
-      - "8001:8000"
-    depends_on:
-      - elasticsearch
+      - "7002:7002"
 
   elasticsearch:
-    image: elasticsearch:8.11.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
     container_name: dashboard-elasticsearch
     environment:
-      discovery.type: single-node
-      xpack.security.enabled: false
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
+
+  elasticsearch-api:
+    build: ./09-elasticsearch-api
+    container_name: dashboard-elasticsearch-api
+    ports:
+      - "7003:7003"
+    depends_on:
+      - elasticsearch
