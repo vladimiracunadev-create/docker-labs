@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Mantener LF en scripts y YAML para evitar problemas en GitHub Actions (Windows -> Linux)
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
