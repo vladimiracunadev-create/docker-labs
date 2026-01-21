@@ -17,19 +17,19 @@ services:
       - elasticsearch-api
 
   node-api:
-    build: ./03-node-api
+    build: ./01-node-api
     container_name: dashboard-node-api
     ports:
       - "3000:3000"
 
   python-api:
-    build: ./04-python-api
+    build: ./03-python-api
     container_name: dashboard-python-api
     ports:
       - "5000:5000"
 
   redis-cache-api:
-    build: ./05-redis-cache-api
+    build: ./04-redis-cache
     container_name: dashboard-redis-cache-api
     ports:
       - "7000:7000"
@@ -56,7 +56,7 @@ services:
       retries: 20
 
   postgres-api:
-    build: ./07-postgres-api
+    build: ./05-postgres-api
     container_name: dashboard-postgres-api
     ports:
       - "7001:7001"
@@ -67,7 +67,7 @@ services:
         condition: service_healthy
 
   go-api:
-    build: ./08-go-api
+    build: ./10-go-api
     container_name: dashboard-go-api
     ports:
       - "7002:7002"
@@ -82,7 +82,7 @@ services:
       - "9200:9200"
 
   elasticsearch-api:
-    build: ./09-elasticsearch-api
+    build: ./11-elasticsearch-search
     container_name: dashboard-elasticsearch-api
     ports:
       - "7003:7003"
