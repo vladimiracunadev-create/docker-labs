@@ -28,20 +28,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          # 1) Composes por carpeta-lab (01..12): docker-compose.yml
+          # Composes por carpeta-lab (01..12)
           mapfile -t lab_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print | sed 's|^\./||' | sort -u)
 
-          # 2) Composes "globales" en la raíz (dashboards)
+          # Composes "globales" en la raíz (dashboards)
           mapfile -t root_dash < <(find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print | sed 's|^\./||' | sort -u)
 
           all=("${lab_files[@]}" "${root_dash[@]}")
 
           if [ "${#all[@]}" -eq 0 ]; then
-            echo "No se encontraron docker-compose.yml"
+            echo "No se encontraron docker-compose.yml / docker-compose-dashboard*.yml"
             exit 1
           fi
 
-          # Convertimos a JSON de objetos: {dir,file,path}
           targets_json="$(printf '%s\n' "${all[@]}" | jq -R -s -c '
             split("\n")[:-1]
             | map({
@@ -72,6 +71,12 @@ jobs:
         run: |
           docker version
           docker compose version
+
+      # 🔧 FIX CRÍTICO: arregla CRLF/Unicode raro en scripts (causa exit code 2)
+      - name: Normalize line endings (CRLF -> LF)
+        shell: bash
+        run: |
+          sed -i 's/\r$//' scripts/ci-compose-test.sh
 
       - name: Make scripts executable
         shell: bash

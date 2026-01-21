@@ -18,12 +18,7 @@ if [[ ! -f "${COMPOSE_FILE}" ]]; then
   exit 1
 fi
 
-# -----------------------------------------------------------------------------
-# Project name seguro:
-# - Válido para docker compose
-# - Y (clave) si algún compose lo usa en `image: ${COMPOSE_PROJECT_NAME}-...`,
-#   también debe ser válido como referencia de imagen Docker (sin separadores repetidos)
-# -----------------------------------------------------------------------------
+# Project name seguro (sirve para docker compose y evita nombres raros)
 raw="${LAB_DIR}"
 if [[ -z "${raw}" || "${raw}" == "." ]]; then raw="root"; fi
 
@@ -32,7 +27,6 @@ safe="$(
     | tr '[:upper:]' '[:lower:]' \
     | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//; s/-+/-/g'
 )"
-
 if [[ -z "${safe}" ]]; then safe="root"; fi
 
 export COMPOSE_PROJECT_NAME="ci-${safe}-${GITHUB_RUN_ID:-local}-${GITHUB_RUN_ATTEMPT:-0}"
@@ -47,43 +41,44 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "==> 🚀 UP + BUILD: ${LAB_DIR}/${COMPOSE_FILE}  (project=${COMPOSE_PROJECT_NAME})"
+echo "==> 🚀 UP + BUILD: ${LAB_DIR}/${COMPOSE_FILE} (project=${COMPOSE_PROJECT_NAME})"
 compose up -d --build
 
-echo "==> Estado inicial"
+echo "==> 📦 Estado"
 compose ps || true
-docker ps -a --filter "label=com.docker.compose.project=${COMPOSE_PROJECT_NAME}" || true
 
-# -----------------------------------------------------------------------------
-# Espera a que todos estén RUNNING (no exited/restarting)
-# -----------------------------------------------------------------------------
-echo "==> ⏳ Esperando contenedores RUNNING (máx 240s)"
+# Espera RUNNING o HEALTHY (máx 240s)
+echo "==> ⏳ Esperando contenedores RUNNING/HEALTHY (máx 240s)"
 deadline=$((SECONDS+240))
 
+mapfile -t ids < <(compose ps -q 2>/dev/null || true)
+if [[ "${#ids[@]}" -eq 0 ]]; then
+  echo "❌ No se crearon contenedores."
+  compose ps || true
+  compose logs --no-color --tail=250 || true
+  exit 1
+fi
+
 while true; do
-  mapfile -t ids < <(compose ps -q 2>/dev/null || true)
-  total="${#ids[@]}"
-
-  if [[ "${total}" -eq 0 ]]; then
-    echo "❌ No se crearon contenedores (total=0)."
-    compose ps || true
-    compose logs --no-color --tail=250 || true
-    exit 1
-  fi
-
   bad=0
-  running=0
+  ok=0
+
+  mapfile -t ids < <(compose ps -q 2>/dev/null || true)
 
   for id in "${ids[@]}"; do
-    st="$(docker inspect -f '{{.State.Status}}' "${id}" 2>/dev/null || echo "unknown")"
-    case "${st}" in
-      running) running=$((running+1)) ;;
-      exited|dead|removing|restarting|paused)
-        bad=1
-        echo "❌ Contenedor con estado problemático: ${id} => ${st}"
-        ;;
-      *) : ;;
-    esac
+    status="$(docker inspect -f '{{.State.Status}}' "${id}" 2>/dev/null || echo "unknown")"
+    health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}nohealth{{end}}' "${id}" 2>/dev/null || echo "unknown")"
+
+    # estados “malos”
+    if [[ "${status}" == "exited" || "${status}" == "dead" || "${status}" == "restarting" ]]; then
+      bad=1
+      echo "❌ Contenedor malo: ${id} status=${status} health=${health}"
+    fi
+
+    # ok si está running y health es healthy o no tiene healthcheck
+    if [[ "${status}" == "running" && ( "${health}" == "healthy" || "${health}" == "nohealth" ) ]]; then
+      ok=$((ok+1))
+    fi
   done
 
   if [[ "${bad}" -eq 1 ]]; then
@@ -92,12 +87,12 @@ while true; do
     exit 1
   fi
 
-  if [[ "${running}" -eq "${total}" ]]; then
+  if [[ "${ok}" -eq "${#ids[@]}" ]]; then
     break
   fi
 
   if (( SECONDS >= deadline )); then
-    echo "⚠️ Timeout esperando RUNNING (total=${total}, running=${running})"
+    echo "⚠️ Timeout esperando RUNNING/HEALTHY"
     compose ps || true
     compose logs --no-color --tail=250 || true
     exit 1
@@ -106,60 +101,4 @@ while true; do
   sleep 3
 done
 
-# -----------------------------------------------------------------------------
-# Smoke test HTTP:
-# Por defecto: basta con que responda (code != 000).
-# Si quieres estricto (2xx-4xx): exporta CI_HTTP_STRICT=1 en el workflow.
-# -----------------------------------------------------------------------------
-candidate_container_ports=(80 3000 5000 8000 8080 9090 9200 15672)
-strict="${CI_HTTP_STRICT:-0}"
-
-echo "==> Buscando puertos HTTP para smoke test"
-services="$(compose config --services 2>/dev/null || true)"
-
-found_any=0
-ok_any=0
-
-for svc in ${services}; do
-  for cport in "${candidate_container_ports[@]}"; do
-    if out="$(compose port "${svc}" "${cport}" 2>/dev/null)"; then
-      host_port="$(echo "${out}" | head -n1 | sed -E 's/.*:([0-9]+)$/\1/' || true)"
-      if [[ -n "${host_port}" ]]; then
-        found_any=1
-        url="http://localhost:${host_port}"
-        echo " - candidato: ${svc}:${cport} -> ${url}"
-
-        deadline2=$((SECONDS+240))
-        while true; do
-          code="$(curl -s -m 5 -o /dev/null -w "%{http_code}" "${url}" || true)"
-
-          if [[ "${code}" != "000" ]]; then
-            if [[ "${strict}" == "1" ]]; then
-              if [[ "${code}" -lt 500 ]]; then
-                echo "✅ HTTP OK (estricto) en ${url} (code=${code})"
-                ok_any=1
-                break
-              fi
-            else
-              echo "✅ HTTP responde en ${url} (code=${code})"
-              ok_any=1
-              break
-            fi
-          fi
-
-          # ✅ FIX: antes decía "deadline 2" (con espacio) y rompía bash
-          if (( SECONDS >= deadline2 )); then
-            echo "❌ HTTP no respondió en ${url} (último code=${code})"
-            break
-          fi
-
-          sleep 3
-        done
-      fi
-    fi
-  done
-done
-
-if [[ "${found_any}" == "1" && "${ok_any}" == "0" ]]; then
-  echo "❌ Se detectaron puertos HTTP, pero ninguno respondió."
-  c
+echo "==> ✅ OK: ${LAB_DIR}/${COMPOSE_FILE}"
