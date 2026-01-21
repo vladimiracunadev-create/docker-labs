@@ -95,6 +95,7 @@ docker-compose -f docker-compose-dashboard.yml up
 - 📋 **[Catálogo de Laboratorios](docs/LABS_CATALOG.md)**: Detalles técnicos de cada lab
 - ☸️ **[Despliegue con Kubernetes](docs/KUBERNETES_DEPLOYMENT.md)**: Migra tus labs a orquestación nativa
 - 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Soluciones a problemas comunes
+- 🛠️ **[Desafíos y Soluciones](docs/TROUBLESHOOTING_AND_SOLUTIONS.md)**: Bitácora técnica de estabilización del proyecto
 
 ### 🏗️ Para Desarrolladores
 
