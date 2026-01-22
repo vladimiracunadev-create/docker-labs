@@ -4,6 +4,29 @@ Instrucciones completas para instalar Docker, Docker Compose y configurar **dock
 
 ---
 
+## 💻 Requisitos del Sistema
+
+Para asegurar que los laboratorios funcionen correctamente, tu equipo debe cumplir con los siguientes requisitos mínimos.
+
+### Hardware Mínimo Recomendado
+*   **Procesador (CPU):** Intel Core i5 / AMD Ryzen 5 (Virtualización activada) o Apple Silicon M1/M2/M3.
+*   **Memoria RAM:** 
+    *   Mínimo: 8 GB
+    *   Recomendado: 16 GB (para correr el Dashboard completo con todos los servicios).
+*   **Espacio en Disco:** 20 GB libres (para imágenes y volúmenes de Docker).
+*   **Virtualización:** Debe estar habilitada en la BIOS/UEFI (Intel VT-x o AMD-V).
+
+### Software Base
+Antes de instalar Docker, asegúrate de tener:
+*   **Sistema Operativo:**
+    *   Windows 10/11 (Pro/Enterprise/Education recomendados, Home requiere WSL 2).
+    *   macOS 12 (Monterey) o superior.
+    *   Linux: Ubuntu 20.04+, Debian 11+, Fedora 35+.
+*   **Git:** [Descargar última versión](https://git-scm.com/downloads).
+*   **Editor de Código:** Recomendamos [VS Code](https://code.visualstudio.com/) con la extensión "Docker".
+
+---
+
 ## 🖥️ Instalación de Docker
 
 ### Windows
