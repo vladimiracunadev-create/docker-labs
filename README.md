@@ -29,6 +29,8 @@ docker-labs es una colección curada de **laboratorios Docker independientes**, 
 - [Docker Compose](https://docs.docker.com/compose/install/) 2.0+
 - [Git](https://git-scm.com/downloads)
 
+> 📋 **Recomendado**: Verifica los [Requisitos de Hardware y Software Completos](docs/INSTALL.md#requisitos-del-sistema) antes de empezar.
+
 ### Tu Primer Laboratorio (60 segundos)
 
 ```bash
