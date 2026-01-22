@@ -52,15 +52,15 @@ docker-compose -f docker-compose-dashboard.yml up
 | Laboratorio | Stack | Puerto | Complejidad | Objetivo |
 |-------------|-------|--------|-------------|----------|
 | [**01-node-api**](01-node-api/) | Node.js + Express | 3000 | ⭐ Básico | API REST básica |
-| [**02-php-lamp**](02-php-lamp/) | PHP + Apache + MariaDB | 8080, 8081 | ⭐⭐ Intermedio | CRUD con base de datos |
+| [**02-php-lamp**](02-php-lamp/) | PHP + Apache + MariaDB | 8081, 8082 | ⭐⭐ Intermedio | CRUD con base de datos |
 | [**03-python-api**](03-python-api/) | Python + Flask | 5000 | ⭐ Básico | API REST con Python |
 | [**04-redis-cache**](04-redis-cache/) | Node.js + Redis | 3001 | ⭐⭐ Intermedio | API con caching |
 | [**05-postgres-api**](05-postgres-api/) | Python + FastAPI + PostgreSQL | 8000 | ⭐⭐ Intermedio | API con Postgres |
-| [**06-nginx-proxy**](06-nginx-proxy/) | Nginx | 8080 | ⭐ Básico | Reverse proxy |
+| [**06-nginx-proxy**](06-nginx-proxy/) | Nginx | 8085 | ⭐ Básico | Reverse proxy |
 | [**07-rabbitmq-messaging**](07-rabbitmq-messaging/) | Node.js + RabbitMQ | 5672, 15672 | ⭐⭐⭐ Avanzado | Mensajería asíncrona |
-| [**08-prometheus-grafana**](08-prometheus-grafana/) | Prometheus + Grafana | 9090, 3000 | ⭐⭐ Intermedio | Monitoreo |
-| [**09-multi-service-app**](09-multi-service-app/) | React + Node.js + MongoDB | 8080, 3000 | ⭐⭐⭐ Avanzado | Microservicios |
-| [**10-go-api**](10-go-api/) | Go | 8080 | ⭐⭐ Intermedio | API en Go |
+| [**08-prometheus-grafana**](08-prometheus-grafana/) | Prometheus + Grafana | 9090, 3002 | ⭐⭐ Intermedio | Monitoreo |
+| [**09-multi-service-app**](09-multi-service-app/) | React + Node.js + MongoDB | 8083, 3003 | ⭐⭐⭐ Avanzado | Microservicios |
+| [**10-go-api**](10-go-api/) | Go | 8084 | ⭐⭐ Intermedio | API en Go |
 | [**11-elasticsearch-search**](11-elasticsearch-search/) | Python + Elasticsearch | 8000, 9200 | ⭐⭐ Intermedio | Búsqueda full-text |
 | [**12-jenkins-ci**](12-jenkins-ci/) | Jenkins | 8080 | ⭐⭐⭐ Avanzado | CI/CD pipeline |
 
