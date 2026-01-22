@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   dashboard:
@@ -9,15 +8,24 @@ services:
     volumes:
       - ./nginx-dashboard.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - node-api
-      - php-lamp
-      - phpmyadmin
-      - redis-cache-api
-      - postgres-api
-      - go-api
-      - elasticsearch-api
-      - jenkins
-      - nginx-proxy
+      node-api:
+        condition: service_started
+      php-lamp:
+        condition: service_started
+      phpmyadmin:
+        condition: service_started
+      redis-cache-api:
+        condition: service_started
+      postgres-api:
+        condition: service_started
+      go-api:
+        condition: service_started
+      elasticsearch-api:
+        condition: service_started
+      jenkins:
+        condition: service_started
+      nginx-proxy:
+        condition: service_started
 
   node-api:
     build: ./01-node-api
@@ -39,7 +47,8 @@ services:
     volumes:
       - ./02-php-lamp/src:/var/www/html
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     environment:
       DB_HOST: mariadb
       DB_NAME: app
@@ -55,6 +64,11 @@ services:
       MARIADB_DATABASE: app
       MARIADB_USER: user
       MARIADB_PASSWORD: pass
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -66,7 +80,8 @@ services:
       PMA_USER: user
       PMA_PASSWORD: pass
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
 
   redis-cache-api:
     build: ./04-redis-cache
@@ -74,11 +89,17 @@ services:
     ports:
       - "7000:7000"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
 
   redis:
     image: redis:alpine
     container_name: dashboard-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   postgres:
     image: postgres:alpine
@@ -120,6 +141,11 @@ services:
       - xpack.security.enabled=false
     ports:
       - "9200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   elasticsearch-api:
     build: ./11-elasticsearch-search
@@ -127,7 +153,8 @@ services:
     ports:
       - "7003:7003"
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
   jenkins:
     image: jenkins/jenkins:lts

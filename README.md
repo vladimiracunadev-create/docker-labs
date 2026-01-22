@@ -39,7 +39,11 @@ git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 
 # 2. Levanta el dashboard
-docker-compose -f docker-compose-dashboard.yml up
+# Opción A: Usando Make (Recomendado)
+make up-dashboard
+
+# Opción B: Usando Docker Compose directamente
+# docker-compose -f docker-compose-dashboard.yml up -d
 
 # 3. Abre tu navegador
 # http://localhost:9090
