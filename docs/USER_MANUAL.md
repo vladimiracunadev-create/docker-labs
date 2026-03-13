@@ -1,582 +1,125 @@
-# Manual de Usuario 📚
+# User Manual
 
-Guía completa para sacar el máximo provecho a **docker-labs** y dominar el flujo de trabajo con Docker.
+Manual operativo del workspace.
 
----
+## Flujo recomendado
 
-## 🎯 Flujo de Trabajo Completo
+1. abre el panel en `http://localhost:9090`
+2. revisa el diagnostico de equipo y Docker
+3. elige un lab o sistema principal
+4. usa `Levantar entorno`
+5. entra por `Abrir sistema`
+6. revisa logs si algo queda parcial
+7. baja o elimina entornos cuando termines
 
-El ciclo de vida típico de un laboratorio sigue este patrón:
+## Diferencia clave
 
-```
-┌─────────┐    ┌─────┐    ┌──────┐    ┌──────┐    ┌──────┐
-│  build  │ →  │ up  │ →  │ logs │ →  │ exec │ →  │ down │
-└─────────┘    └─────┘    └──────┘    └──────┘    └──────┘
-```
+- `Estado Docker`: dice si el stack existe, corre y reporta salud
+- `Abrir sistema`: entra a la app o API real dentro del contenedor
 
-### 1. **Build** - Construir la imagen
+## Sistema principal recomendado
 
-Crea la imagen Docker desde el Dockerfile:
+### Inventory Core
 
-```bash
-docker-compose build
-```
+- URL: `http://localhost:8000`
+- docs: `http://localhost:8000/docs`
+- rol: core transaccional
 
-**Cuándo usarlo**:
-- Primera vez que usas el laboratorio
-- Modificaste el `Dockerfile`
-- Instalaste nuevas dependencias
+### Operations Portal
 
-### 2. **Up** - Levantar los servicios
+- URL: `http://localhost:8083`
+- rol: experiencia operativa
 
-Inicia los contenedores definidos en `docker-compose.yml`:
+### Platform Gateway
 
-```bash
-# Modo foreground (ver logs en tiempo real)
-docker-compose up
+- URL: `http://localhost:8085`
+- rol: acceso unificado a panel, core y portal
 
-# Modo background (libera la terminal)
-docker-compose up -d
-```
+### Control Center
 
-**Reconstruir y levantar**:
-```bash
-docker-compose up --build
-```
+- URL: `http://localhost:9090`
+- rol: operacion del workspace
 
-### 3. **Logs** - Ver registros
+## Operacion por casos
 
-Monitorea la salida de los contenedores:
+### Caso 1. Quiero aprender Docker con algo pequeno
 
-```bash
-# Logs de todos los servicios
-docker-compose logs -f
+Levanta:
 
-# Logs de un servicio específico
-docker-compose logs -f web
+- `01-node-api`
+- `03-python-api`
 
-# Últimas 100 líneas
-docker-compose logs --tail=100
-```
+### Caso 2. Quiero ver un backend serio
 
-### 4. **Exec** - Ejecutar comandos dentro del contenedor
+Levanta:
 
-Entra al contenedor para debugging o tareas administrativas:
+- `05-postgres-api`
 
-```bash
-# Bash interactivo
-docker-compose exec web bash
+### Caso 3. Quiero ver un producto mas real
 
-# Comando específico
-docker-compose exec web ls -la
+Levanta:
 
-# Como root
-docker-compose exec -u root web apt-get update
-```
+- `05-postgres-api`
+- `09-multi-service-app`
+- `06-nginx-proxy`
 
-### 5. **Down** - Detener y eliminar
+### Caso 4. Quiero experimentar con capacidades
 
-Detiene y elimina los contenedores:
+Levanta segun objetivo:
 
-```bash
-# Detener servicios
-docker-compose down
+- `04-redis-cache`: cache
+- `07-rabbitmq-messaging`: mensajeria
+- `08-prometheus-grafana`: observabilidad
+- `11-elasticsearch-search`: busqueda
+- `12-jenkins-ci`: CI
 
-# Detener y eliminar volúmenes (⚠️ CUIDADO: borra datos)
-docker-compose down -v
+## Comandos utiles
+
+### Levantar un stack
+
+```powershell
+docker compose -f 05-postgres-api\docker-compose.yml up -d --build
 ```
 
----
+### Bajar un stack
 
-## 🧪 Uso de Cada Laboratorio
-
-### 🟢 01-node-api (Node.js + Express)
-
-**Objetivo**: API REST básica con Node.js
-
-**Inicio rápido**:
-```bash
-cd 01-node-api
-docker-compose up
+```powershell
+docker compose -f 05-postgres-api\docker-compose.yml down
 ```
 
-**Acceso**: http://localhost:3000
+### Ver contenedores
 
-**Endpoints disponibles**:
-- `GET /` - Mensaje de bienvenida
-- `GET /health` - Health check
-
-**Modificar código**:
-1. Edita `src/index.js` en tu máquina
-2. El contenedor se reinicia automáticamente (nodemon)
-3. Refresca el navegador
-
-**Instalar dependencias**:
-```bash
-# Entra al contenedor
-docker-compose exec web bash
-
-# Instala un paquete
-npm install <paquete>
-
-# Sal del contenedor
-exit
-
-# Reconstruye para persistir cambios
-docker-compose build
-```
-
----
-
-### 🐘 02-php-lamp (PHP + Apache + MariaDB)
-
-**Objetivo**: Stack LAMP clásico para apps PHP con base de datos
-
-**Inicio rápido**:
-```bash
-cd 02-php-lamp
-docker-compose up -d
-```
-
-**Acceso**: 
-- Web: http://localhost:8080
-- phpMyAdmin: http://localhost:8081
-
-**Servicios**:
-- `web`: Apache + PHP 8.1
-- `db`: MariaDB 10.6
-- `phpmyadmin`: Gestor visual de BD
-
-**Variables de entorno** (`.env`):
-```env
-DB_HOST=db
-DB_NAME=testdb
-DB_USER=devuser
-DB_PASS=devpass123
-```
-
-**Conectar a la BD desde PHP**:
-```php
-<?php
-$conn = new mysqli(
-    $_ENV['DB_HOST'],
-    $_ENV['DB_USER'],
-    $_ENV['DB_PASS'],
-    $_ENV['DB_NAME']
-);
-```
-
-**Importar SQL**:
-```bash
-# Copia el archivo al contenedor
-docker cp midb.sql 02-php-lamp-db-1:/midb.sql
-
-# Importa
-docker-compose exec db mysql -u devuser -pdevpass123 testdb < /midb.sql
-```
-
----
-
-### 🐍 03-python-api (Python + Flask)
-
-**Objetivo**: API REST con Python y framework Flask
-
-**Inicio rápido**:
-```bash
-cd 03-python-api
-docker-compose up
-```
-
-**Acceso**: http://localhost:5000
-
-**Endpoints disponibles**:
-- `GET /` - Mensaje de bienvenida
-- `GET /items` - Lista de items (ejemplo)
-
-**Modificar código**:
-1. Edita `app/main.py`
-2. Flask detecta cambios automáticamente (debug mode)
-3. Los cambios se reflejan al instante
-
-**Instalar dependencias**:
-```bash
-# Agrega a requirements.txt
-echo "requests==2.28.0" >> requirements.txt
-
-# Reconstruye
-docker-compose up --build
-```
-
----
-
-### 05-postgres-api (FastAPI + PostgreSQL)
-
-**Objetivo**: ejecutar un backend transaccional para clientes, productos y pedidos.
-
-**Inicio rapido**:
-```bash
-cd 05-postgres-api
-docker compose up -d --build
-```
-
-**Acceso**:
-- API: http://localhost:8000
-- Swagger: http://localhost:8000/docs
-
-**Comandos utiles**:
-```bash
-docker compose ps
-docker compose logs -f api
-docker compose exec postgres psql -U postgres -d inventory
-```
-
-**Endpoints base**:
-- `GET /health`
-- `GET /ready`
-- `GET /summary`
-- `GET /customers`
-- `GET /products`
-- `GET /orders`
-
-**Escenario recomendado de aprendizaje**:
-1. consulta `GET /summary`
-2. crea un cliente
-3. crea un producto
-4. registra un pedido
-5. revisa como cambia el stock
-6. cancela el pedido y verifica la reposicion
-
----
-
-## Recorrido recomendado de la plataforma
-
-Si quieres usar el repositorio como sistema y no solo como demos tecnicas, este es el orden recomendado:
-
-1. Abre el panel principal en `http://localhost:9090`
-2. Entra a `05-postgres-api` para entender el core del negocio
-3. Revisa `09-multi-service-app` para ver la operacion desde una interfaz mas cercana al usuario
-4. Usa el panel para confirmar estado, accesos y logs
-
-### Diferencia entre conceptos
-
-- `Estado Docker`: indica si los contenedores estan arriba
-- `Control del entorno`: levanta o detiene el stack
-- `Abrir sistema`: entra a la app o API que vive dentro del contenedor
-
-### Sistemas recomendados hoy
-
-- `05-postgres-api`: backend central
-- `09-multi-service-app`: experiencia operativa
-- `06-nginx-proxy`: siguiente paso para unificar acceso
-
-Para la hoja de ruta completa, revisa `docs/PLATFORM_ROADMAP.md`.
-
----
-
-## 🔧 Comandos Esenciales
-
-### Inspeccionar el estado
-
-```bash
-# Ver contenedores activos
+```powershell
 docker ps
-
-# Ver todos los contenedores (incluidos detenidos)
-docker ps -a
-
-# Detalles de un contenedor
-docker inspect <nombre-contenedor>
-
-# Uso de recursos
-docker stats
 ```
 
-### Gestión de imágenes
+### Ver logs
 
-```bash
-# Listar imágenes
-docker images
-
-# Eliminar imagen
-docker rmi <nombre-imagen>
-
-# Eliminar imágenes sin usar
-docker image prune
+```powershell
+docker compose -f 05-postgres-api\docker-compose.yml logs --tail 80
 ```
 
-### Gestión de volúmenes
+## Interpretacion del diagnostico
 
-```bash
-# Listar volúmenes
-docker volume ls
+### Equipo estimado
 
-# Inspeccionar volumen
-docker volume inspect <nombre-volumen>
+Lo aporta el navegador y sirve como referencia rapida.
 
-# Eliminar volúmenes sin usar
-docker volume prune
-```
+### Capacidad Docker
 
-### Limpieza general
+La aporta el daemon Docker y es la cifra mas importante para decidir cuanto levantar.
 
-```bash
-# Limpiar todo (contenedores, redes, imágenes sin usar)
-docker system prune
+### Recomendacion
 
-# Limpieza agresiva (incluye volúmenes)
-docker system prune -a --volumes
-```
+El panel sugiere:
 
----
+- modo caso a caso
+- plataforma principal
+- labs a levantar con cautela
 
-## ⚙️ Personalización de Laboratorios
+## Buenas practicas
 
-### Cambiar puertos
-
-Edita `docker-compose.yml`:
-
-```yaml
-services:
-  web:
-    ports:
-      - "3001:3000"  # Cambia 3001 por el puerto que prefieras
-```
-
-### Agregar variables de entorno
-
-**Opción 1: En docker-compose.yml**
-```yaml
-services:
-  web:
-    environment:
-      - NODE_ENV=production
-      - API_KEY=mi-clave-secreta
-```
-
-**Opción 2: Archivo .env**
-```bash
-# Crea .env desde .env.example
-cp .env.example .env
-
-# Edita .env
-NODE_ENV=development
-DB_PASSWORD=mi-password-seguro
-```
-
-### Agregar más servicios
-
-Ejemplo: Agregar Redis a 01-node-api
-
-```yaml
-services:
-  web:
-    # ... configuración existente ...
-    depends_on:
-      - redis
-  
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-```
-
----
-
-## 🐛 Debugging y Logs
-
-### Ver logs en tiempo real
-
-```bash
-docker-compose logs -f
-```
-
-### Filtrar por servicio
-
-```bash
-docker-compose logs -f web
-```
-
-### Grep en logs
-
-```bash
-docker-compose logs | grep ERROR
-```
-
-### Entrar al contenedor para debug
-
-```bash
-# Bash
-docker-compose exec web bash
-
-# Si no tiene bash, usa sh
-docker-compose exec web sh
-
-# Navega y explora
-ls -la
-ps aux
-cat /var/log/apache2/error.log
-```
-
-### Verificar conectividad entre servicios
-
-```bash
-# Desde el contenedor web, haz ping a db
-docker-compose exec web ping db
-```
-
----
-
-## 🔄 Workflow de Desarrollo
-
-### 1. Desarrollo activo (hot reload)
-
-```bash
-# Levanta con logs visibles
-docker-compose up
-
-# En otra terminal, edita código
-# Los cambios se reflejan automáticamente
-```
-
-### 2. Testing de cambios
-
-```bash
-# Reconstruye si modificaste dependencias
-docker-compose up --build
-
-# Ejecuta tests dentro del contenedor
-docker-compose exec web npm test
-```
-
-### 3. Limpieza y reset
-
-```bash
-# Detén todo
-docker-compose down
-
-# Elimina volúmenes (datos de BD, etc.)
-docker-compose down -v
-
-# Empieza de cero
-docker-compose up --build
-```
-
----
-
-## 📦 Gestión de Dependencias
-
-### Node.js (01-node-api)
-
-**Agregar paquete**:
-```bash
-docker-compose exec web npm install <paquete>
-docker-compose exec web npm install --save-dev <paquete-dev>
-```
-
-**Actualizar package.json en host**:
-```bash
-docker cp 01-node-api-web-1:/app/package.json ./package.json
-```
-
-### Python (03-python-api)
-
-**Agregar paquete**:
-1. Edita `requirements.txt` directamente
-2. Reconstruye: `docker-compose up --build`
-
-### PHP (02-php-lamp)
-
-**Extensiones PHP**:
-Edita `docker/Dockerfile`:
-```dockerfile
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install gd
-```
-
-Reconstruye:
-```bash
-docker-compose build web
-```
-
----
-
-## 🔐 Seguridad Básica
-
-### Variables sensibles
-
-❌ **MAL**:
-```yaml
-environment:
-  - DB_PASSWORD=password123
-```
-
-✅ **BIEN**:
-```yaml
-environment:
-  - DB_PASSWORD=${DB_PASSWORD}
-```
-
-Luego en `.env`:
-```
-DB_PASSWORD=mi-password-seguro
-```
-
-### .gitignore
-
-Asegúrate de que `.gitignore` incluya:
-```
-.env
-node_modules/
-__pycache__/
-*.log
-```
-
-### Exponer solo puertos necesarios
-
-```yaml
-# Solo localmente
-ports:
-  - "127.0.0.1:3000:3000"
-```
-
----
-
-## 🚀 Tips Pro
-
-### Alias útiles
-
-Agrega a tu `.bashrc` o `.zshrc`:
-
-```bash
-alias dcu='docker-compose up'
-alias dcd='docker-compose down'
-alias dcb='docker-compose build'
-alias dcl='docker-compose logs -f'
-alias dce='docker-compose exec'
-```
-
-### Ver todos los logs en VS Code
-
-Usa la extensión Docker para VS Code y visualiza logs, contenedores e imágenes desde la barra lateral.
-
-### Docker en Windows (WSL2)
-
-Coloca tu código dentro de WSL2 para mejor performance:
-```bash
-# Desde WSL2
-cd ~
-git clone <repo>
-```
-
----
-
-## 📖 Recursos Adicionales
-
-- 🏗️ [Arquitectura](ARCHITECTURE.md) - Cómo están diseñados los labs
-- 📋 [Catálogo de Labs](LABS_CATALOG.md) - Detalles técnicos de cada uno
-- 🔧 [Troubleshooting](TROUBLESHOOTING.md) - Solución de problemas
-- 🎯 [Best Practices](BEST_PRACTICES.md) - Mejores prácticas de Docker
-
----
-
-← [Volver al README](../README.md)
+- no levantes todo si no lo necesitas
+- usa el gateway para navegar mejor
+- revisa `LABS_RUNTIME_REFERENCE` antes de mezclar labs pesados
+- usa `remove-all` solo cuando quieras limpiar tambien volumenes

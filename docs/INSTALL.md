@@ -1,405 +1,171 @@
-# Guía de Instalación 🔧
+# Install Guide
 
-Instrucciones completas para instalar Docker, Docker Compose y configurar **docker-labs** en tu sistema.
+Guia actualizada para instalar y operar `docker-labs` con foco en la experiencia real del repositorio.
 
----
+## Requisitos base
 
-## 💻 Requisitos del Sistema
+### Software
 
-Para asegurar que los laboratorios funcionen correctamente, tu equipo debe cumplir con los siguientes requisitos mínimos.
+- Docker Desktop o Docker Engine con `docker compose`
+- Git
+- Navegador moderno
 
-### Hardware Mínimo Recomendado
-*   **Procesador (CPU):** Intel Core i5 / AMD Ryzen 5 (Virtualización activada) o Apple Silicon M1/M2/M3.
-*   **Memoria RAM:** 
-    *   Mínimo: 8 GB
-    *   Recomendado: 16 GB (para correr el Dashboard completo con todos los servicios).
-*   **Espacio en Disco:** 20 GB libres (para imágenes y volúmenes de Docker).
-*   **Virtualización:** Debe estar habilitada en la BIOS/UEFI (Intel VT-x o AMD-V).
+### Hardware recomendado
 
-### Software Base
-Antes de instalar Docker, asegúrate de tener:
-*   **Sistema Operativo:**
-    *   Windows 10/11 (Pro/Enterprise/Education recomendados, Home requiere WSL 2).
-    *   macOS 12 (Monterey) o superior.
-    *   Linux: Ubuntu 20.04+, Debian 11+, Fedora 35+.
-*   **Git:** [Descargar última versión](https://git-scm.com/downloads).
-*   **Editor de Código:** Recomendamos [VS Code](https://code.visualstudio.com/) con la extensión "Docker".
+| Escenario | CPU | RAM | Disco libre |
+|---|---:|---:|---:|
+| Panel `9090` + 1 lab liviano | 4 nucleos | 8 GB | 15 GB |
+| Plataforma principal `05 + 06 + 09 + 9090` | 6 nucleos | 16 GB | 30 GB SSD |
+| Labs pesados `08`, `11`, `12` | 8 nucleos | 24 GB o mas | 40 GB SSD |
 
-### Recomendacion operativa realista
-
-No necesitas levantar todos los labs al mismo tiempo.
-
-Modo recomendado segun recursos:
-
-- **8 GB RAM**: panel principal + un sistema a la vez
-- **16 GB RAM**: panel principal + `05` + `09` + `06`
-- **24 GB RAM o mas**: plataforma principal + capacidades complementarias como monitoreo, mensajeria o busqueda
-
-En este repositorio, el flujo mas sano es:
-
-1. levantar solo el panel principal
-2. elegir el sistema que quieres usar
-3. levantar ese entorno caso a caso
-
-Eso reduce consumo de CPU, RAM y disco, y evita que Docker Desktop se vuelva innecesariamente pesado.
-
----
-
-## 🖥️ Instalación de Docker
+## Instalacion de Docker
 
 ### Windows
 
-#### Requisitos
-- Windows 10/11 Pro, Enterprise o Education (64-bit)
-- Virtualización habilitada en BIOS
-- WSL 2 (Windows Subsystem for Linux 2)
+1. Instala o actualiza WSL 2:
 
-#### Pasos
-
-1. **Habilitar WSL 2**:
 ```powershell
-# Ejecuta PowerShell como Administrador
 wsl --install
+wsl --update
 ```
 
-2. **Descargar Docker Desktop**:
-   - Ve a: https://docs.docker.com/desktop/install/windows-install/
-   - Descarga Docker Desktop for Windows
+2. Instala Docker Desktop.
+3. Activa la virtualizacion en BIOS si fuera necesario.
+4. Abre Docker Desktop y espera a que quede operativo.
 
-3. **Instalar Docker Desktop**:
-   - Ejecuta el instalador
-   - Marca "Use WSL 2 instead of Hyper-V"
-   - Reinicia tu PC
+Verificacion:
 
-4. **Verificar instalación**:
 ```powershell
 docker --version
-docker-compose --version
+docker compose version
 ```
-
-#### Solución de problemas (Windows)
-
-**Error: WSL 2 installation is incomplete**
-```powershell
-wsl --update
-wsl --set-default-version 2
-```
-
-**Docker no inicia**
-- Verifica que Docker Desktop esté en la bandeja del sistema
-- Revisa `Settings > Resources > WSL Integration`
-
----
 
 ### macOS
 
-#### Requisitos
-- macOS 11 Big Sur o superior
-- Procesador Intel o Apple Silicon (M1/M2)
+1. Instala Docker Desktop para Apple Silicon o Intel segun corresponda.
+2. Abre Docker Desktop.
+3. Verifica:
 
-#### Pasos
-
-1. **Descargar Docker Desktop**:
-   - Ve a: https://docs.docker.com/desktop/install/mac-install/
-   - Descarga la versión correcta:
-     - **Intel Chip**: Docker Desktop para Mac (Intel)
-     - **Apple Silicon**: Docker Desktop para Mac (Apple Silicon)
-
-2. **Instalar**:
-   - Abre el archivo `.dmg`
-   - Arrastra Docker a Aplicaciones
-   - Abre Docker desde Aplicaciones
-
-3. **Verificar instalación**:
-```bash
-docker --version
-docker-compose --version
-```
-
----
-
-### Linux (Ubuntu/Debian)
-
-#### Desinstalar versiones antiguas
-```bash
-sudo apt-get remove docker docker-engine docker.io containerd runc
-```
-
-#### Instalar Docker Engine
-
-1. **Actualizar repositorios**:
-```bash
-sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg lsb-release
-```
-
-2. **Agregar GPG key de Docker**:
-```bash
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-```
-
-3. **Configurar repositorio**:
-```bash
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-```
-
-4. **Instalar Docker**:
-```bash
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-```
-
-5. **Permitir Docker sin sudo** (opcional):
-```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-6. **Verificar**:
 ```bash
 docker --version
 docker compose version
 ```
 
-**Nota**: En Linux, usa `docker compose` (espacio) en lugar de `docker-compose` (guion).
-
----
-
-## 📦 Instalación de Docker Compose
-
-### Windows / macOS
-✅ **Ya incluido con Docker Desktop**
-
 ### Linux
-✅ **Ya instalado con docker-compose-plugin**
 
-Si usas una versión antigua, puedes instalar standalone:
+Instala Docker Engine y el plugin Compose segun tu distribucion.
+
+Verificacion:
+
 ```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+docker --version
+docker compose version
 ```
 
----
-
-## 🚀 Configuración Inicial de docker-labs
-
-### 1. Clonar el repositorio
+## Clonar el repositorio
 
 ```bash
 git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 ```
 
-### 2. Verificar estructura
+## Modo recomendado de uso
 
-```bash
-ls -la
+No necesitas levantar todos los labs a la vez.
+
+Flujo recomendado:
+
+1. levanta el panel principal
+2. revisa capacidad y estado
+3. levanta un lab o la plataforma principal
+4. baja entornos cuando termines
+
+## Levantar el panel principal
+
+El panel `9090` ahora corre como contenedor Docker propio.
+
+```powershell
+scripts\start-control-center.cmd
 ```
 
-Deberías ver:
-```
-.git/
-docs/
-01-node-api/
-02-php-lamp/
-03-python-api/
-README.md
-LICENSE
-...
-```
+Entradas:
 
-### 3. Configurar variables de entorno (si aplica)
+- `http://localhost:9090`: control center
+- `http://localhost:9090/learning-center.html`: centro de aprendizaje
 
-Para `02-php-lamp`:
-```bash
-cd 02-php-lamp
-cp .env.example .env
+## Levantar la plataforma principal manualmente
+
+```powershell
+docker compose -f 05-postgres-api\docker-compose.yml up -d --build
+docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
+docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
+docker compose -f dashboard-control\docker-compose.yml up -d --build
 ```
 
-Edita `.env` con tus valores preferidos:
-```env
-DB_HOST=db
-DB_NAME=testdb
-DB_USER=devuser
-DB_PASS=tu-password-seguro
-```
+Entradas:
 
-### 4. Levantar tu primer laboratorio
+- `http://localhost:8000`: Inventory Core
+- `http://localhost:8083`: Operations Portal
+- `http://localhost:8085`: Platform Gateway
+- `http://localhost:9090`: Control Center
 
-```bash
-cd 01-node-api
-docker-compose up
-```
+## Verificacion inicial
 
-Si ves:
-```
-web_1  | Server running on port 3000
-```
-✅ **¡Funciona!** Abre http://localhost:3000
-
----
-
-## 🔍 Verificación de Instalación
-
-Ejecuta estos comandos para verificar que todo esté correcto:
-
-```bash
-# Docker instalado
-docker --version
-# Salida esperada: Docker version 20.10.x
-
-# Docker Compose instalado
-docker-compose --version
-# Salida esperada: Docker Compose version v2.x.x
-
-# Docker funcionando
-docker run hello-world
-# Salida esperada: "Hello from Docker!"
-
-# Puede crear contenedores
+```powershell
 docker ps
-# Salida esperada: tabla vacía (si no hay contenedores corriendo)
 ```
 
----
+Debes poder ver, al menos, estos contenedores cuando la plataforma principal esta arriba:
 
-## ⚙️ Configuración Recomendada
+- `docker_labs_control_center`
+- `inventory_core_api`
+- `inventory_core_db`
+- `multi_backend`
+- `multi_frontend`
+- `multi_db`
+- `platform_gateway`
 
-### Recursos (Docker Desktop)
+## Que hacer si tu equipo es limitado
 
-1. Abre Docker Desktop
-2. Settings > Resources
-3. Ajusta según tu sistema:
-   - **CPUs**: 4 (mínimo 2)
-   - **Memory**: 4 GB (mínimo 2 GB)
-   - **Swap**: 1 GB
-   - **Disk**: 20 GB
+### 8 GB RAM
 
-### WSL 2 Integration (Windows)
+- deja solo `9090`
+- levanta un lab a la vez
+- evita mezclar `08`, `11` y `12`
 
-1. Settings > Resources > WSL Integration
-2. Activa integración con tu distribución Ubuntu/Debian
+### 16 GB RAM
 
-### File Sharing (macOS)
+- usa `05 + 06 + 09 + 9090`
+- agrega un servicio complementario solo si realmente lo necesitas
 
-1. Settings > Resources > File Sharing
-2. Asegúrate de que tu directorio de proyectos esté compartido
+### 24 GB RAM o mas
 
----
+- puedes experimentar con observabilidad, busqueda y CI con menos riesgo de saturacion
 
-## 🐛 Solución de Problemas Comunes
+## Problemas comunes
 
-### "Cannot connect to Docker daemon"
+### Docker Desktop abierto pero sin respuesta
 
-**Linux**:
-```bash
-sudo systemctl start docker
-sudo systemctl enable docker
+Valida:
+
+```powershell
+docker info
 ```
 
-**Windows/macOS**:
-- Verifica que Docker Desktop esté corriendo
+### El panel `9090` no abre
 
-### "Permission denied" al ejecutar docker
+Levanta de nuevo:
 
-**Linux**:
-```bash
-sudo usermod -aG docker $USER
-newgrp docker
+```powershell
+docker compose -f dashboard-control\docker-compose.yml up -d --build
 ```
 
-Cierra sesión y vuelve a entrar.
+### El gateway `8085` abre pero no enruta
 
-### Puerto ya en uso
+Revisa que `05`, `09` y `9090` esten arriba.
 
-```bash
-# Ver qué está usando el puerto 3000
-lsof -i :3000  # macOS/Linux
-netstat -ano | findstr :3000  # Windows
+## Documentos relacionados
 
-# Cambia el puerto en docker-compose.yml
-ports:
-  - "3001:3000"  # Usa 3001 en lugar de 3000
-```
-
-### Lentitud en Windows
-
-1. Coloca tu código dentro de WSL 2:
-```bash
-# Desde WSL 2 (Ubuntu)
-cd ~
-git clone https://github.com/...
-```
-
-2. Abre VS Code desde WSL:
-```bash
-code .
-```
-
-### Error: "no space left on device"
-
-Limpia imágenes y contenedores antiguos:
-```bash
-docker system prune -a --volumes
-```
-
----
-
-## 🎓 Configuración Avanzada
-
-### Usar buildkit (builds más rápidos)
-
-Agrega a tu `.bashrc` / `.zshrc`:
-```bash
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
-```
-
-### Docker sin sudo de forma permanente (Linux)
-
-```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
-sudo chmod g+rwx "$HOME/.docker" -R
-```
-
-Reinicia tu sesión.
-
-### Aliases útiles
-
-```bash
-# Agrega a .bashrc / .zshrc
-alias dps='docker ps'
-alias dcu='docker-compose up'
-alias dcd='docker-compose down'
-alias dcb='docker-compose build'
-alias dcl='docker-compose logs -f'
-```
-
----
-
-## 📖 Próximos Pasos
-
-Ahora que tienes todo instalado:
-
-1. 🎓 **[Guía para Principiantes](BEGINNERS_GUIDE.md)** - Tu primer laboratorio
-2. 📚 **[Manual de Usuario](USER_MANUAL.md)** - Domina el flujo de trabajo
-3. 🏗️ **[Arquitectura](ARCHITECTURE.md)** - Entiende cómo funciona
-
----
-
-## 🆘 Ayuda
-
-Si ninguna de estas soluciones funciona:
-- 📋 [Troubleshooting](TROUBLESHOOTING.md)
-- 🐛 [Reportar issue](https://github.com/vladimiracunadev-create/docker-labs/issues)
-- 📖 [Documentación oficial de Docker](https://docs.docker.com/)
-
----
-
-← [Volver al README](../README.md)
+- [BEGINNERS_GUIDE](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
+- [DASHBOARD_SETUP](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [LABS_RUNTIME_REFERENCE](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)

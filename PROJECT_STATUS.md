@@ -4,10 +4,11 @@ Estado resumido del repositorio.
 
 ## Actualmente consolidado
 
-- panel principal operativo
+- panel principal operativo y dockerizado en `9090`
 - `05-postgres-api` funcional y documentado
 - `09-multi-service-app` funcional e integrado con `05`
 - `06-nginx-proxy` funcional como gateway de entrada
+- diagnostico de capacidad del equipo y del runtime Docker integrado al panel
 
 ## Actualmente en evolucion
 

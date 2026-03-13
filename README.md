@@ -109,6 +109,15 @@ El panel principal en [http://localhost:9090](http://localhost:9090) ahora separ
 
 Tambien destaca los sistemas principales del repositorio y muestra su rol dentro de la plataforma.
 
+Desde ahora el panel tambien corre como contenedor Docker propio en `9090`, para que el workspace se gobierne con la misma logica que el resto de los servicios.
+
+Tecnica usada:
+
+- el panel corre en su propio contenedor
+- el contenedor incluye `docker cli` y `docker compose`
+- se conecta al daemon Docker mediante el socket compartido
+- monta el repositorio para leer documentos, manifests y archivos Compose
+
 ## Documentacion recomendada
 
 - [docs/ARCHITECTURE.md](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)

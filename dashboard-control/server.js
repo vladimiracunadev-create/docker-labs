@@ -4,9 +4,11 @@ const path = require("path");
 const { URL } = require("url");
 const { execFile } = require("child_process");
 
-const labs = require("./labs");
+const repoRoot = process.env.APP_REPO_ROOT
+  ? path.resolve(process.env.APP_REPO_ROOT)
+  : path.resolve(__dirname, "..");
 
-const repoRoot = path.resolve(__dirname, "..");
+const labs = require("./labs");
 const port = Number(process.env.DASHBOARD_PORT || 9090);
 
 const staticFiles = new Map([
@@ -106,6 +108,162 @@ function safeParseComposePs(output) {
       }
     })
     .filter(Boolean);
+}
+
+function safeParseJsonLines(output) {
+  return output
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      try {
+        return JSON.parse(line);
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean);
+}
+
+function bytesToGb(value) {
+  return Number((value / (1024 ** 3)).toFixed(1));
+}
+
+function parsePercent(value) {
+  return Number(String(value || "0").replace("%", "").trim()) || 0;
+}
+
+function parseMemoryUsage(value) {
+  const match = String(value || "").match(/^([\d.]+)([KMG]iB)\s*\/\s*([\d.]+)([KMG]iB)$/i);
+  if (!match) {
+    return { usedMiB: 0, limitGiB: 0 };
+  }
+
+  const used = Number(match[1]);
+  const usedUnit = match[2].toLowerCase();
+  const limit = Number(match[3]);
+  const limitUnit = match[4].toLowerCase();
+
+  const unitToMiB = {
+    kib: 1 / 1024,
+    mib: 1,
+    gib: 1024
+  };
+
+  const unitToGiB = {
+    kib: 1 / (1024 ** 2),
+    mib: 1 / 1024,
+    gib: 1
+  };
+
+  return {
+    usedMiB: Number((used * (unitToMiB[usedUnit] || 0)).toFixed(1)),
+    limitGiB: Number((limit * (unitToGiB[limitUnit] || 0)).toFixed(1))
+  };
+}
+
+function buildRecommendation(labs, dockerMemGb) {
+  const featured = labs.filter((lab) => lab.featured);
+  const featuredNeedGb = featured.reduce((acc, lab) => acc + Number(lab.recommendedRamGb || 0), 0);
+
+  let mode = "case-by-case";
+  let summary = "Trabaja con un lab a la vez y usa el panel para no sobrecargar Docker.";
+  let recommendedLabs = ["01-node-api", "03-python-api", "06-nginx-proxy"];
+  let cautionLabs = ["08-prometheus-grafana", "11-elasticsearch-search", "12-jenkins-ci"];
+
+  if (dockerMemGb >= 16) {
+    mode = "platform";
+    summary = "Tu asignacion Docker permite trabajar con la plataforma principal y sumar un servicio complementario con cuidado.";
+    recommendedLabs = ["05-postgres-api", "06-nginx-proxy", "09-multi-service-app", "07-rabbitmq-messaging"];
+  } else if (dockerMemGb >= 8) {
+    mode = "balanced";
+    summary = "Puedes trabajar con la plataforma principal, pero evita mezclar varios labs pesados al mismo tiempo.";
+    recommendedLabs = ["05-postgres-api", "06-nginx-proxy", "09-multi-service-app"];
+  }
+
+  if (dockerMemGb < featuredNeedGb) {
+    summary = `Docker tiene ${dockerMemGb} GB asignados y la plataforma principal sugiere ~${featuredNeedGb} GB. Conviene usar modo caso a caso o subir la memoria de Docker Desktop.`;
+  }
+
+  return {
+    mode,
+    summary,
+    dockerMemGb,
+    featuredNeedGb: Number(featuredNeedGb.toFixed(1)),
+    recommendedLabs,
+    cautionLabs
+  };
+}
+
+async function getDiagnostics() {
+  const [dockerInfoResult, dockerStatsResult, dockerDfResult, overview] = await Promise.all([
+    execCommand("docker", ["info", "--format", "{{json .}}"]),
+    execCommand("docker", ["stats", "--no-stream", "--format", "{{json .}}"]),
+    execCommand("docker", ["system", "df"]),
+    getOverview()
+  ]);
+
+  const dockerInfo = JSON.parse(dockerInfoResult.stdout.trim() || "{}");
+  const dockerStats = safeParseJsonLines(dockerStatsResult.stdout);
+  const dockerMemGb = bytesToGb(Number(dockerInfo.MemTotal || 0));
+  const cpuCount = Number(dockerInfo.NCPU || 0);
+
+  const activeContainers = dockerStats.map((item) => {
+    const memory = parseMemoryUsage(item.MemUsage);
+    return {
+      name: item.Name,
+      cpuPercent: parsePercent(item.CPUPerc),
+      memoryPercent: parsePercent(item.MemPerc),
+      memoryUsedMiB: memory.usedMiB,
+      memoryLimitGiB: memory.limitGiB
+    };
+  });
+
+  const usage = activeContainers.reduce(
+    (acc, item) => {
+      acc.cpuPercent += item.cpuPercent;
+      acc.memoryUsedMiB += item.memoryUsedMiB;
+      return acc;
+    },
+    { cpuPercent: 0, memoryUsedMiB: 0 }
+  );
+
+  const runningLabs = overview.labs.filter((lab) => lab.summary.running > 0);
+  const recommendedRunningRamGb = Number(
+    runningLabs.reduce((acc, lab) => acc + Number(lab.recommendedRamGb || 0), 0).toFixed(1)
+  );
+
+  return {
+    generatedAt: new Date().toISOString(),
+    browserNote: "El navegador aporta una estimacion del equipo anfitrion. Docker aporta la capacidad realmente asignada al runtime.",
+    docker: {
+      serverVersion: dockerInfo.ServerVersion || "unknown",
+      operatingSystem: dockerInfo.OperatingSystem || "unknown",
+      cpus: cpuCount,
+      memoryTotalGb: dockerMemGb,
+      images: Number(dockerInfo.Images || 0),
+      containersRunning: Number(dockerInfo.ContainersRunning || 0),
+      diskUsage: dockerDfResult.stdout.trim(),
+      usage: {
+        cpuPercentApprox: Number(usage.cpuPercent.toFixed(1)),
+        cpuPercentNormalized: cpuCount > 0 ? Number((usage.cpuPercent / cpuCount).toFixed(1)) : Number(usage.cpuPercent.toFixed(1)),
+        memoryUsedMiB: Number(usage.memoryUsedMiB.toFixed(1)),
+        memoryUsedGb: Number((usage.memoryUsedMiB / 1024).toFixed(2)),
+        memoryLoadPercent: dockerMemGb > 0 ? Number(((usage.memoryUsedMiB / 1024) / dockerMemGb * 100).toFixed(1)) : 0
+      },
+      activeContainers
+    },
+    recommendation: {
+      ...buildRecommendation(overview.labs, dockerMemGb),
+      runningLabs: runningLabs.map((lab) => ({
+        id: lab.id,
+        name: lab.name,
+        recommendedRamGb: Number(lab.recommendedRamGb || 0),
+        status: lab.summary.status
+      })),
+      runningNeedGb: recommendedRunningRamGb
+    }
+  };
 }
 
 function summarizeProject(containers, services) {
@@ -256,6 +414,11 @@ async function handleWorkspaceAction(action) {
 async function handleApi(request, response, pathname) {
   if (pathname === "/api/overview" && request.method === "GET") {
     sendJson(response, 200, await getOverview());
+    return;
+  }
+
+  if (pathname === "/api/diagnostics" && request.method === "GET") {
+    sendJson(response, 200, await getDiagnostics());
     return;
   }
 

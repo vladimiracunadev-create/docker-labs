@@ -1,3 +1,4 @@
 @echo off
 cd /d %~dp0\..
-"C:\Program Files\nodejs\node.exe" dashboard-control\server.js
+docker compose -f dashboard-control\docker-compose.yml up -d --build
+echo Docker Labs Control Center: http://localhost:9090

@@ -1,51 +1,56 @@
 # FAQ
 
-## Para que sirve este repositorio
+## Cual es la entrada principal del repo
 
-Sirve para aprender Docker con casos practicos y, al mismo tiempo, para evolucionar algunos labs hacia sistemas modulares reutilizables.
-
-## Cual es la entrada principal
-
-El panel principal:
+El Control Center:
 
 [http://localhost:9090](http://localhost:9090)
 
-## Puedo levantar solo el panel y despues ir caso a caso
+## El panel corre fuera de Docker
 
-Si. De hecho ese es el modo recomendado cuando quieres cuidar recursos.
+No. Ahora el panel tambien corre como contenedor Docker.
 
-Lo normal es:
+## Que hago si quiero cuidar recursos
 
-- dejar el panel principal arriba
-- revisar estados
-- levantar solo el sistema que vas a usar
+Usa modo caso a caso:
 
-## Cuanto hardware necesito realmente
+- deja `9090` arriba
+- revisa el diagnostico
+- levanta solo el sistema que necesitas
 
-- `8 GB RAM`: suficiente para panel y un entorno a la vez
-- `16 GB RAM`: comodo para `05 + 09 + 06`
-- `24 GB RAM o mas`: mejor para sumar observabilidad, busqueda o mensajeria
+## Como se si mi equipo aguanta mas labs
 
-## Que sistemas conviene abrir primero
+El panel ahora muestra:
+
+- estimacion del equipo anfitrion
+- CPU y RAM asignadas a Docker
+- uso actual de contenedores
+- recomendacion de que labs conviene levantar
+
+## Que es mas importante: mi RAM o la de Docker
+
+Para ejecutar contenedores, la cifra mas importante es la memoria asignada a Docker.
+
+## Cuales son los sistemas principales
 
 - `05-postgres-api`
-- `09-multi-service-app`
 - `06-nginx-proxy`
+- `09-multi-service-app`
+- `dashboard-control`
 
-## Que diferencia hay entre estado Docker y abrir sistema
+## El gateway reemplaza al panel
 
-- `Estado Docker` indica si el contenedor o stack esta arriba
-- `Abrir sistema` entra a la app o API que vive dentro del contenedor
+No. El gateway unifica accesos. El panel gobierna el workspace.
 
-## Por que hay labs detenidos
+## Que hago si `9090` no abre
 
-Porque no es necesario levantar todo a la vez. El repositorio ahora prioriza trabajar primero con los sistemas principales y solo encender capacidades complementarias cuando aportan valor.
+```powershell
+docker compose -f dashboard-control\docker-compose.yml up -d --build
+```
 
-## Cual es la direccion del proyecto
+## Puedo borrar todos los Docker del repo desde el panel
 
-Pasar de una coleccion de laboratorios a una plataforma modular compuesta por:
+Si. El panel ya ofrece:
 
-- core transaccional
-- portal operativo
-- gateway
-- servicios de infraestructura complementarios
+- `Bajar todos los Docker`
+- `Eliminar entornos del repo`

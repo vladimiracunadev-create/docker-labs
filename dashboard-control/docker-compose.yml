@@ -1,0 +1,17 @@
+services:
+  control-center:
+    build:
+      context: ..
+      dockerfile: dashboard-control/Dockerfile
+    container_name: docker_labs_control_center
+    ports:
+      - "9090:9090"
+    environment:
+      APP_REPO_ROOT: /workspace
+      DOCKER_REPO_ROOT: /run/desktop/mnt/host/c/docker-labs/docker-labs
+      DASHBOARD_PORT: 9090
+    volumes:
+      - ..:/workspace
+      - ..:/run/desktop/mnt/host/c/docker-labs/docker-labs
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

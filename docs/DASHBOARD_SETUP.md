@@ -1,143 +1,110 @@
-# Control Center Setup
+# Dashboard Setup
 
-Esta guia documenta el nuevo panel principal de `docker-labs`: un control center web que permite inspeccionar el estado real de los laboratorios y ejecutar acciones Docker desde una sola interfaz.
+Guia operativa del `Docker Labs Control Center`.
 
-## Objetivo
+## Que es
 
-El panel existe para resolver tres problemas del repositorio:
+El panel en `9090` es la consola principal del repositorio.
 
-- evitar levantar labs a ciegas desde terminal
-- centralizar estado, accesos y logs
-- transformar el repositorio en una plataforma operable, no solo en una coleccion de ejemplos
+Resuelve cuatro necesidades:
 
-## Como Funciona
+- ver estado real de los labs
+- controlar `docker compose` sin ir carpeta por carpeta
+- abrir el sistema correcto dentro de cada stack
+- estimar si tu equipo y Docker tienen capacidad para levantar mas servicios
 
-El control center tiene dos capas:
+## Arquitectura actual
 
-1. `index.html` como interfaz principal
-2. `dashboard-control/server.js` como API local que ejecuta `docker compose`
+Hoy el panel corre como un contenedor Docker propio.
 
-El backend local:
+Componentes:
 
-- descubre servicios por `docker compose config --services`
-- consulta contenedores por `docker compose ps --format json`
-- ejecuta `up`, `down`, `restart` y `logs`
-- devuelve un overview agregado para la web
+1. `dashboard-control/docker-compose.yml`
+2. `dashboard-control/Dockerfile`
+3. `dashboard-control/server.js`
+4. `index.html`, `dashboard.js`, `dashboard.css`
 
-## Requisitos
+## Como funciona
 
-- Docker Desktop o Docker Engine activo
-- Node.js 20+ disponible en la maquina
-- permisos suficientes para que el proceso local pueda ejecutar `docker`
+El contenedor del panel:
 
-### Nota Importante para Windows
+- expone `9090`
+- monta el repositorio para leer archivos y metadata
+- incluye `docker cli` y `docker compose`
+- usa el socket Docker para inspeccionar y operar los labs
 
-Si Docker en tu equipo requiere privilegios elevados, inicia el control center desde una terminal con permisos equivalentes. El frontend puede abrirse normalmente en el navegador, pero el backend necesita el mismo nivel de acceso que tu cliente Docker.
+## Inicio rapido
 
-## Inicio Rapido
-
-### Windows
-
-```bat
-cd C:\docker-labs\docker-labs
+```powershell
 scripts\start-control-center.cmd
 ```
 
-### macOS / Linux / PowerShell
+O manualmente:
 
-```bash
-cd /ruta/al/repositorio
-node dashboard-control/server.js
+```powershell
+docker compose -f dashboard-control\docker-compose.yml up -d --build
 ```
 
-Luego abre:
+## URLs
 
-- [http://localhost:9090](http://localhost:9090)
+- `http://localhost:9090`
+- `http://localhost:9090/api/overview`
+- `http://localhost:9090/api/diagnostics`
+- `http://localhost:9090/learning-center.html`
 
-## Funciones Disponibles
+## Que muestra el panel
 
-El panel permite:
+### Overview
 
-- listar todos los labs del repositorio
-- ver estado `healthy`, `running`, `stopped` o `degraded`
-- abrir URLs publicadas por cada lab
-- levantar un lab individual
-- reiniciar un lab
-- detener un lab
-- reconstruir un lab con `--build`
-- inspeccionar logs recientes
-- revisar un resumen global del estado del repositorio
+- labs registrados
+- labs saludables
+- labs corriendo
+- labs que requieren atencion
 
-## Flujo Recomendado
+### Sistemas principales
 
-1. abre el control center
-2. revisa el overview de estado
-3. inicia un laboratorio puntual
-4. valida servicios y healthchecks desde el panel lateral
-5. abre el servicio en su URL publicada
-6. usa logs cuando un stack no quede saludable
+- `05-postgres-api`
+- `06-nginx-proxy`
+- `09-multi-service-app`
 
-## Arquitectura del Control Center
+### Diagnostico
 
-```mermaid
-flowchart LR
-    A[Browser] --> B[index.html]
-    B --> C[dashboard-control/server.js]
-    C --> D[docker compose]
-    D --> E[Lab Containers]
-```
+Cruza dos fuentes:
 
-## Verificacion
+- navegador: estimacion del equipo anfitrion
+- Docker: CPU, RAM y consumo real del runtime
 
-### API del panel
+### Detalle por lab
 
-```bash
+- estado Docker
+- objetivo del entorno
+- health de contenedores
+- accesos reales
+- acciones `start`, `stop`, `restart`, `rebuild`, `logs`
+
+## Acciones globales
+
+- `Levantar repositorio activo`
+- `Bajar todos los Docker`
+- `Eliminar entornos del repo`
+
+## Verificacion tecnica
+
+```powershell
 curl http://localhost:9090/api/overview
+curl http://localhost:9090/api/diagnostics
 ```
 
-### Accion remota sobre un lab
+## Notas importantes
 
-```bash
-curl -X POST http://localhost:9090/api/labs/05-postgres-api/start ^
-  -H "Content-Type: application/json" ^
-  -d "{}"
-```
+- `9090` ya no depende de un proceso Node suelto en una consola
+- el panel se levanta como parte del ecosistema Docker
+- el panel no reemplaza Docker Desktop: lo usa y lo explica mejor
 
-### Logs de un lab
+## Relacion con el gateway
 
-```bash
-curl -X POST http://localhost:9090/api/labs/05-postgres-api/logs ^
-  -H "Content-Type: application/json" ^
-  -d "{\"tail\":40}"
-```
+El gateway en `8085` expone tambien:
 
-## Troubleshooting
+- `http://localhost:8085/control/`
 
-### El panel carga pero no puede controlar Docker
-
-Causa probable:
-- el proceso Node no tiene el mismo nivel de permisos que Docker
-
-Solucion:
-- reinicia el backend del panel con permisos adecuados
-
-### Puerto 9090 ocupado
-
-Solucion:
-- libera el puerto, o ejecuta el servidor con otra variable:
-
-```bash
-DASHBOARD_PORT=9191 node dashboard-control/server.js
-```
-
-### Un lab aparece como `stopped` aunque exista su compose
-
-Eso significa que el compose fue leido correctamente, pero no hay contenedores activos en ese proyecto.
-
-### Un lab aparece como `degraded`
-
-Eso significa que hay contenedores corriendo, pero con healthcheck no saludable o en estado parcial.
-
-## Relacion con el Dashboard Legacy
-
-Los archivos `docker-compose-dashboard*.yml` y la configuracion Nginx siguen en el repositorio como referencia historica. El flujo recomendado para operar el proyecto ahora es el control center local, porque puede ejecutar acciones reales sobre Docker y no solo mostrar un HTML estatico.
+Eso permite usar la plataforma principal como si fuera un solo producto.

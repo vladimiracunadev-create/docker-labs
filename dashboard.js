@@ -1,7 +1,9 @@
 const state = {
   labs: [],
   filteredLabs: [],
-  selectedLabId: null
+  selectedLabId: null,
+  diagnostics: null,
+  browserHost: null
 };
 
 const els = {
@@ -11,6 +13,7 @@ const els = {
   attention: document.getElementById("metric-attention"),
   generatedAt: document.getElementById("generated-at"),
   featuredGrid: document.getElementById("featured-grid"),
+  diagnosticsGrid: document.getElementById("diagnostics-grid"),
   labGrid: document.getElementById("lab-grid"),
   search: document.getElementById("search"),
   selectionTitle: document.getElementById("selection-title"),
@@ -28,6 +31,19 @@ const els = {
   stopAll: document.getElementById("stop-all"),
   removeAll: document.getElementById("remove-all")
 };
+
+function formatNumber(value, digits = 1) {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(digits) : "n/d";
+}
+
+function profileLabel(profile) {
+  const labels = {
+    light: "Liviano",
+    medium: "Medio",
+    heavy: "Pesado"
+  };
+  return labels[profile] || "General";
+}
 
 function formatTimestamp(value) {
   return value ? new Date(value).toLocaleString("es-CL") : "sin datos";
@@ -110,6 +126,122 @@ function renderFeatured(labs) {
       </div>
     </article>
   `).join("");
+}
+
+async function readBrowserHostEstimate() {
+  let storage = null;
+  if (navigator.storage && navigator.storage.estimate) {
+    try {
+      storage = await navigator.storage.estimate();
+    } catch {
+      storage = null;
+    }
+  }
+
+  state.browserHost = {
+    platform: navigator.userAgentData?.platform || navigator.platform || "unknown",
+    language: navigator.language || "unknown",
+    hardwareConcurrency: navigator.hardwareConcurrency || null,
+    deviceMemoryGb: navigator.deviceMemory || null,
+    storageQuotaGb: storage?.quota ? Number((storage.quota / (1024 ** 3)).toFixed(1)) : null
+  };
+}
+
+function renderDiagnostics() {
+  if (!state.diagnostics) {
+    return;
+  }
+
+  const browser = state.browserHost || {};
+  const docker = state.diagnostics.docker;
+  const recommendation = state.diagnostics.recommendation;
+
+  const runningItems = recommendation.runningLabs.length
+    ? recommendation.runningLabs.map((item) => `<span class="tag">${item.id} · ${item.recommendedRamGb} GB</span>`).join("")
+    : `<span class="tag">Sin labs activos</span>`;
+
+  const cautionItems = recommendation.cautionLabs.map((id) => `<span class="tag">${id}</span>`).join("");
+  const recommendedItems = recommendation.recommendedLabs.map((id) => `<span class="tag">${id}</span>`).join("");
+  const topContainers = docker.activeContainers
+    .slice()
+    .sort((a, b) => b.memoryUsedMiB - a.memoryUsedMiB)
+    .slice(0, 4)
+    .map((item) => `
+      <div class="service-row">
+        <div>
+          <strong>${item.name}</strong>
+          <div class="service-meta">${formatNumber(item.memoryUsedMiB, 0)} MiB · ${formatNumber(item.cpuPercent, 1)}% CPU</div>
+        </div>
+        <div class="service-pill ${item.memoryPercent > 50 ? "degraded" : "healthy"}">
+          <span class="status-dot"></span>
+          <span>${formatNumber(item.memoryPercent, 1)}% RAM</span>
+        </div>
+      </div>
+    `).join("");
+
+  els.diagnosticsGrid.innerHTML = `
+    <article class="featured-card">
+      <div class="featured-head">
+        <div>
+          <span class="tag">Equipo estimado</span>
+          <h3>Host desde navegador</h3>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div><span class="summary-label">Plataforma</span><strong>${browser.platform || "n/d"}</strong></div>
+        <div><span class="summary-label">CPU estimada</span><strong>${browser.hardwareConcurrency ? `${browser.hardwareConcurrency} hilos` : "n/d"}</strong></div>
+        <div><span class="summary-label">RAM estimada</span><strong>${browser.deviceMemoryGb ? `${browser.deviceMemoryGb} GB` : "n/d"}</strong></div>
+        <div><span class="summary-label">Cuota navegador</span><strong>${browser.storageQuotaGb ? `${browser.storageQuotaGb} GB` : "n/d"}</strong></div>
+      </div>
+      <p class="summary-copy">Esta lectura es orientativa y depende de lo que el navegador expone. La capacidad efectiva para contenedores es la que Docker Desktop tiene asignada.</p>
+    </article>
+
+    <article class="featured-card">
+      <div class="featured-head">
+        <div>
+          <span class="tag">Docker asignado</span>
+          <h3>Capacidad real del runtime</h3>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div><span class="summary-label">Docker OS</span><strong>${docker.operatingSystem}</strong></div>
+        <div><span class="summary-label">Version</span><strong>${docker.serverVersion}</strong></div>
+        <div><span class="summary-label">CPU visibles</span><strong>${docker.cpus}</strong></div>
+        <div><span class="summary-label">RAM para Docker</span><strong>${docker.memoryTotalGb} GB</strong></div>
+      </div>
+      <p class="summary-copy">${state.diagnostics.browserNote}</p>
+    </article>
+
+    <article class="featured-card">
+      <div class="featured-head">
+        <div>
+          <span class="tag">Carga actual</span>
+          <h3>Uso de contenedores</h3>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div><span class="summary-label">CPU aprox.</span><strong>${formatNumber(docker.usage.cpuPercentNormalized, 1)}%</strong></div>
+        <div><span class="summary-label">RAM usada</span><strong>${formatNumber(docker.usage.memoryUsedGb, 2)} GB</strong></div>
+        <div><span class="summary-label">Carga RAM</span><strong>${formatNumber(docker.usage.memoryLoadPercent, 1)}%</strong></div>
+        <div><span class="summary-label">Contenedores arriba</span><strong>${docker.containersRunning}</strong></div>
+      </div>
+      <div class="service-stack compact-stack">${topContainers || `<div class="empty">Sin consumo activo.</div>`}</div>
+    </article>
+
+    <article class="featured-card">
+      <div class="featured-head">
+        <div>
+          <span class="tag">Recomendacion</span>
+          <h3>Que conviene levantar ahora</h3>
+        </div>
+      </div>
+      <p class="summary-copy"><strong>Modo:</strong> ${recommendation.mode}. ${recommendation.summary}</p>
+      <div class="guidance-item"><strong>Plataforma principal sugerida</strong><div>${formatNumber(recommendation.featuredNeedGb, 1)} GB recomendados</div></div>
+      <div class="guidance-item"><strong>Labs activos ahora</strong><div>${runningItems}</div></div>
+      <div class="guidance-item"><strong>Bueno para tu capacidad actual</strong><div>${recommendedItems}</div></div>
+      <div class="guidance-item"><strong>Levantar con cautela</strong><div>${cautionItems}</div></div>
+    </article>
+  `;
 }
 
 function renderStatusSummary(lab) {
@@ -314,6 +446,12 @@ async function loadOverview(preferredLabId = state.selectedLabId) {
   }
 }
 
+async function loadDiagnostics() {
+  const diagnostics = await fetchJson("/api/diagnostics");
+  state.diagnostics = diagnostics;
+  renderDiagnostics();
+}
+
 async function runAction(labId, action) {
   els.logsOutput.textContent = "Ejecutando accion sobre Docker...";
   const body = action === "rebuild" ? { rebuild: true } : {};
@@ -396,6 +534,6 @@ els.startAll.addEventListener("click", async () => {
 els.stopAll.addEventListener("click", () => runWorkspaceAction("stop-all", "Esto bajara todos los entornos Docker de este repositorio. Deseas continuar?"));
 els.removeAll.addEventListener("click", () => runWorkspaceAction("remove-all", "Esto eliminara contenedores, redes y volumenes de los entornos de este repositorio. Deseas continuar?"));
 
-loadOverview().catch((error) => {
+Promise.all([readBrowserHostEstimate(), loadOverview(), loadDiagnostics()]).catch((error) => {
   els.logsOutput.textContent = error.message;
 });
