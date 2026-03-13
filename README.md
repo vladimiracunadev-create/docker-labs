@@ -2,46 +2,83 @@
 
 > Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y evolucion de productos.
 
-## ✨ Resumen
+[![CI](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](C:/docker-labs/docker-labs/LICENSE)
+[![Workspace Status](https://img.shields.io/badge/workspace-operational-2e8b57)](http://localhost:9090)
+[![Platform Focus](https://img.shields.io/badge/focus-core%20%2B%20portal%20%2B%20gateway-c96a2b)](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
 
-`docker-labs` ya no se presenta solo como una coleccion de ejemplos aislados. Hoy funciona como un workspace compuesto por:
+---
 
-- 🧠 un core transaccional
-- 🖥️ una capa operativa para usuarios y operadores
-- 🌐 una puerta de entrada unificada
-- 🧰 servicios de infraestructura para extender capacidades
+## Implementacion Profesional del Workspace
 
-## 📊 Estado actual
+`docker-labs` ya no se entiende solo como una coleccion de contenedores sueltos. Hoy funciona como un workspace modular con:
+
+1. 🧠 un core transaccional para entidades de negocio
+2. 🖥️ una capa operativa para visualizar y operar el flujo
+3. 🌐 un gateway para unificar accesos
+4. 🐳 un control center dockerizado para gobernar el entorno
+5. 🧰 servicios complementarios para performance, mensajeria, observabilidad, busqueda y CI
+
+Tip
+
+Si quieres entender el repositorio rapido, entra primero a [http://localhost:9090](http://localhost:9090), luego abre `Inventory Core`, `Operations Portal` y `Platform Gateway`.
+
+---
+
+## 📊 Estado del Workspace
 
 | Componente | Estado | Rol | Entrada |
 |---|---|---|---|
-| `05-postgres-api` | 🟢 Activo | Core transaccional | [http://localhost:8000](http://localhost:8000) |
-| `09-multi-service-app` | 🟢 Activo | Portal operativo | [http://localhost:8083](http://localhost:8083) |
-| `06-nginx-proxy` | 🟢 Activo | Gateway | [http://localhost:8085](http://localhost:8085) |
-| `dashboard-control` | 🟢 Activo | Control Center | [http://localhost:9090](http://localhost:9090) |
+| `dashboard-control` | 🟢 OPERATIVO | Control Center | [http://localhost:9090](http://localhost:9090) |
+| `05-postgres-api` | 🟢 OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| `09-multi-service-app` | 🟢 OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
+| `06-nginx-proxy` | 🟢 OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
+| `Learning Center` | 🟢 OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
 
-### Estado editorial
-
-- 🟢 Documentacion troncal alineada con el sistema real
-- 🟢 Panel principal dockerizado
-- 🟢 Diagnostico de capacidad del equipo y de Docker integrado
-- 🟡 Labs secundarios aun en proceso de estandarizacion fina
-
-### Estado del workspace
+### Estado de Capacidades
 
 | Capacidad | Estado | Detalle |
 |---|---|---|
 | Panel dockerizado | 🟢 | `dashboard-control` corre en `9090` como contenedor |
-| Gateway funcional | 🟢 | `06-nginx-proxy` enruta hacia panel, core y portal |
-| Core transaccional | 🟢 | `05-postgres-api` expone sistema, Swagger y healthchecks |
-| Portal operativo | 🟢 | `09-multi-service-app` consume `05` y agrega capa de uso |
-| Diagnostico de capacidad | 🟢 | `GET /api/diagnostics` cruza host estimado y runtime Docker |
-| Learning Center | 🟢 | Vista HTML integrada en `9090/learning-center.html` |
+| Diagnostico del host y Docker | 🟢 | `GET /api/diagnostics` cruza navegador + runtime Docker |
+| Control por lab | 🟢 | `start`, `stop`, `restart`, `rebuild`, `logs` |
+| Control global | 🟢 | `bajar todos` y `eliminar entornos del repo` |
+| Gateway funcional | 🟢 | `06` enruta a panel, core y portal |
+| Core documentado | 🟢 | `05` tiene sistema, Swagger, healthchecks y summary |
+| Portal integrado | 🟢 | `09` consume `05` y agrega capa operativa |
 | CI base | 🟢 | Workflow Compose en [.github/workflows/ci.yml](C:/docker-labs/docker-labs/.github/workflows/ci.yml) |
-| Documentacion troncal | 🟢 | README, instalacion, dashboard, manual y runtime alineados |
-| Estandarizacion de labs secundarios | 🟡 | Aun falta elevar todos los `README.md` al mismo nivel editorial |
+| Labs secundarios al mismo estandar editorial | 🟡 | Aun falta elevar todos los README por carpeta |
 
-## 🚀 Inicio rapido
+---
+
+## ✨ Caracteristicas Principales
+
+- ✅ Workspace gobernado desde un panel dockerizado en `9090`
+- ✅ Diferenciacion clara entre `Estado Docker` y `Abrir sistema`
+- ✅ Core de negocio con FastAPI + PostgreSQL
+- ✅ Portal operativo con Node.js + MongoDB + frontend Nginx
+- ✅ Gateway central con Nginx
+- ✅ Diagnostico de CPU, RAM y carga de Docker para decidir que conviene levantar
+- ✅ Learning Center integrado dentro del ambiente local
+- ✅ CI de Docker Compose en GitHub Actions
+- ✅ Documentacion pensada para novatos, operadores, reclutadores y mantenedores
+
+---
+
+## 🧭 ¿Por donde empezar?
+
+| Si eres... | Ruta recomendada | Que mirar |
+|---|---|---|
+| Principiante | [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md) | Conceptos, flujo caso a caso y como no perderte |
+| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Estado, diagnostico y apertura de sistemas |
+| Dev / DevOps | [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) | Panel, Compose, gateway y operacion del repo |
+| Backend | [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Core transaccional, healthchecks y Swagger |
+| Full stack / producto | [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Portal operativo e integracion con el core |
+| Reclutador / manager | [For Recruiters](C:/docker-labs/docker-labs/FOR_RECRUITERS.md) | Valor de portafolio, criterio tecnico y narrativa |
+
+---
+
+## 🚀 Ejecucion Rapida
 
 ### Opcion recomendada
 
@@ -49,10 +86,14 @@
 scripts\start-control-center.cmd
 ```
 
-Despues abre:
+Entradas principales:
 
 - Control Center: [http://localhost:9090](http://localhost:9090)
 - Learning Center: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
+- Inventory Core: [http://localhost:8000](http://localhost:8000)
+- Swagger del core: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Operations Portal: [http://localhost:8083](http://localhost:8083)
+- Platform Gateway: [http://localhost:8085](http://localhost:8085)
 
 ### Opcion manual
 
@@ -63,11 +104,11 @@ docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
 docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 ```
 
-## 🧭 Como leer este repositorio
+---
 
-### 1. Sistemas principales
+## 🧩 Taxonomia del Repositorio
 
-Estos son los entornos que ya cuentan una historia de producto coherente:
+### Sistemas principales
 
 | Carpeta | Tipo | Objetivo |
 |---|---|---|
@@ -76,9 +117,7 @@ Estos son los entornos que ya cuentan una historia de producto coherente:
 | [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
 | [dashboard-control](C:/docker-labs/docker-labs/dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
 
-### 2. Servicios de infraestructura
-
-Amplian las capacidades de la plataforma:
+### Servicios de infraestructura
 
 | Carpeta | Capacidad | Estado narrativo |
 |---|---|---|
@@ -88,9 +127,7 @@ Amplian las capacidades de la plataforma:
 | `11-elasticsearch-search` | Busqueda | Complementario |
 | `12-jenkins-ci` | CI y automatizacion | Complementario |
 
-### 3. Starters y demos
-
-Buenos para aprender stacks o iniciar productos mas pequenos:
+### Starters y demos
 
 | Carpeta | Enfoque |
 |---|---|
@@ -98,6 +135,8 @@ Buenos para aprender stacks o iniciar productos mas pequenos:
 | `02-php-lamp` | Entorno clasico administrativo |
 | `03-python-api` | API Python sencilla |
 | `10-go-api` | Servicio ligero y rapido |
+
+---
 
 ## 🖥️ Control Center
 
@@ -109,14 +148,18 @@ El panel principal en [http://localhost:9090](http://localhost:9090):
 - lee capacidad del host y de Docker
 - recomienda que conviene levantar segun memoria y carga actuales
 
-### Caracteristicas destacadas
+### Endpoints relevantes
 
-- 🐳 corre como contenedor Docker propio
-- 🔎 expone `GET /api/overview` y `GET /api/diagnostics`
-- 🧠 diagnostica RAM asignada a Docker y carga actual
-- 🧹 permite `Bajar todos los Docker` y `Eliminar entornos del repo`
+- `GET /api/overview`
+- `GET /api/diagnostics`
+- `POST /api/labs/:id/start`
+- `POST /api/labs/:id/stop`
+- `POST /api/workspace/stop-all`
+- `POST /api/workspace/remove-all`
 
-## 📚 Documentacion recomendada
+---
+
+## 📚 Documentacion Recomendada
 
 ### Navegacion principal
 
@@ -137,7 +180,7 @@ El panel principal en [http://localhost:9090](http://localhost:9090):
 | Labs Runtime Reference | Resume imagenes, tamanos y requisitos de los 12 casos | [Abrir](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md) |
 | Technical Specs | Resume stacks, endpoints y especificaciones clave | [Abrir](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md) |
 
-### Estado y roadmap
+### Estado, operacion y roadmap
 
 | Documento | Para que sirve | Enlace |
 |---|---|---|
@@ -154,6 +197,8 @@ El panel principal en [http://localhost:9090](http://localhost:9090):
 | Developing | Quien vaya a extender o mantener el repo | [Abrir](C:/docker-labs/docker-labs/DEVELOPING.md) |
 | Support | Quien necesite ayuda o criterios de soporte | [Abrir](C:/docker-labs/docker-labs/SUPPORT.md) |
 
+---
+
 ## 🎯 Que mejora este enfoque
 
 Este repositorio gana valor cuando cada carpeta deja de ser "otro Docker" y pasa a ser:
@@ -163,10 +208,12 @@ Este repositorio gana valor cuando cada carpeta deja de ser "otro Docker" y pasa
 - una pieza de una plataforma mayor
 - una base de aprendizaje reutilizable
 
+---
+
 ## 🔭 Direccion recomendada
 
 1. Consolidar `05`, `09`, `06` y `9090` como experiencia principal.
-2. Estandarizar metadata y documentacion del resto de labs.
+2. Estandarizar metadata y README de las 12 carpetas.
 3. Reforzar pruebas, CI y observabilidad.
 4. Convertir mas labs en capacidades integradas, no en demos aisladas.
 
