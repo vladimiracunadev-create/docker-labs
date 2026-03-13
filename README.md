@@ -118,6 +118,8 @@ Tambien destaca los sistemas principales del repositorio y muestra su rol dentro
 - [DEVELOPING.md](C:/docker-labs/docker-labs/DEVELOPING.md)
 - [SUPPORT.md](C:/docker-labs/docker-labs/SUPPORT.md)
 - [FAQ.md](C:/docker-labs/docker-labs/FAQ.md)
+- [FOR_RECRUITERS.md](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
+- [PROJECT_STATUS.md](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
 
 ## Siguiente direccion
 
