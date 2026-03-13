@@ -1,64 +1,76 @@
-# For Recruiters
+# 👀 For Recruiters
 
-Guia rapida para evaluar `docker-labs` como pieza de portafolio.
+Guia rapida para evaluar `docker-labs` como pieza de portafolio tecnico.
 
-## Que es este repositorio
+## 🧭 Que es
 
-`docker-labs` evoluciono desde una coleccion de laboratorios Docker hacia una plataforma modular con tres sistemas principales:
+`docker-labs` evoluciono desde una coleccion de laboratorios Docker hacia una plataforma modular con cuatro piezas visibles:
 
-- `05-postgres-api`: core transaccional
-- `09-multi-service-app`: portal operativo
-- `06-nginx-proxy`: gateway de entrada
+| Componente | Estado | Valor |
+|---|---|---|
+| `05-postgres-api` | 🟢 Funcional | Backend transaccional serio |
+| `09-multi-service-app` | 🟢 Funcional | Portal operativo integrado |
+| `06-nginx-proxy` | 🟢 Funcional | Gateway de acceso |
+| `dashboard-control` | 🟢 Funcional | Workspace y diagnostico |
 
-## Que demuestra
+## 💼 Que demuestra
 
-Este repo evidencia trabajo en:
-
-- Docker y Docker Compose
+- Docker y Docker Compose aplicados a multiples stacks
 - integracion entre servicios
-- modelado de backend con FastAPI y PostgreSQL
-- construccion de una capa frontend/backend adicional
-- experiencia de desarrollo orientada a panel de control
-- documentacion tecnica y narrativa de producto
+- modelado backend con FastAPI y PostgreSQL
+- frontend/backend adicional con MongoDB
+- capa de gateway y experiencia de workspace
+- documentacion tecnica con enfoque de producto
 
-## Como revisarlo rapido
+## ⚡ Como revisarlo rapido
 
 1. abrir el panel principal en [http://localhost:9090](http://localhost:9090)
-2. abrir `Inventory Core`
-3. abrir `Operations Portal`
-4. abrir `Platform Gateway`
+2. revisar el diagnostico del runtime
+3. abrir `Inventory Core`
+4. abrir `Operations Portal`
+5. abrir `Platform Gateway`
 
-Con eso se entiende la arquitectura principal del repo sin revisar todas las carpetas.
+Con eso se entiende la historia principal del repositorio sin recorrer las 12 carpetas.
 
-## Que mirar especificamente
+## 🔎 Que mirar
 
 ### Criterio tecnico
 
-- `05-postgres-api`
-- `09-multi-service-app`
-- `06-nginx-proxy`
-- `dashboard-control`
+- [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md)
+- [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md)
+- [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md)
+- [dashboard-control/server.js](C:/docker-labs/docker-labs/dashboard-control/server.js)
 
 ### Criterio de producto
 
-- el repositorio no se presenta solo como demos
-- cada entorno principal tiene objetivo y justificacion
-- existe navegacion entre sistemas y capa de entrada comun
+- el repositorio no se vende como demos sueltas
+- los sistemas principales tienen objetivo y relacion entre si
+- existe una entrada operativa comun
 
 ### Criterio documental
 
-- [README.md](C:/docker-labs/docker-labs/README.md)
-- [docs/ARCHITECTURE.md](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
-- [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [README](C:/docker-labs/docker-labs/README.md)
+- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [Project Status](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
 
-## Estado actual
+## 📌 Estado actual
 
-El proyecto esta funcional como workspace local y como activo de portafolio. Aun no pretende ser una solucion productiva final ni una plataforma completamente cerrada, pero ya muestra direccion, criterio y capacidad de ejecucion.
+El proyecto ya funciona como:
 
-## Lectura sugerida
+- workspace local util
+- activo de portafolio tecnico
+- base de evolucion hacia una plataforma mas integrada
 
-Si el tiempo es corto:
+Todavia no intenta ser:
 
-- [README.md](C:/docker-labs/docker-labs/README.md)
-- [FOR_RECRUITERS.md](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
-- [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- un reemplazo completo de Docker Desktop
+- una plataforma productiva final
+- un set de 12 labs totalmente homogeneos
+
+## 📚 Lectura recomendada
+
+- [README](C:/docker-labs/docker-labs/README.md)
+- [For Recruiters](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
+- [Project Status](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)

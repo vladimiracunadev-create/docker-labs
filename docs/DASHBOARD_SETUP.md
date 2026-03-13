@@ -1,39 +1,45 @@
-# Dashboard Setup
+# 🖥️ Dashboard Setup
 
 Guia operativa del `Docker Labs Control Center`.
 
-## Que es
+## 🎯 Objetivo
 
-El panel en `9090` es la consola principal del repositorio.
+El panel en `9090` existe para resolver cuatro problemas:
 
-Resuelve cuatro necesidades:
+- no levantar labs a ciegas
+- ver estado Docker real
+- abrir la entrada correcta de cada sistema
+- saber si Docker tiene capacidad para mas carga
 
-- ver estado real de los labs
-- controlar `docker compose` sin ir carpeta por carpeta
-- abrir el sistema correcto dentro de cada stack
-- estimar si tu equipo y Docker tienen capacidad para levantar mas servicios
+## 📊 Estado del componente
 
-## Arquitectura actual
+| Aspecto | Estado |
+|---|---|
+| Despliegue | 🟢 Dockerizado |
+| Puerto principal | `9090` |
+| Gateway integrado | 🟢 `/control/` en `8085` |
+| Diagnostico de capacidad | 🟢 Disponible |
+| Acciones globales | 🟢 Disponible |
 
-Hoy el panel corre como un contenedor Docker propio.
+## 🧱 Arquitectura actual
 
 Componentes:
 
-1. `dashboard-control/docker-compose.yml`
-2. `dashboard-control/Dockerfile`
-3. `dashboard-control/server.js`
-4. `index.html`, `dashboard.js`, `dashboard.css`
+1. [dashboard-control/docker-compose.yml](C:/docker-labs/docker-labs/dashboard-control/docker-compose.yml)
+2. [dashboard-control/Dockerfile](C:/docker-labs/docker-labs/dashboard-control/Dockerfile)
+3. [dashboard-control/server.js](C:/docker-labs/docker-labs/dashboard-control/server.js)
+4. [index.html](C:/docker-labs/docker-labs/index.html), [dashboard.js](C:/docker-labs/docker-labs/dashboard.js), [dashboard.css](C:/docker-labs/docker-labs/dashboard.css)
 
-## Como funciona
+## ⚙️ Como funciona
 
 El contenedor del panel:
 
 - expone `9090`
-- monta el repositorio para leer archivos y metadata
+- monta el repositorio para leer metadata y documentos
 - incluye `docker cli` y `docker compose`
-- usa el socket Docker para inspeccionar y operar los labs
+- usa el socket Docker para operar labs
 
-## Inicio rapido
+## 🚀 Inicio rapido
 
 ```powershell
 scripts\start-control-center.cmd
@@ -45,14 +51,15 @@ O manualmente:
 docker compose -f dashboard-control\docker-compose.yml up -d --build
 ```
 
-## URLs
+## 🔗 URLs utiles
 
-- `http://localhost:9090`
-- `http://localhost:9090/api/overview`
-- `http://localhost:9090/api/diagnostics`
-- `http://localhost:9090/learning-center.html`
+- [http://localhost:9090](http://localhost:9090)
+- [http://localhost:9090/api/overview](http://localhost:9090/api/overview)
+- [http://localhost:9090/api/diagnostics](http://localhost:9090/api/diagnostics)
+- [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
+- [http://localhost:8085/control/](http://localhost:8085/control/)
 
-## Que muestra el panel
+## 🧠 Que muestra el panel
 
 ### Overview
 
@@ -74,37 +81,36 @@ Cruza dos fuentes:
 - navegador: estimacion del equipo anfitrion
 - Docker: CPU, RAM y consumo real del runtime
 
-### Detalle por lab
+### Acciones por lab
 
-- estado Docker
-- objetivo del entorno
-- health de contenedores
-- accesos reales
-- acciones `start`, `stop`, `restart`, `rebuild`, `logs`
+- `start`
+- `stop`
+- `restart`
+- `rebuild`
+- `logs`
 
-## Acciones globales
+### Acciones globales
 
 - `Levantar repositorio activo`
 - `Bajar todos los Docker`
 - `Eliminar entornos del repo`
 
-## Verificacion tecnica
+## 🔍 Verificacion tecnica
 
 ```powershell
 curl http://localhost:9090/api/overview
 curl http://localhost:9090/api/diagnostics
 ```
 
-## Notas importantes
+## 📝 Notas importantes
 
-- `9090` ya no depende de un proceso Node suelto en una consola
-- el panel se levanta como parte del ecosistema Docker
-- el panel no reemplaza Docker Desktop: lo usa y lo explica mejor
+- `9090` ya no depende de un proceso Node suelto
+- el panel forma parte del ecosistema Docker del repo
+- el panel no reemplaza Docker Desktop: lo usa, lo explica y ayuda a decidir mejor
 
-## Relacion con el gateway
+## 📚 Documentos relacionados
 
-El gateway en `8085` expone tambien:
-
-- `http://localhost:8085/control/`
-
-Eso permite usar la plataforma principal como si fuera un solo producto.
+- [README](C:/docker-labs/docker-labs/README.md)
+- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
+- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [FAQ](C:/docker-labs/docker-labs/FAQ.md)

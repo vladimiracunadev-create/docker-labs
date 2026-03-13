@@ -1,49 +1,44 @@
-# Beginner Guide
+# 🎓 Beginner Guide
 
-Guia pensada para personas que estan comenzando con Docker, Docker Compose y este repositorio.
+Guia pensada para personas que estan empezando con Docker, Docker Compose y este repositorio.
 
-## Que es este repositorio
+## 🧭 Si solo lees una cosa
 
-`docker-labs` es una coleccion de 12 entornos Docker. Cada carpeta representa un caso de uso concreto:
+Empieza asi:
 
-- algunos son sistemas de negocio
-- otros son servicios de infraestructura
-- otros son starters para practicar stacks
+1. levanta el panel en [http://localhost:9090](http://localhost:9090)
+2. revisa el diagnostico del equipo
+3. levanta un solo lab
+4. entra por `Abrir sistema`
+5. cuando termines, baja o elimina el entorno
 
-La idea no es memorizar comandos. La idea es aprender a leer un entorno Docker, entender que resuelve y levantarlo solo cuando lo necesitas.
+Documentos relacionados:
 
-## Como empezar sin perderte
+- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
+- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
 
-La forma mas simple de trabajar es esta:
+## 🧱 Que es este repositorio
 
-1. Levanta solo el panel principal.
-2. Revisa los sistemas activos.
-3. Enciende un lab caso a caso.
-4. Abre el sistema real desde el boton `Abrir sistema`.
-5. Cuando termines, baja o elimina el entorno.
+`docker-labs` es una coleccion de 12 entornos Docker con tres tipos de casos:
 
-Comando recomendado:
+- 🟦 sistemas de negocio
+- 🟨 servicios de infraestructura
+- 🟩 starters para practicar stacks
 
-```powershell
-scripts\start-control-center.cmd
-```
+## 🐳 Docker vs sistema
 
-Entradas utiles:
+Esta es la confusion mas comun al inicio:
 
-- `http://localhost:9090`: panel principal
-- `http://localhost:8085`: gateway unificado cuando `06` esta levantado
-
-## Diferencia entre Docker y el sistema
-
-Esta es la confusion mas comun al inicio.
-
-- Docker: es la capa que levanta contenedores, redes y volumenes.
-- El sistema: es la aplicacion o servicio que corre dentro del contenedor.
+| Concepto | Que significa |
+|---|---|
+| Docker | La capa que levanta contenedores, redes y volumenes |
+| Sistema | La app, API o servicio que corre dentro del contenedor |
 
 Ejemplo:
 
 - `05-postgres-api` puede estar `healthy` en Docker
-- y su sistema real se usa desde `http://localhost:8000`
+- el sistema real se usa desde [http://localhost:8000](http://localhost:8000)
 
 Por eso el panel separa:
 
@@ -51,17 +46,9 @@ Por eso el panel separa:
 - `Control del entorno`
 - `Abrir sistema`
 
-## Flujo recomendado para novatos
+## 🚀 Primer flujo recomendado
 
-### Paso 1. Valida prerequisitos
-
-Necesitas:
-
-- Docker Desktop o Docker Engine con Compose
-- Git
-- 8 GB de RAM como minimo practico
-
-Verificacion:
+### Paso 1. Verifica prerequisitos
 
 ```powershell
 docker --version
@@ -69,7 +56,13 @@ docker compose version
 git --version
 ```
 
-### Paso 2. Inicia el panel
+Necesitas como minimo:
+
+- Docker activo
+- Git
+- 8 GB RAM practicos
+
+### Paso 2. Levanta el panel
 
 ```powershell
 scripts\start-control-center.cmd
@@ -77,36 +70,37 @@ scripts\start-control-center.cmd
 
 ### Paso 3. Entra al panel
 
-Abre `http://localhost:9090`.
+- Control Center: [http://localhost:9090](http://localhost:9090)
+- Learning Center: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 
-### Paso 4. Levanta solo un caso
+### Paso 4. Elige un caso simple
 
-Empieza por uno de estos:
+| Lab | Ideal para aprender |
+|---|---|
+| `01-node-api` | API basica, puertos y contenedor simple |
+| `03-python-api` | Python dockerizado y estructura minima |
+| `05-postgres-api` | App + base de datos + healthchecks |
 
-- `05-postgres-api`: si quieres ver un backend transaccional serio
-- `09-multi-service-app`: si quieres ver portal + backend + base de datos
-- `01-node-api`: si quieres un ejemplo muy simple
+### Paso 5. Observa estas piezas
 
-### Paso 5. Observa las piezas
+Cada vez que levantes un lab, intenta responder:
 
-En cada lab intenta identificar:
-
-- que contenedores levanta
 - que imagen usa
-- que puertos expone
+- que puertos publica
 - que volumen persiste datos
-- cual es la entrada funcional del sistema
+- cuantos contenedores levanta
+- cual es la entrada funcional real
 
-## Que aprender en este repo
+## 📚 Ruta de aprendizaje
 
-### Nivel 1
+### 🟢 Nivel 1
 
 Aprender a:
 
 - levantar y bajar entornos
 - leer `Dockerfile`
 - leer `docker-compose.yml`
-- distinguir imagen, contenedor, puerto y volumen
+- entender puertos y bind mounts
 
 Labs sugeridos:
 
@@ -114,14 +108,13 @@ Labs sugeridos:
 - `03-python-api`
 - `06-nginx-proxy`
 
-### Nivel 2
+### 🟡 Nivel 2
 
 Aprender a:
 
 - conectar app y base de datos
-- usar healthchecks
-- entender redes entre servicios
-- trabajar con dependencias entre contenedores
+- entender healthchecks
+- trabajar con multiples servicios
 
 Labs sugeridos:
 
@@ -129,14 +122,14 @@ Labs sugeridos:
 - `09-multi-service-app`
 - `02-php-lamp`
 
-### Nivel 3
+### 🔴 Nivel 3
 
 Aprender a:
 
 - agregar cache
 - usar mensajeria
-- incorporar observabilidad
-- pensar en plataforma
+- sumar observabilidad
+- pensar como plataforma
 
 Labs sugeridos:
 
@@ -146,88 +139,42 @@ Labs sugeridos:
 - `11-elasticsearch-search`
 - `12-jenkins-ci`
 
-## Recomendacion de hardware
+## 💻 Recomendacion de hardware
 
-### Minimo practico
+| Perfil | CPU | RAM | Disco | Uso recomendado |
+|---|---:|---:|---:|---|
+| Basico | 4 nucleos | 8 GB | 15 GB | Panel + 1 lab |
+| Comodo | 6-8 nucleos | 16 GB | 30 GB SSD | `05 + 06 + 09 + 9090` |
+| Avanzado | 8+ nucleos | 24 GB+ | 40 GB SSD | Plataforma + labs pesados |
 
-- CPU: 4 nucleos
-- RAM: 8 GB
-- Disco libre: 15 GB
+## ⚠️ Errores comunes
 
-Con esto puedes correr:
-
-- el panel principal
-- un lab sencillo a la vez
-
-### Recomendado para trabajar comodo
-
-- CPU: 6 a 8 nucleos
-- RAM: 16 GB
-- Disco libre: 30 GB SSD
-
-Con esto puedes correr:
-
-- `05`
-- `06`
-- `09`
-
-al mismo tiempo, que es hoy la experiencia principal del repositorio.
-
-### Para usar labs pesados
-
-- CPU: 8 nucleos
-- RAM: 24 GB o mas
-- Disco libre: 40 GB SSD
-
-Recomendado si vas a experimentar con:
-
-- `08-prometheus-grafana`
-- `11-elasticsearch-search`
-- `12-jenkins-ci`
-
-## Glosario rapido
-
-- Imagen: plantilla base desde la que se crea un contenedor.
-- Contenedor: instancia en ejecucion de una imagen.
-- Volumen: almacenamiento persistente.
-- Puerto publicado: puerta de entrada desde tu maquina al contenedor.
-- Healthcheck: prueba automatica para saber si un servicio esta listo.
-- Compose: archivo que orquesta varios servicios relacionados.
-
-## Errores comunes
-
-### El panel abre, pero el sistema no
+### El panel abre, pero la app no
 
 Posibles causas:
 
 - el lab no esta levantado
-- el servicio aun esta iniciando
-- otro proceso ya ocupa el puerto
+- el servicio sigue iniciando
+- el puerto esta ocupado
 
-### Docker esta arriba, pero la app se ve fea o vacia
+### Docker esta arriba, pero la interfaz se ve "vacia"
 
-Eso significa que el contenedor existe, pero todavia debes abrir la interfaz correcta del sistema o revisar los datos de ejemplo.
+Eso significa que el contenedor existe, pero aun no abriste la entrada correcta del sistema o faltan datos de ejemplo.
 
 ### Mi equipo se pone lento
 
-Usa el modo caso a caso:
+Usa modo caso a caso:
 
-- deja solo el panel arriba
+- deja `9090` arriba
 - levanta un solo lab
-- baja todo al terminar
+- evita mezclar `08`, `11` y `12`
 
-## Ruta sugerida de aprendizaje
+## ✅ Objetivo de esta guia
 
-1. `01-node-api`
-2. `03-python-api`
-3. `05-postgres-api`
-4. `09-multi-service-app`
-5. `06-nginx-proxy`
-6. `04`, `07`, `08`, `11`, `12`
+Que puedas pasar de:
 
-## Documentos para seguir
+- "solo veo contenedores"
 
-- [INSTALL](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [USER_MANUAL](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [LABS_CATALOG](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
-- [LABS_RUNTIME_REFERENCE](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+a:
+
+- "entiendo que resuelve cada entorno y se cuando conviene levantarlo"

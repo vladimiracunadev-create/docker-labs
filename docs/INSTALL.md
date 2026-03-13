@@ -1,8 +1,22 @@
-# Install Guide
+# 🔧 Install Guide
 
 Guia actualizada para instalar y operar `docker-labs` con foco en la experiencia real del repositorio.
 
-## Requisitos base
+## 📌 Antes de empezar
+
+Este repo no requiere levantar los 12 labs a la vez. El flujo recomendado es:
+
+1. levantar el panel `9090`
+2. revisar capacidad
+3. levantar solo el entorno necesario
+
+Relacion con otros documentos:
+
+- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
+- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+
+## 🧰 Requisitos
 
 ### Software
 
@@ -12,17 +26,17 @@ Guia actualizada para instalar y operar `docker-labs` con foco en la experiencia
 
 ### Hardware recomendado
 
-| Escenario | CPU | RAM | Disco libre |
-|---|---:|---:|---:|
-| Panel `9090` + 1 lab liviano | 4 nucleos | 8 GB | 15 GB |
-| Plataforma principal `05 + 06 + 09 + 9090` | 6 nucleos | 16 GB | 30 GB SSD |
-| Labs pesados `08`, `11`, `12` | 8 nucleos | 24 GB o mas | 40 GB SSD |
+| Escenario | CPU | RAM | Disco libre | Estado recomendado |
+|---|---:|---:|---:|---|
+| Panel `9090` + 1 lab liviano | 4 nucleos | 8 GB | 15 GB | 🟢 Seguro |
+| Plataforma principal `05 + 06 + 09 + 9090` | 6 nucleos | 16 GB | 30 GB SSD | 🟢 Recomendado |
+| Labs pesados `08`, `11`, `12` | 8 nucleos | 24 GB+ | 40 GB SSD | 🟡 Segun carga |
 
-## Instalacion de Docker
+## 🐳 Instalacion de Docker
 
 ### Windows
 
-1. Instala o actualiza WSL 2:
+1. Activa o actualiza WSL 2:
 
 ```powershell
 wsl --install
@@ -30,10 +44,7 @@ wsl --update
 ```
 
 2. Instala Docker Desktop.
-3. Activa la virtualizacion en BIOS si fuera necesario.
-4. Abre Docker Desktop y espera a que quede operativo.
-
-Verificacion:
+3. Verifica que Docker Desktop quede operativo.
 
 ```powershell
 docker --version
@@ -42,7 +53,7 @@ docker compose version
 
 ### macOS
 
-1. Instala Docker Desktop para Apple Silicon o Intel segun corresponda.
+1. Instala Docker Desktop para tu arquitectura.
 2. Abre Docker Desktop.
 3. Verifica:
 
@@ -55,34 +66,21 @@ docker compose version
 
 Instala Docker Engine y el plugin Compose segun tu distribucion.
 
-Verificacion:
-
 ```bash
 docker --version
 docker compose version
 ```
 
-## Clonar el repositorio
+## 📦 Clonar el repositorio
 
 ```bash
 git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 ```
 
-## Modo recomendado de uso
+## 🚀 Levantar el panel principal
 
-No necesitas levantar todos los labs a la vez.
-
-Flujo recomendado:
-
-1. levanta el panel principal
-2. revisa capacidad y estado
-3. levanta un lab o la plataforma principal
-4. baja entornos cuando termines
-
-## Levantar el panel principal
-
-El panel `9090` ahora corre como contenedor Docker propio.
+El panel `9090` corre como contenedor Docker propio.
 
 ```powershell
 scripts\start-control-center.cmd
@@ -90,32 +88,32 @@ scripts\start-control-center.cmd
 
 Entradas:
 
-- `http://localhost:9090`: control center
-- `http://localhost:9090/learning-center.html`: centro de aprendizaje
+- Control Center: [http://localhost:9090](http://localhost:9090)
+- Learning Center: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 
-## Levantar la plataforma principal manualmente
+## 🧱 Levantar la plataforma principal manualmente
 
 ```powershell
+docker compose -f dashboard-control\docker-compose.yml up -d --build
 docker compose -f 05-postgres-api\docker-compose.yml up -d --build
 docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
 docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
-docker compose -f dashboard-control\docker-compose.yml up -d --build
 ```
 
 Entradas:
 
-- `http://localhost:8000`: Inventory Core
-- `http://localhost:8083`: Operations Portal
-- `http://localhost:8085`: Platform Gateway
-- `http://localhost:9090`: Control Center
+- [http://localhost:9090](http://localhost:9090)
+- [http://localhost:8000](http://localhost:8000)
+- [http://localhost:8083](http://localhost:8083)
+- [http://localhost:8085](http://localhost:8085)
 
-## Verificacion inicial
+## ✅ Verificacion inicial
 
 ```powershell
 docker ps
 ```
 
-Debes poder ver, al menos, estos contenedores cuando la plataforma principal esta arriba:
+Debes poder ver:
 
 - `docker_labs_control_center`
 - `inventory_core_api`
@@ -125,7 +123,7 @@ Debes poder ver, al menos, estos contenedores cuando la plataforma principal est
 - `multi_db`
 - `platform_gateway`
 
-## Que hacer si tu equipo es limitado
+## 🧠 Si tu equipo es limitado
 
 ### 8 GB RAM
 
@@ -136,25 +134,21 @@ Debes poder ver, al menos, estos contenedores cuando la plataforma principal est
 ### 16 GB RAM
 
 - usa `05 + 06 + 09 + 9090`
-- agrega un servicio complementario solo si realmente lo necesitas
+- suma un servicio complementario solo cuando tenga sentido
 
 ### 24 GB RAM o mas
 
-- puedes experimentar con observabilidad, busqueda y CI con menos riesgo de saturacion
+- puedes experimentar con observabilidad, busqueda y CI con menos riesgo
 
-## Problemas comunes
+## 🆘 Problemas comunes
 
 ### Docker Desktop abierto pero sin respuesta
-
-Valida:
 
 ```powershell
 docker info
 ```
 
 ### El panel `9090` no abre
-
-Levanta de nuevo:
 
 ```powershell
 docker compose -f dashboard-control\docker-compose.yml up -d --build
@@ -163,9 +157,3 @@ docker compose -f dashboard-control\docker-compose.yml up -d --build
 ### El gateway `8085` abre pero no enruta
 
 Revisa que `05`, `09` y `9090` esten arriba.
-
-## Documentos relacionados
-
-- [BEGINNERS_GUIDE](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [DASHBOARD_SETUP](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
-- [LABS_RUNTIME_REFERENCE](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)

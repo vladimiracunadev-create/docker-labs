@@ -1,148 +1,153 @@
 # Docker Labs
 
-Repositorio de entornos Docker orientados a aprendizaje practico, prototipado y construccion de sistemas modulares.
+> Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y evolucion de productos.
 
-Hoy el proyecto ya no se entiende solo como una lista de laboratorios aislados. La direccion actual del repositorio es una plataforma compuesta por:
+## ✨ Resumen
 
-- un core transaccional
-- una capa de experiencia para operadores
-- servicios de infraestructura que amplian la solucion
+`docker-labs` ya no se presenta solo como una coleccion de ejemplos aislados. Hoy funciona como un workspace compuesto por:
 
-## Estado actual
+- 🧠 un core transaccional
+- 🖥️ una capa operativa para usuarios y operadores
+- 🌐 una puerta de entrada unificada
+- 🧰 servicios de infraestructura para extender capacidades
 
-La columna vertebral del repositorio es esta:
+## 📊 Estado actual
 
-- [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md): `Inventory Core`, backend transaccional para clientes, productos y pedidos
-- [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md): `Operations Portal`, experiencia operativa sobre el core
-- [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md): futura capa de gateway para unificar accesos
+| Componente | Estado | Rol | Entrada |
+|---|---|---|---|
+| `05-postgres-api` | 🟢 Activo | Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| `09-multi-service-app` | 🟢 Activo | Portal operativo | [http://localhost:8083](http://localhost:8083) |
+| `06-nginx-proxy` | 🟢 Activo | Gateway | [http://localhost:8085](http://localhost:8085) |
+| `dashboard-control` | 🟢 Activo | Control Center | [http://localhost:9090](http://localhost:9090) |
 
-El resto de carpetas sigue siendo util, pero hoy funcionan mejor como piezas complementarias o de aprendizaje que como sistemas principales.
+### Estado editorial
 
-## Inicio rapido
+- 🟢 Documentacion troncal alineada con el sistema real
+- 🟢 Panel principal dockerizado
+- 🟢 Diagnostico de capacidad del equipo y de Docker integrado
+- 🟡 Labs secundarios aun en proceso de estandarizacion fina
+
+## 🚀 Inicio rapido
 
 ### Opcion recomendada
-
-1. Levanta el panel principal:
 
 ```powershell
 scripts\start-control-center.cmd
 ```
 
-2. Abre el menu principal:
+Despues abre:
 
-[http://localhost:9090](http://localhost:9090)
-
-3. Desde el panel, trabaja primero con:
-
-- `Inventory Core`
-- `Operations Portal`
+- Control Center: [http://localhost:9090](http://localhost:9090)
+- Learning Center: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 
 ### Opcion manual
 
 ```powershell
-cd 05-postgres-api
-docker compose up -d --build
-
-cd ..\09-multi-service-app
-docker compose up -d --build
+docker compose -f dashboard-control\docker-compose.yml up -d --build
+docker compose -f 05-postgres-api\docker-compose.yml up -d --build
+docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
+docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 ```
 
-Entradas principales:
+## 🧭 Como leer este repositorio
 
-- Panel principal: [http://localhost:9090](http://localhost:9090)
-- Centro de aprendizaje: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
-- Inventory Core: [http://localhost:8000](http://localhost:8000)
-- Swagger del core: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Operations Portal: [http://localhost:8083](http://localhost:8083)
+### 1. Sistemas principales
 
-## Como leer este repositorio
+Estos son los entornos que ya cuentan una historia de producto coherente:
 
-### Sistemas principales
-
-Son los entornos que ya cuentan una historia de producto clara:
-
-| Carpeta | Rol | Tipo |
+| Carpeta | Tipo | Objetivo |
 |---|---|---|
-| `05-postgres-api` | Core transaccional | Plataforma |
-| `09-multi-service-app` | Portal operativo | Plataforma |
-| `06-nginx-proxy` | Gateway de entrada | Plataforma |
+| [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Plataforma | Resolver clientes, productos, pedidos y stock |
+| [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Plataforma | Dar una experiencia operativa sobre el core |
+| [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
+| [dashboard-control](C:/docker-labs/docker-labs/dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
 
-### Servicios de infraestructura
+### 2. Servicios de infraestructura
 
-Amplian las capacidades de los sistemas principales:
+Amplian las capacidades de la plataforma:
 
-| Carpeta | Capacidad |
-|---|---|
-| `04-redis-cache` | cache y performance |
-| `07-rabbitmq-messaging` | mensajeria asincrona |
-| `08-prometheus-grafana` | monitoreo y observabilidad |
-| `11-elasticsearch-search` | busqueda e indexacion |
-| `12-jenkins-ci` | automatizacion y entrega |
+| Carpeta | Capacidad | Estado narrativo |
+|---|---|---|
+| `04-redis-cache` | Cache y performance | Complementario |
+| `07-rabbitmq-messaging` | Mensajeria asincrona | Complementario |
+| `08-prometheus-grafana` | Observabilidad | Complementario |
+| `11-elasticsearch-search` | Busqueda | Complementario |
+| `12-jenkins-ci` | CI y automatizacion | Complementario |
 
-### Starters y demos
+### 3. Starters y demos
 
-Sirven para aprender stacks o como base para futuros productos:
+Buenos para aprender stacks o iniciar productos mas pequenos:
 
 | Carpeta | Enfoque |
 |---|---|
 | `01-node-api` | API REST inicial |
-| `02-php-lamp` | administracion clasica |
+| `02-php-lamp` | Entorno clasico administrativo |
 | `03-python-api` | API Python sencilla |
-| `10-go-api` | servicio ligero y rapido |
+| `10-go-api` | Servicio ligero y rapido |
 
-## Que mejora este enfoque
+## 🖥️ Control Center
 
-Este repositorio gana valor cuando cada carpeta deja de ser "un Docker mas" y pasa a ser:
+El panel principal en [http://localhost:9090](http://localhost:9090):
 
-- un sistema con objetivo claro
+- muestra estado Docker real
+- controla `docker compose` por lab
+- distingue entre `Estado Docker` y `Abrir sistema`
+- lee capacidad del host y de Docker
+- recomienda que conviene levantar segun memoria y carga actuales
+
+### Caracteristicas destacadas
+
+- 🐳 corre como contenedor Docker propio
+- 🔎 expone `GET /api/overview` y `GET /api/diagnostics`
+- 🧠 diagnostica RAM asignada a Docker y carga actual
+- 🧹 permite `Bajar todos los Docker` y `Eliminar entornos del repo`
+
+## 📚 Documentacion recomendada
+
+### Navegacion principal
+
+- [Documentation Index](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
+- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
+- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
+- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+
+### Referencia tecnica
+
+- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [Labs Catalog](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+
+### Estado y roadmap
+
+- [Project Status](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [Changelog](C:/docker-labs/docker-labs/CHANGELOG.md)
+- [FAQ](C:/docker-labs/docker-labs/FAQ.md)
+
+### Lectura externa
+
+- [For Recruiters](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
+- [Developing](C:/docker-labs/docker-labs/DEVELOPING.md)
+- [Support](C:/docker-labs/docker-labs/SUPPORT.md)
+
+## 🎯 Que mejora este enfoque
+
+Este repositorio gana valor cuando cada carpeta deja de ser "otro Docker" y pasa a ser:
+
+- un sistema con objetivo
 - un entorno instalable
 - una pieza de una plataforma mayor
-- una base real para aprendizaje y evolucion
+- una base de aprendizaje reutilizable
 
-## Control Center
+## 🔭 Direccion recomendada
 
-El panel principal en [http://localhost:9090](http://localhost:9090) ahora separa:
+1. Consolidar `05`, `09`, `06` y `9090` como experiencia principal.
+2. Estandarizar metadata y documentacion del resto de labs.
+3. Reforzar pruebas, CI y observabilidad.
+4. Convertir mas labs en capacidades integradas, no en demos aisladas.
 
-- estado Docker
-- control del entorno
-- apertura del sistema real
-
-Tambien destaca los sistemas principales del repositorio y muestra su rol dentro de la plataforma.
-
-Desde ahora el panel tambien corre como contenedor Docker propio en `9090`, para que el workspace se gobierne con la misma logica que el resto de los servicios.
-
-Tecnica usada:
-
-- el panel corre en su propio contenedor
-- el contenedor incluye `docker cli` y `docker compose`
-- se conecta al daemon Docker mediante el socket compartido
-- monta el repositorio para leer documentos, manifests y archivos Compose
-
-## Documentacion recomendada
-
-- [docs/ARCHITECTURE.md](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
-- [docs/BEGINNERS_GUIDE.md](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [docs/USER_MANUAL.md](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [docs/LABS_CATALOG.md](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
-- [docs/LABS_RUNTIME_REFERENCE.md](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
-- [docs/DASHBOARD_SETUP.md](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
-- [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
-- [CHANGELOG.md](C:/docker-labs/docker-labs/CHANGELOG.md)
-- [DEVELOPING.md](C:/docker-labs/docker-labs/DEVELOPING.md)
-- [SUPPORT.md](C:/docker-labs/docker-labs/SUPPORT.md)
-- [FAQ.md](C:/docker-labs/docker-labs/FAQ.md)
-- [FOR_RECRUITERS.md](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
-- [PROJECT_STATUS.md](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
-
-## Siguiente direccion
-
-La mejora recomendada para el repo es:
-
-1. consolidar `05`, `09` y `06` como experiencia de plataforma
-2. estandarizar metadata y navegacion entre entornos
-3. reforzar tests, CI y observabilidad
-4. despues elevar el resto de labs para que encajen en la misma narrativa
-
-## Licencia
+## 📄 Licencia
 
 Proyecto bajo [Apache License 2.0](C:/docker-labs/docker-labs/LICENSE).
