@@ -27,6 +27,20 @@
 - 🟢 Diagnostico de capacidad del equipo y de Docker integrado
 - 🟡 Labs secundarios aun en proceso de estandarizacion fina
 
+### Estado del workspace
+
+| Capacidad | Estado | Detalle |
+|---|---|---|
+| Panel dockerizado | 🟢 | `dashboard-control` corre en `9090` como contenedor |
+| Gateway funcional | 🟢 | `06-nginx-proxy` enruta hacia panel, core y portal |
+| Core transaccional | 🟢 | `05-postgres-api` expone sistema, Swagger y healthchecks |
+| Portal operativo | 🟢 | `09-multi-service-app` consume `05` y agrega capa de uso |
+| Diagnostico de capacidad | 🟢 | `GET /api/diagnostics` cruza host estimado y runtime Docker |
+| Learning Center | 🟢 | Vista HTML integrada en `9090/learning-center.html` |
+| CI base | 🟢 | Workflow Compose en [.github/workflows/ci.yml](C:/docker-labs/docker-labs/.github/workflows/ci.yml) |
+| Documentacion troncal | 🟢 | README, instalacion, dashboard, manual y runtime alineados |
+| Estandarizacion de labs secundarios | 🟡 | Aun falta elevar todos los `README.md` al mismo nivel editorial |
+
 ## 🚀 Inicio rapido
 
 ### Opcion recomendada
@@ -106,31 +120,39 @@ El panel principal en [http://localhost:9090](http://localhost:9090):
 
 ### Navegacion principal
 
-- [Documentation Index](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
-- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+| Documento | Para que sirve | Cuando leerlo |
+|---|---|---|
+| [Documentation Index](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md) | Mapa general de la documentacion | Cuando no sabes por donde empezar |
+| [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md) | Ruta simple para novatos | Si estas empezando con Docker o con este repo |
+| [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md) | Instalacion, requisitos y arranque | Si vas a preparar el entorno desde cero |
+| [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md) | Operacion diaria del workspace | Si ya tienes Docker andando y quieres usar el repo |
+| [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) | Arquitectura y uso del `9090` | Si quieres entender o mantener el panel |
 
 ### Referencia tecnica
 
-- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
-- [Labs Catalog](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
-- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+| Documento | Para que sirve | Enlace |
+|---|---|---|
+| Architecture | Explica la arquitectura general y la intencion del repo | [Abrir](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md) |
+| Labs Catalog | Cataloga los 12 labs y su rol | [Abrir](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md) |
+| Labs Runtime Reference | Resume imagenes, tamanos y requisitos de los 12 casos | [Abrir](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md) |
+| Technical Specs | Resume stacks, endpoints y especificaciones clave | [Abrir](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md) |
 
 ### Estado y roadmap
 
-- [Project Status](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
-- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
-- [Changelog](C:/docker-labs/docker-labs/CHANGELOG.md)
-- [FAQ](C:/docker-labs/docker-labs/FAQ.md)
+| Documento | Para que sirve | Enlace |
+|---|---|---|
+| Project Status | Muestra que esta consolidado y que sigue en evolucion | [Abrir](C:/docker-labs/docker-labs/PROJECT_STATUS.md) |
+| Platform Roadmap | Explica la direccion futura del workspace | [Abrir](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md) |
+| Changelog | Registra cambios relevantes del proyecto | [Abrir](C:/docker-labs/docker-labs/CHANGELOG.md) |
+| FAQ | Responde dudas frecuentes de operacion | [Abrir](C:/docker-labs/docker-labs/FAQ.md) |
 
 ### Lectura externa
 
-- [For Recruiters](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
-- [Developing](C:/docker-labs/docker-labs/DEVELOPING.md)
-- [Support](C:/docker-labs/docker-labs/SUPPORT.md)
+| Documento | Para quien | Enlace |
+|---|---|---|
+| For Recruiters | Reclutadores y evaluadores tecnicos | [Abrir](C:/docker-labs/docker-labs/FOR_RECRUITERS.md) |
+| Developing | Quien vaya a extender o mantener el repo | [Abrir](C:/docker-labs/docker-labs/DEVELOPING.md) |
+| Support | Quien necesite ayuda o criterios de soporte | [Abrir](C:/docker-labs/docker-labs/SUPPORT.md) |
 
 ## 🎯 Que mejora este enfoque
 
