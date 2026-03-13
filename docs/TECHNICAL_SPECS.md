@@ -154,6 +154,41 @@ Werkzeug==2.3.0
 
 ---
 
+## 05-postgres-api: Especificaciones
+
+### Imagen Base
+- **Base**: `python:3.12-slim`
+- **Python**: 3.12
+- **DB**: `postgres:15`
+
+### Dependencias
+
+```txt
+fastapi==0.104.1
+uvicorn==0.24.0
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+email-validator==2.2.0
+```
+
+### Variables de Entorno
+
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `POSTGRES_DB` | `inventory` | Base de datos principal |
+| `POSTGRES_USER` | `postgres` | Usuario de PostgreSQL |
+| `POSTGRES_PASSWORD` | `postgres` | Password de PostgreSQL |
+| `DATABASE_URL` | `postgresql://postgres:postgres@postgres:5432/inventory` | Conexion del API |
+
+### Contrato Operativo
+
+- `GET /health`: liveness
+- `GET /ready`: readiness contra PostgreSQL
+- `GET /summary`: resumen operativo
+- entidades: `customers`, `products`, `orders`
+
+---
+
 ## 📋 Estándares de Código
 
 ### JavaScript (Node.js)
@@ -350,6 +385,8 @@ Disk image size: 20 GB
 | 02-php-lamp | MariaDB | (interno) | 3306 |
 | 02-php-lamp | phpMyAdmin | 8081 | 80 |
 | 03-python-api | Web | 5000 | 5000 |
+| 05-postgres-api | API | 8000 | 8000 |
+| 05-postgres-api | PostgreSQL | 5432 | 5432 |
 
 **Conflictos comunes**:
 - Puerto `3000`: Usado por macOS AirPlay

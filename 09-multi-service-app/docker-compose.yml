@@ -3,22 +3,45 @@ services:
     image: nginx:alpine
     container_name: multi_frontend
     ports:
-      - "8083:80" # Cambiado para evitar conflicto con 06-nginx-proxy
+      - "8083:80"
     volumes:
       - ./frontend/index.html:/usr/share/nginx/html/index.html
+    depends_on:
+      backend:
+        condition: service_healthy
 
   backend:
-    image: node:20-alpine
+    build: ./backend
     container_name: multi_backend
     ports:
-      - "3003:3000" # Cambiado para evitar conflicto con grafana en 08-prometheus-grafana
-    volumes:
-      - ./backend:/app
-    working_dir: /app
-    command: sh -c "npm install && npm start"
+      - "3003:3000"
+    environment:
+      PORT: 3000
+      INVENTORY_API_BASE_URL: http://host.docker.internal:8000
+      MONGODB_URL: mongodb://db:27017/operations_portal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
 
   db:
     image: mongo:7
     container_name: multi_db
     ports:
       - "27017:27017"
+    volumes:
+      - multi_db_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.adminCommand('ping').ok\" | grep 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  multi_db_data:

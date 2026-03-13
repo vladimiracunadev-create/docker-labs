@@ -1,207 +1,143 @@
-# Configuración del Dashboard de Docker Labs
+# Control Center Setup
 
-Este documento explica cómo configurar y ejecutar el dashboard completo de Docker Labs, que permite ejecutar todos los laboratorios simultáneamente en un entorno Docker unificado.
+Esta guia documenta el nuevo panel principal de `docker-labs`: un control center web que permite inspeccionar el estado real de los laboratorios y ejecutar acciones Docker desde una sola interfaz.
 
-## 📋 Requisitos Previos
+## Objetivo
 
-- **Docker y Docker Compose**: Versión 20+ recomendada. Instala desde [docker.com](https://www.docker.com/).
-- **Sistema Operativo**: Windows, macOS o Linux con soporte para Docker Desktop.
-- **Recursos**: Mínimo 8 GB RAM, 4 CPU cores. Recomendado 16 GB RAM para mejor rendimiento.
-- **Puertos libres**: Asegúrate de que los siguientes puertos no estén en uso:
-  - 9090 (Dashboard principal)
-  - 3000, 3001, 5000, 8000, 8080, 8081, 8082
-  - 3307, 5433, 5672, 15672
+El panel existe para resolver tres problemas del repositorio:
 
-## 🚀 Inicio Rápido
+- evitar levantar labs a ciegas desde terminal
+- centralizar estado, accesos y logs
+- transformar el repositorio en una plataforma operable, no solo en una coleccion de ejemplos
 
-### 1. Clonar el Repositorio
+## Como Funciona
 
-```bash
-git clone https://github.com/tu-usuario/docker-labs.git
-cd docker-labs
+El control center tiene dos capas:
+
+1. `index.html` como interfaz principal
+2. `dashboard-control/server.js` como API local que ejecuta `docker compose`
+
+El backend local:
+
+- descubre servicios por `docker compose config --services`
+- consulta contenedores por `docker compose ps --format json`
+- ejecuta `up`, `down`, `restart` y `logs`
+- devuelve un overview agregado para la web
+
+## Requisitos
+
+- Docker Desktop o Docker Engine activo
+- Node.js 20+ disponible en la maquina
+- permisos suficientes para que el proceso local pueda ejecutar `docker`
+
+### Nota Importante para Windows
+
+Si Docker en tu equipo requiere privilegios elevados, inicia el control center desde una terminal con permisos equivalentes. El frontend puede abrirse normalmente en el navegador, pero el backend necesita el mismo nivel de acceso que tu cliente Docker.
+
+## Inicio Rapido
+
+### Windows
+
+```bat
+cd C:\docker-labs\docker-labs
+scripts\start-control-center.cmd
 ```
 
-### 2. Ejecutar el Dashboard Completo
+### macOS / Linux / PowerShell
 
 ```bash
-docker-compose -f docker-compose-dashboard-simple.yml up -d --build
+cd /ruta/al/repositorio
+node dashboard-control/server.js
 ```
 
-Este comando:
-- Construirá todas las imágenes necesarias (primera ejecución toma tiempo).
-- Iniciará todos los contenedores en segundo plano.
-- Configurará redes y volúmenes automáticamente.
+Luego abre:
 
-### 3. Acceder al Dashboard
+- [http://localhost:9090](http://localhost:9090)
 
-Abre tu navegador en: **http://localhost:9090**
+## Funciones Disponibles
 
-Verás una interfaz con tarjetas para cada laboratorio, mostrando su estado (activo/inactivo) y enlaces directos.
+El panel permite:
 
-## 📚 Laboratorios Incluidos
+- listar todos los labs del repositorio
+- ver estado `healthy`, `running`, `stopped` o `degraded`
+- abrir URLs publicadas por cada lab
+- levantar un lab individual
+- reiniciar un lab
+- detener un lab
+- reconstruir un lab con `--build`
+- inspeccionar logs recientes
+- revisar un resumen global del estado del repositorio
 
-El dashboard incluye los siguientes laboratorios, todos ejecutándose simultáneamente:
+## Flujo Recomendado
 
-| Lab | Descripción | Puertos | Estado |
-|-----|-------------|---------|--------|
-| 01-node-api | API REST básica con Node.js | 3000 | ✅ Activo |
-| 02-php-lamp | Stack LAMP completo | 8081 (Web), 8082 (phpMyAdmin) | ✅ Activo |
-| 03-python-api | API REST con Flask | 5000 | ✅ Activo |
-| 04-redis-cache | API con caching Redis | 3001 | ✅ Activo |
-| 05-postgres-api | API con PostgreSQL | 8000 | ✅ Activo |
-| 06-nginx-proxy | Reverse proxy con balanceo | 8082 | ✅ Activo |
-| 07-rabbitmq-messaging | Mensajería con RabbitMQ | 5672 (AMQP), 15672 (Management) | ✅ Activo |
-| 08-prometheus-grafana | Monitoreo con Prometheus y Grafana | 9090 (Prometheus), 3002 (Grafana) | ✅ Activo |
-| 09-multi-service-app | App full-stack React/Node.js/MongoDB | 8083 (Frontend), 3003 (Backend) | ✅ Activo |
-| 10-go-api | API REST en Go | 8084 | ✅ Activo |
-| 11-elasticsearch-search | Búsqueda con Elasticsearch | 8001 (API), 9200 (ES) | ✅ Activo |
-| 12-jenkins-ci | CI/CD con Jenkins | 8085 (Web), 50001 (Slave) | ✅ Activo |
+1. abre el control center
+2. revisa el overview de estado
+3. inicia un laboratorio puntual
+4. valida servicios y healthchecks desde el panel lateral
+5. abre el servicio en su URL publicada
+6. usa logs cuando un stack no quede saludable
 
-## Configuración del entorno PHP LAMP
+## Arquitectura del Control Center
 
-El entorno PHP LAMP incluye los siguientes servicios:
+```mermaid
+flowchart LR
+    A[Browser] --> B[index.html]
+    B --> C[dashboard-control/server.js]
+    C --> D[docker compose]
+    D --> E[Lab Containers]
+```
 
-1. **Web**:
-   - Imagen base: `php:8.3-apache`
-   - Extensiones instaladas: `pdo`, `pdo_mysql`, `mysqli`
-   - Puerto mapeado: `8081:80`
-   - Volumen: `./src:/var/www/html`
+## Verificacion
 
-2. **Base de datos (MariaDB)**:
-   - Imagen: `mariadb:11`
-   - Puerto mapeado: `3307:3306`
-   - Variables de entorno:
-     - `MARIADB_DATABASE`: `appdb`
-     - `MARIADB_USER`: `appuser`
-     - `MARIADB_PASSWORD`: `apppass`
-     - `MARIADB_ROOT_PASSWORD`: `rootpass`
-
-3. **phpMyAdmin**:
-   - Imagen: `phpmyadmin:latest`
-   - Puerto mapeado: `8082:80`
-   - Variables de entorno:
-     - `PMA_HOST`: `db`
-     - `PMA_PORT`: `3306`
-
-### Pasos para iniciar el entorno:
-
-1. Asegúrate de tener Docker y Docker Compose instalados.
-2. Navega al directorio `02-php-lamp`.
-3. Crea el archivo `.env` con las siguientes variables:
-
-   ```dotenv
-   DB_NAME=appdb
-   DB_USER=appuser
-   DB_PASS=apppass
-   DB_ROOT=rootpass
-   ```
-
-4. Ejecuta los siguientes comandos:
-
-   ```bash
-   docker-compose down
-   docker-compose up -d
-   ```
-
-5. Accede a los servicios:
-   - Aplicación web: [http://localhost:8081](http://localhost:8081)
-   - phpMyAdmin: [http://localhost:8082](http://localhost:8082)
-
-6. Para detener los servicios, ejecuta:
-
-   ```bash
-   docker-compose down
-   ```
-
-## 🔍 Verificación de Estado
-
-### Contenedores Activos
+### API del panel
 
 ```bash
-docker ps
+curl http://localhost:9090/api/overview
 ```
 
-Deberías ver ~15 contenedores corriendo, todos con nombres que empiezan por `dashboard-`.
-
-### Logs de un Servicio Específico
+### Accion remota sobre un lab
 
 ```bash
-docker-compose -f docker-compose-dashboard-simple.yml logs [nombre-servicio]
+curl -X POST http://localhost:9090/api/labs/05-postgres-api/start ^
+  -H "Content-Type: application/json" ^
+  -d "{}"
 ```
 
-Ejemplo:
+### Logs de un lab
+
 ```bash
-docker-compose -f docker-compose-dashboard-simple.yml logs node-api
+curl -X POST http://localhost:9090/api/labs/05-postgres-api/logs ^
+  -H "Content-Type: application/json" ^
+  -d "{\"tail\":40}"
 ```
 
-### Healthchecks
+## Troubleshooting
 
-Cada servicio tiene healthchecks automáticos. El dashboard muestra el estado en tiempo real.
+### El panel carga pero no puede controlar Docker
 
-## 🛠️ Troubleshooting
+Causa probable:
+- el proceso Node no tiene el mismo nivel de permisos que Docker
 
-### Problema: "Port already in use"
+Solucion:
+- reinicia el backend del panel con permisos adecuados
 
-**Solución**: Detén otros servicios que usen los puertos requeridos, o modifica los puertos en `docker-compose-dashboard-simple.yml`.
+### Puerto 9090 ocupado
 
-### Problema: Contenedor no inicia
+Solucion:
+- libera el puerto, o ejecuta el servidor con otra variable:
 
-**Solución**:
-1. Verifica logs: `docker-compose -f docker-compose-dashboard-simple.yml logs [servicio]`
-2. Reinicia: `docker-compose -f docker-compose-dashboard-simple.yml restart [servicio]`
-3. Reconstruye: `docker-compose -f docker-compose-dashboard-simple.yml up -d --build [servicio]`
-
-### Problema: Lentitud o alto uso de recursos
-
-**Solución**:
-- Ejecuta menos labs simultáneamente comentando servicios en el compose.
-- Aumenta recursos de Docker Desktop (RAM/CPU).
-- Usa `docker system prune` para limpiar imágenes no usadas.
-
-### Problema: Dashboard no carga
-
-**Solución**:
-- Verifica que el contenedor `docker-labs-dashboard` esté corriendo.
-- Accede directamente a http://localhost:9090
-- Revisa logs del dashboard.
-
-### Problema: API no responde
-
-**Solución**:
-- Verifica que la base de datos correspondiente esté healthy (ej: postgres-db).
-- Usa `curl` para probar: `curl http://localhost:[puerto]/health`
-
-## 🏗️ Arquitectura
-
-- **Red**: Todos los contenedores comparten la red `docker-labs_default`.
-- **Volúmenes**: Datos persistentes para bases de datos (MariaDB, PostgreSQL, Redis).
-- **Healthchecks**: Automáticos para servicios críticos (bases de datos, APIs).
-- **Dependencias**: Servicios esperan a sus dependencias (ej: APIs esperan a DBs).
-
-## 📝 Desarrollo y Contribución
-
-- **Agregar nuevo lab**: Crea carpeta en raíz, actualiza `docker-compose-dashboard-simple.yml`, `index.html` y este documento.
-- **Modificar configuración**: Edita archivos en `docker-compose-dashboard-simple.yml`.
-- **Testing**: Ejecuta `docker-compose -f docker-compose-dashboard-simple.yml up --build` para probar cambios.
-
-## 🔄 Actualizaciones
-
-Para actualizar el entorno:
 ```bash
-git pull
-docker-compose -f docker-compose-dashboard-simple.yml down
-docker-compose -f docker-compose-dashboard-simple.yml up -d --build
+DASHBOARD_PORT=9191 node dashboard-control/server.js
 ```
 
-## 📞 Soporte
+### Un lab aparece como `stopped` aunque exista su compose
 
-Si encuentras problemas:
-1. Revisa esta documentación.
-2. Verifica logs de contenedores.
-3. Abre un issue en el repositorio con detalles del error.
+Eso significa que el compose fue leido correctamente, pero no hay contenedores activos en ese proyecto.
 
-¡Disfruta explorando Docker Labs! 🐳
+### Un lab aparece como `degraded`
 
-# Actualización menor para probar GitHub Actions
+Eso significa que hay contenedores corriendo, pero con healthcheck no saludable o en estado parcial.
 
-Este cambio es para verificar que los workflows de GitHub Actions se ejecuten correctamente.
+## Relacion con el Dashboard Legacy
+
+Los archivos `docker-compose-dashboard*.yml` y la configuracion Nginx siguen en el repositorio como referencia historica. El flujo recomendado para operar el proyecto ahora es el control center local, porque puede ejecutar acciones reales sobre Docker y no solo mostrar un HTML estatico.

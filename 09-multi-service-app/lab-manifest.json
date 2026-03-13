@@ -1,0 +1,13 @@
+{
+  "featured": true,
+  "category": "platform",
+  "goal": "Convertir el backend del laboratorio 05 en una experiencia operativa visible para usuarios finales.",
+  "primaryEntryLabel": "Portal operativo",
+  "recommendedActions": [
+    "Abrir el portal para revisar el resumen operacional.",
+    "Usar las entradas al core para navegar entre portal y backend.",
+    "Crear notas en la watchlist para probar persistencia en MongoDB."
+  ],
+  "relatedLabs": ["05-postgres-api", "06-nginx-proxy"],
+  "systemRole": "Capa de experiencia"
+}

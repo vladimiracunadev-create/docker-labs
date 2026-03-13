@@ -1,9 +1,10 @@
 {
-  "name": "multi-backend",
+  "name": "operations-portal-backend",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^8.9.5"
   }
 }

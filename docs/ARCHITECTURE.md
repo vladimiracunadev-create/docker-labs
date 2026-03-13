@@ -282,6 +282,74 @@ services:
 
 ---
 
+## 05-postgres-api: Arquitectura
+
+### Proposito
+
+`05-postgres-api` se diseno como un servicio central de negocio para el repositorio. Su rol es demostrar como empaquetar un backend transaccional con Docker cuando existen relaciones entre entidades, reglas de stock y operaciones consistentes.
+
+### Diagrama de Componentes
+
+```mermaid
+flowchart LR
+    A[Client or Frontend] -->|HTTP :8000| B[FastAPI Container]
+    B --> C[Inventory Core]
+    C --> D[(PostgreSQL 15)]
+    D --> E[(postgres_data volume)]
+```
+
+### Responsabilidades
+
+| Componente | Responsabilidad |
+|------------|-----------------|
+| FastAPI app | Exponer contratos HTTP y validar datos |
+| SQLAlchemy | Persistencia y modelo relacional |
+| PostgreSQL | Integridad, transacciones y consulta estructurada |
+| Volume `postgres_data` | Persistencia local del inventario |
+
+### Flujo de Negocio
+
+1. El servicio inicia y verifica conectividad con PostgreSQL.
+2. Se crean tablas base y seed inicial.
+3. Los clientes y productos se registran por API.
+4. Un pedido confirmado descuenta stock.
+5. Un pedido cancelado devuelve stock al catalogo.
+
+---
+
+## Arquitectura de Plataforma Actual
+
+El repositorio esta evolucionando desde labs independientes hacia una plataforma modular compuesta por sistemas principales y capacidades de soporte.
+
+### Sistemas principales
+
+- `05-postgres-api`: core transaccional
+- `09-multi-service-app`: portal operativo
+- `06-nginx-proxy`: futura capa de entrada comun
+
+### Lectura recomendada
+
+1. `05` resuelve la verdad transaccional del negocio.
+2. `09` vuelve visible esa operacion para usuarios finales.
+3. `06` puede unificar accesos cuando la plataforma pase de puertos sueltos a una experiencia integrada.
+
+### Mapa conceptual
+
+```mermaid
+flowchart LR
+    A["Control Center"] --> B["05 Inventory Core"]
+    A --> C["09 Operations Portal"]
+    B --> C
+    D["06 Gateway"] -. integra .-> B
+    D -. integra .-> C
+    E["Infra Labs"] -. complementan .-> B
+    E -. complementan .-> C
+```
+
+Este modelo ayuda a que cada carpeta tenga un rol claro dentro del repositorio y evita que el proyecto se perciba como una suma desordenada de demos.
+
+---
+
 ## 🌐 Redes Docker
 
 Cada `docker-compose.yml` crea una red privada automáticamente:

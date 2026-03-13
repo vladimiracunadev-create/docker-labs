@@ -1,10 +1,282 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Multi-Service App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Portal</title>
+    <style>
+        :root {
+            --card: rgba(255, 252, 246, 0.92);
+            --text: #17212b;
+            --muted: #5e6976;
+            --accent: #c8632f;
+            --line: rgba(23, 33, 43, 0.12);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(200, 99, 47, 0.2), transparent 28%),
+                linear-gradient(180deg, #faf5ec 0%, #efe6d9 100%);
+        }
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 18px 36px;
+        }
+        .hero, .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: 0 14px 32px rgba(40, 28, 15, 0.08);
+        }
+        .hero { padding: 28px; margin-bottom: 20px; }
+        .hero h1 { margin: 0 0 10px; font-size: clamp(2rem, 5vw, 3.6rem); line-height: .94; }
+        .hero p, .muted { color: var(--muted); }
+        .metrics, .layout { display: grid; gap: 16px; }
+        .metrics { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 20px; }
+        .metric, .card { padding: 18px; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; margin-top: 8px; }
+        .layout { grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.8fr); }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .stack, .list { display: grid; gap: 16px; }
+        .item {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,.72);
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.8);
+            border: 1px solid var(--line);
+            font-size: .85rem;
+            margin-right: 8px;
+        }
+        button, select, textarea {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            padding: 12px 14px;
+            font: inherit;
+        }
+        button { background: var(--accent); color: white; cursor: pointer; }
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 220px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            text-decoration: none;
+            border: 1px solid transparent;
+            background: var(--accent);
+            color: white;
+        }
+        .link-button.secondary {
+            background: transparent;
+            color: var(--text);
+            border-color: var(--line);
+        }
+        button.secondary { background: transparent; color: var(--text); }
+        textarea { min-height: 100px; resize: vertical; }
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
-    <h1>Frontend OK ✅</h1>
-    <p>Conecta al backend en /api</p>
+    <main>
+        <section class="hero">
+            <span class="tag">Operations Portal</span>
+            <h1>Inventory Core visibility for operators.</h1>
+            <p>
+                Este portal toma a `05-postgres-api` como sistema transaccional y agrega una capa operacional:
+                resumen comercial, alertas de stock, pedidos recientes y watchlist persistida en MongoDB.
+            </p>
+            <div class="actions">
+                <a class="link-button" href="http://localhost:9090">Volver al menu principal</a>
+                <a class="link-button secondary" href="http://localhost:8000">Abrir Inventory Core</a>
+                <a class="link-button secondary" href="http://localhost:8000/docs">Abrir Swagger del core</a>
+            </div>
+            <div class="metrics">
+                <div class="card"><div class="muted">Clientes</div><div id="customers" class="metric-value">-</div></div>
+                <div class="card"><div class="muted">Productos</div><div id="products" class="metric-value">-</div></div>
+                <div class="card"><div class="muted">Pedidos</div><div id="orders" class="metric-value">-</div></div>
+                <div class="card"><div class="muted">Revenue confirmado</div><div id="revenue" class="metric-value">-</div></div>
+            </div>
+        </section>
+
+        <section class="layout">
+            <div class="stack">
+                <section class="card">
+                    <div class="row">
+                        <h2>Low stock</h2>
+                        <button class="secondary" onclick="loadPortal()">Actualizar</button>
+                    </div>
+                    <div id="low-stock" class="list"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Pedidos recientes</h2>
+                    <div id="recent-orders" class="list"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Catalogo visible</h2>
+                    <div id="products-list" class="list"></div>
+                </section>
+            </div>
+
+            <div class="stack">
+                <section class="card">
+                    <h2>Objetivo del entorno</h2>
+                    <div class="item">
+                        <strong>Para que existe este portal</strong>
+                        <div class="muted">Convierte el backend transaccional del laboratorio 05 en una experiencia operativa mas entendible para equipos comerciales y de operaciones.</div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>Watchlist operativa</h2>
+                    <div class="muted">Notas persistidas en MongoDB para seguimiento de productos sensibles.</div>
+                    <div id="watchlist" class="list" style="margin-top: 14px;"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Agregar nota</h2>
+                    <label for="product-select">Producto</label>
+                    <select id="product-select"></select>
+                    <label for="priority-select">Prioridad</label>
+                    <select id="priority-select">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                    <label for="note-input">Nota</label>
+                    <textarea id="note-input" placeholder="Ej: revisar proveedor de este SKU o validar reposicion durante la semana."></textarea>
+                    <button onclick="createWatchlistItem()">Guardar nota</button>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = "http://localhost:3003/api";
+        let currentProducts = [];
+
+        function money(value) {
+            return new Intl.NumberFormat("es-CL", { style: "currency", currency: "USD" }).format(Number(value || 0));
+        }
+
+        function renderList(targetId, items, renderItem, emptyText) {
+            const target = document.getElementById(targetId);
+            if (!items.length) {
+                target.innerHTML = `<div class="item muted">${emptyText}</div>`;
+                return;
+            }
+            target.innerHTML = items.map(renderItem).join("");
+        }
+
+        function populateProductOptions(products) {
+            currentProducts = products;
+            document.getElementById("product-select").innerHTML = products
+                .map((product) => `<option value="${product.id}">${product.sku} · ${product.name}</option>`)
+                .join("");
+        }
+
+        async function loadPortal() {
+            const response = await fetch(`${API_BASE}/overview`);
+            const data = await response.json();
+
+            document.getElementById("customers").textContent = data.summary.customers;
+            document.getElementById("products").textContent = data.summary.products;
+            document.getElementById("orders").textContent = data.summary.orders;
+            document.getElementById("revenue").textContent = money(data.summary.revenue);
+
+            populateProductOptions(data.products);
+
+            renderList(
+                "low-stock",
+                data.lowStockProducts,
+                (item) => `<div class="item"><strong>${item.sku}</strong><div>${item.name}</div><div class="muted">Stock actual: ${item.stock}</div></div>`,
+                "No hay productos con stock bajo."
+            );
+
+            renderList(
+                "recent-orders",
+                data.orders,
+                (item) => `<div class="item"><div class="row"><strong>Pedido #${item.id}</strong><span class="tag">${item.status}</span></div><div class="muted">Cliente ${item.customer_id} · ${money(item.total_amount)}</div></div>`,
+                "No hay pedidos recientes."
+            );
+
+            renderList(
+                "products-list",
+                data.products,
+                (item) => `<div class="item"><div class="row"><strong>${item.sku}</strong><span class="tag">Stock ${item.stock}</span></div><div>${item.name}</div><div class="muted">${money(item.price)}</div></div>`,
+                "No hay productos visibles."
+            );
+
+            renderWatchlist(data.watchlist);
+        }
+
+        function renderWatchlist(items) {
+            renderList(
+                "watchlist",
+                items,
+                (item) => `<div class="item"><div class="row"><strong>${item.sku}</strong><span class="tag">${item.priority}</span></div><div>${item.productName}</div><div class="muted">${item.note}</div><button class="secondary" onclick="deleteWatchlistItem('${item._id}')">Eliminar</button></div>`,
+                "Todavia no hay notas operativas."
+            );
+        }
+
+        async function createWatchlistItem() {
+            const productId = Number(document.getElementById("product-select").value);
+            const note = document.getElementById("note-input").value.trim();
+            const priority = document.getElementById("priority-select").value;
+            const product = currentProducts.find((item) => item.id === productId);
+
+            if (!product || !note) {
+                alert("Selecciona un producto y escribe una nota.");
+                return;
+            }
+
+            await fetch(`${API_BASE}/watchlist`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    productId: product.id,
+                    sku: product.sku,
+                    productName: product.name,
+                    note,
+                    priority
+                })
+            });
+
+            document.getElementById("note-input").value = "";
+            await loadPortal();
+        }
+
+        async function deleteWatchlistItem(id) {
+            await fetch(`${API_BASE}/watchlist/${id}`, { method: "DELETE" });
+            await loadPortal();
+        }
+
+        loadPortal().catch(() => {
+            document.body.insertAdjacentHTML("beforeend", "<div style='padding:18px;color:#8b2f2f;'>No fue posible cargar el portal. Verifica que 05-postgres-api y el backend de 09 esten arriba.</div>");
+        });
+    </script>
 </body>
 </html>

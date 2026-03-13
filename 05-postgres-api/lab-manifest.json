@@ -1,0 +1,13 @@
+{
+  "featured": true,
+  "category": "platform",
+  "goal": "Resolver el nucleo transaccional del repositorio con clientes, productos, pedidos y stock.",
+  "primaryEntryLabel": "Sistema base",
+  "recommendedActions": [
+    "Abrir el sistema para entender el objetivo del entorno.",
+    "Entrar a Swagger para explorar la API.",
+    "Usar summary, customers, products y orders para recorrer el flujo base."
+  ],
+  "relatedLabs": ["09-multi-service-app", "06-nginx-proxy"],
+  "systemRole": "Core transaccional"
+}

@@ -64,8 +64,8 @@ docker push tuusuario/redis-cache-api:v1
 
 ```bash
 cd 05-postgres-api
-docker build -t tuusuario/postgres-api:v1 .
-docker push tuusuario/postgres-api:v1
+docker build -t tuusuario/inventory-core-api:v1 .
+docker push tuusuario/inventory-core-api:v1
 ```
 
 ### 06-nginx-proxy
@@ -166,10 +166,11 @@ kubectl apply -f deployment.yaml
 ```bash
 cd 05-postgres-api/k8s
 kubectl apply -f deployment.yaml
+kubectl port-forward svc/postgres-api-service 8000:8000
 ```
 
 **Acceso**:
-- `minikube service postgres-api-service`
+- `http://localhost:8000`
 
 ### 06-nginx-proxy
 

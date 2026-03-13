@@ -1,19 +1,8 @@
 services:
   nginx:
     build: .
-    container_name: nginx_proxy
+    container_name: platform_gateway
     ports:
       - "8085:80"
-    depends_on:
-      - backend
-
-  backend:
-    image: traefik/whoami
-    container_name: mock_backend
-    networks:
-      default:
-        aliases:
-          - node-api
-          - dashboard-node-api
-          - python-api
-          - dashboard-python-api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

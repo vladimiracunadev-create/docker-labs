@@ -12,7 +12,7 @@ Referencia completa de todos los laboratorios disponibles en **docker-labs**.
 | [02-php-lamp](#-02-php-lamp) | PHP 8.1 + Apache + MariaDB | 8080, 8081 | CRUD clásico LAMP | ✅ MariaDB | ⭐⭐ Intermedio |
 | [03-python-api](#-03-python-api) | Python 3.10 + Flask | 5000 | API REST Python | ❌ No | ⭐ Básico |
 | [04-redis-cache](#-04-redis-cache) | Node.js 18 + Redis | 3001 | API con caching | ✅ Redis | ⭐⭐ Intermedio |
-| [05-postgres-api](#-05-postgres-api) | Python 3.12 + FastAPI + PostgreSQL | 8000 | API con Postgres | ✅ PostgreSQL | ⭐⭐ Intermedio |
+| [05-postgres-api](#-05-postgres-api) | Python 3.12 + FastAPI + PostgreSQL | 8000 | Inventory Core transaccional | ✅ PostgreSQL | ⭐⭐ Intermedio |
 | [06-nginx-proxy](#-06-nginx-proxy) | Nginx | 8080 | Reverse proxy | ❌ No | ⭐ Básico |
 | [07-rabbitmq-messaging](#-07-rabbitmq-messaging) | Node.js 18 + RabbitMQ | 5672, 15672 | Mensajería asíncrona | ✅ RabbitMQ | ⭐⭐⭐ Avanzado |
 | [08-prometheus-grafana](#-08-prometheus-grafana) | Prometheus + Grafana | 9090, 3000 | Monitoreo | ❌ No | ⭐⭐ Intermedio |
@@ -465,6 +465,18 @@ docker-compose up
 ### Endpoints
 - `GET /items` - Lista items
 - `POST /items` - Crear item
+
+### Actualizacion del Lab
+
+El laboratorio evoluciono a `inventory-core`, un servicio transaccional para clientes, productos y pedidos. La version vigente del sistema incorpora:
+
+- `GET /health` y `GET /ready`
+- `GET /summary`
+- `POST /customers` y `GET /customers`
+- `POST /products` y `GET /products`
+- `POST /orders`, `GET /orders` y `PATCH /orders/{order_id}`
+
+Su objetivo actual es servir como nucleo de inventario y pedidos dentro del ecosistema de `docker-labs`.
 
 ---
 

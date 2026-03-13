@@ -1,251 +1,133 @@
-# Docker Labs 🧪🐳
+# Docker Labs
 
-![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
-![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+Repositorio de entornos Docker orientados a aprendizaje practico, prototipado y construccion de sistemas modulares.
 
-> **Laboratorio personal de contenedores** para aprender, practicar y dominar Docker mediante ejemplos reales y funcionales.
+Hoy el proyecto ya no se entiende solo como una lista de laboratorios aislados. La direccion actual del repositorio es una plataforma compuesta por:
 
----
+- un core transaccional
+- una capa de experiencia para operadores
+- servicios de infraestructura que amplian la solucion
 
-## 🎯 ¿Qué es docker-labs?
+## Estado actual
 
-docker-labs es una colección curada de **laboratorios Docker independientes**, cada uno diseñado para enseñarte un stack tecnológico específico mediante práctica directa. No es solo teoría—es código funcional que puedes ejecutar en segundos.
+La columna vertebral del repositorio es esta:
 
-**Filosofía**:
-- 🔗 **Modular**: Cada lab funciona de forma independiente
-- 🎓 **Educativo**: Del nivel básico al avanzado
-- 💻 **Práctico**: Código real, no tutoriales abstractos
-- 🚀 **Rápido**: Levanta un entorno en menos de 30 segundos
-- ☸️ **Kubernetes Ready**: Despliega en clusters K8s con manifiestos incluidos (ver [Guía de Kubernetes](docs/KUBERNETES_DEPLOYMENT.md))
+- [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md): `Inventory Core`, backend transaccional para clientes, productos y pedidos
+- [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md): `Operations Portal`, experiencia operativa sobre el core
+- [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md): futura capa de gateway para unificar accesos
 
----
+El resto de carpetas sigue siendo util, pero hoy funcionan mejor como piezas complementarias o de aprendizaje que como sistemas principales.
 
-## ⚡ Inicio Rápido
+## Inicio rapido
 
-### Requisitos Previos
+### Opcion recomendada
 
-- [Docker](https://docs.docker.com/get-docker/) 20.10+
-- [Docker Compose](https://docs.docker.com/compose/install/) 2.0+
-- [Git](https://git-scm.com/downloads)
+1. Levanta el panel principal:
 
-> 📋 **Recomendado**: Verifica los [Requisitos de Hardware y Software Completos](docs/INSTALL.md#requisitos-del-sistema) antes de empezar.
-
-### Tu Primer Laboratorio (60 segundos)
-
-```bash
-# 1. Clona el repositorio
-git clone https://github.com/vladimiracunadev-create/docker-labs.git
-cd docker-labs
-
-# 2. Levanta el dashboard
-# Opción A: Usando Make (Recomendado)
-make up-dashboard
-
-# Opción B: Usando Docker Compose directamente
-# docker-compose -f docker-compose-dashboard.yml up -d
-
-# 3. Abre tu navegador
-# http://localhost:9090
+```powershell
+scripts\start-control-center.cmd
 ```
 
-**¡Listo!** Ya tienes un dashboard para explorar todos los labs. 🎉
+2. Abre el menu principal:
 
----
+[http://localhost:9090](http://localhost:9090)
 
-## 🧪 Laboratorios Disponibles
+3. Desde el panel, trabaja primero con:
 
-| Laboratorio | Stack | Puerto | Complejidad | Objetivo |
-|-------------|-------|--------|-------------|----------|
-| [**01-node-api**](01-node-api/) | Node.js + Express | 3000 | ⭐ Básico | API REST básica |
-| [**02-php-lamp**](02-php-lamp/) | PHP + Apache + MariaDB | 8081, 8082 | ⭐⭐ Intermedio | CRUD con base de datos |
-| [**03-python-api**](03-python-api/) | Python + Flask | 5000 | ⭐ Básico | API REST con Python |
-| [**04-redis-cache**](04-redis-cache/) | Node.js + Redis | 3001 | ⭐⭐ Intermedio | API con caching |
-| [**05-postgres-api**](05-postgres-api/) | Python + FastAPI + PostgreSQL | 8000 | ⭐⭐ Intermedio | API con Postgres |
-| [**06-nginx-proxy**](06-nginx-proxy/) | Nginx | 8085 | ⭐ Básico | Reverse proxy |
-| [**07-rabbitmq-messaging**](07-rabbitmq-messaging/) | Node.js + RabbitMQ | 5672, 15672 | ⭐⭐⭐ Avanzado | Mensajería asíncrona |
-| [**08-prometheus-grafana**](08-prometheus-grafana/) | Prometheus + Grafana | 9090, 3002 | ⭐⭐ Intermedio | Monitoreo |
-| [**09-multi-service-app**](09-multi-service-app/) | React + Node.js + MongoDB | 8083, 3003 | ⭐⭐⭐ Avanzado | Microservicios |
-| [**10-go-api**](10-go-api/) | Go | 8084 | ⭐⭐ Intermedio | API en Go |
-| [**11-elasticsearch-search**](11-elasticsearch-search/) | Python + Elasticsearch | 8000, 9200 | ⭐⭐ Intermedio | Búsqueda full-text |
-| [**12-jenkins-ci**](12-jenkins-ci/) | Jenkins | 8080 | ⭐⭐⭐ Avanzado | CI/CD pipeline |
+- `Inventory Core`
+- `Operations Portal`
 
-> 💡 **¿Nuevo en Docker?** Empieza con `01-node-api` o `03-python-api`. Son los más simples.
+### Opcion manual
 
----
+```powershell
+cd 05-postgres-api
+docker compose up -d --build
 
-## 🚀 Características Principales
-
-✅ **Plug & Play**: Copia, ejecuta, aprende  
-✅ **Aislamiento Total**: Sin contaminar tu sistema  
-✅ **Hot Reload**: Edita código y ve cambios al instante  
-✅ **Multi-Stack**: Node.js, PHP, Python, MySQL y más  
-✅ **Soporte Kubernetes**: Despliega en clusters K8s con manifiestos incluidos  
-✅ **Buenas Prácticas**: Aprende Docker correctamente desde el inicio  
-✅ **Dashboard Interactivo**: Verifica el estado de todos los labs en http://localhost:9090  
-✅ **Documentación Completa**: Guías para todos los niveles  
-
----
-
-## 📖 Documentación Completa
-
-### 🎓 Para Principiantes
-
-- 📘 **[Guía para Principiantes](docs/BEGINNERS_GUIDE.md)**: ¿Nuevo en Docker? Empieza aquí
-- 🔧 **[Guía de Instalación](docs/INSTALL.md)**: Instala Docker en Windows, macOS o Linux
-- 🐳 **[Docker Basics](docs/DOCKER_BASICS.md)**: Conceptos fundamentales explicados
-
-### 📚 Para Usuarios
-
-- 📖 **[Manual de Usuario](docs/USER_MANUAL.md)**: Domina el flujo de trabajo completo
-- 📋 **[Catálogo de Laboratorios](docs/LABS_CATALOG.md)**: Detalles técnicos de cada lab
-- ☸️ **[Despliegue con Kubernetes](docs/KUBERNETES_DEPLOYMENT.md)**: Migra tus labs a orquestación nativa
-- 🐛 **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Soluciones a problemas comunes
-- 🛠️ **[Desafíos y Soluciones](docs/TROUBLESHOOTING_AND_SOLUTIONS.md)**: Bitácora técnica de estabilización del proyecto
-
-### 🏗️ Para Desarrolladores
-
-- 🏛️ **[Arquitectura](docs/ARCHITECTURE.md)**: Diagramas y diseño técnico
-- 🔧 **[Specs Técnicas](docs/TECHNICAL_SPECS.md)**: Versiones y estándares
-- 🎯 **[Best Practices](docs/BEST_PRACTICES.md)**: Mejores prácticas de Docker
-
-### 🤝 Para Contribuyentes
-
-- 🛠️ **[Guía de Contribución](CONTRIBUTING.md)**: Cómo colaborar
-- 🗺️ **[Roadmap](ROADMAP.md)**: Planes futuros del proyecto
-- 👥 **[Mantenedores](docs/MAINTAINERS.md)**: Guía para maintainers
-- ⚖️ **[Código de Conducta](CODE_OF_CONDUCT.md)**: Normas de la comunidad
-- 🛡️ **[Seguridad](SECURITY.md)**: Política de vulnerabilidades
-
-### 📜 Otros
-
-- 📝 **[Changelog](CHANGELOG.md)**: Historial de cambios y versiones
-
----
-
-## 💡 Casos de Uso
-
-**¿Para qué sirve docker-labs?**
-
-- 🎓 **Aprender Docker**: Sin leer 300 páginas de documentación
-- 🧪 **Experimentar**: Prueba stacks sin instalarlos permanentemente
-- 🔬 **Comparar**: Node vs Python vs PHP, ¿cuál prefieres?
-- 📚 **Enseñar**: Material didáctico para workshops y clases
-- 🚀 **Prototipar**: Base rápida para MVPs
-
----
-
-## 🛠️ Flujo de Trabajo
-
-```
-┌─────────┐    ┌─────┐    ┌──────┐    ┌──────┐    ┌──────┐
-│  build  │ →  │ up  │ →  │ logs │ →  │ exec │ →  │ down │
-└─────────┘    └─────┘    └──────┘    └──────┘    └──────┘
+cd ..\09-multi-service-app
+docker compose up -d --build
 ```
 
-Aprende más en el [Manual de Usuario](docs/USER_MANUAL.md).
+Entradas principales:
 
----
+- Panel principal: [http://localhost:9090](http://localhost:9090)
+- Inventory Core: [http://localhost:8000](http://localhost:8000)
+- Swagger del core: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Operations Portal: [http://localhost:8083](http://localhost:8083)
 
-## 🤝 Contribuciones
+## Como leer este repositorio
 
-¡Este proyecto está **abierto a colaboración real**! Queremos que contribuir sea fácil y seguro.
+### Sistemas principales
 
-### 🌟 ¿Cómo Ayudar?
+Son los entornos que ya cuentan una historia de producto clara:
 
-- 🐛 **Reporta bugs**: Abre un [issue](https://github.com/vladimiracunadev-create/docker-labs/issues)
-- 💡 **Sugiere ideas**: Propón nuevos laboratorios
-- 📝 **Mejora docs**: La documentación nunca es suficiente
-- 🧪 **Crea labs**: Comparte tu stack favorito
-- ⭐ **Dale una estrella**: ¡Nos motiva a seguir!
+| Carpeta | Rol | Tipo |
+|---|---|---|
+| `05-postgres-api` | Core transaccional | Plataforma |
+| `09-multi-service-app` | Portal operativo | Plataforma |
+| `06-nginx-proxy` | Gateway de entrada | Plataforma |
 
-**Lee nuestra [Guía de Contribución](CONTRIBUTING.md)** para empezar.
+### Servicios de infraestructura
 
-### 🛡️ Contribuciones Seguras
+Amplian las capacidades de los sistemas principales:
 
-- ✅ Código de conducta claro
-- ✅ Revisión de PRs constructiva
-- ✅ Bienvenida a principiantes (`good-first-issue`)
-- ✅ Proceso transparente
+| Carpeta | Capacidad |
+|---|---|
+| `04-redis-cache` | cache y performance |
+| `07-rabbitmq-messaging` | mensajeria asincrona |
+| `08-prometheus-grafana` | monitoreo y observabilidad |
+| `11-elasticsearch-search` | busqueda e indexacion |
+| `12-jenkins-ci` | automatizacion y entrega |
 
----
+### Starters y demos
 
-## 🗺️ Roadmap
+Sirven para aprender stacks o como base para futuros productos:
 
-**Próximos Laboratorios**:
-- 🗄️ PostgreSQL + Node.js/Python
-- 🔴 Redis como caché
-- 🐰 RabbitMQ (colas)
-- 🌐 Nginx como reverse proxy
-- 📊 Prometheus + Grafana (observabilidad)
+| Carpeta | Enfoque |
+|---|---|
+| `01-node-api` | API REST inicial |
+| `02-php-lamp` | administracion clasica |
+| `03-python-api` | API Python sencilla |
+| `10-go-api` | servicio ligero y rapido |
 
-Ver el [ROADMAP completo](ROADMAP.md).
+## Que mejora este enfoque
 
----
+Este repositorio gana valor cuando cada carpeta deja de ser "un Docker mas" y pasa a ser:
 
-## 📊 Estructura del Proyecto
+- un sistema con objetivo claro
+- un entorno instalable
+- una pieza de una plataforma mayor
+- una base real para aprendizaje y evolucion
 
-```
-docker-labs/
-├── docs/                    # 📖 Documentación completa
-│   ├── BEGINNERS_GUIDE.md
-│   ├── USER_MANUAL.md
-│   ├── ARCHITECTURE.md
-│   └── ...
-├── 01-node-api/                # 🟢 Lab Node.js
-├── 02-php-lamp/                # 🐘 Lab PHP+MySQL
-├── 03-python-api/              # 🐍 Lab Python
-├── README.md                # ← Estás aquí
-├── CONTRIBUTING.md          # Guía de contribución
-├── CODE_OF_CONDUCT.md       # Código de conducta
-├── CHANGELOG.md             # Historial de versiones
-└── LICENSE                  # Apache 2.0
-```
+## Control Center
 
----
+El panel principal en [http://localhost:9090](http://localhost:9090) ahora separa:
 
-## 📜 Licencia
+- estado Docker
+- control del entorno
+- apertura del sistema real
 
-Este proyecto está licenciado bajo **Apache License 2.0** (ver archivo [LICENSE](LICENSE)).
+Tambien destaca los sistemas principales del repositorio y muestra su rol dentro de la plataforma.
 
-Las imágenes Docker de terceros (php, mariadb, node, python, etc.) mantienen sus propias licencias.
+## Documentacion recomendada
 
----
+- [docs/ARCHITECTURE.md](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [docs/USER_MANUAL.md](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [docs/LABS_CATALOG.md](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+- [docs/DASHBOARD_SETUP.md](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [DEVELOPING.md](C:/docker-labs/docker-labs/DEVELOPING.md)
+- [SUPPORT.md](C:/docker-labs/docker-labs/SUPPORT.md)
+- [FAQ.md](C:/docker-labs/docker-labs/FAQ.md)
 
-## 🙏 Agradecimientos
+## Siguiente direccion
 
-- A la comunidad de Docker por crear herramientas increíbles
-- A todos los contribuyentes que hacen crecer este proyecto
-- A ti, por tomarte el tiempo de aprender 🚀
+La mejora recomendada para el repo es:
 
----
+1. consolidar `05`, `09` y `06` como experiencia de plataforma
+2. estandarizar metadata y navegacion entre entornos
+3. reforzar tests, CI y observabilidad
+4. despues elevar el resto de labs para que encajen en la misma narrativa
 
-## 📞 Contacto y Soporte
+## Licencia
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/vladimiracunadev-create/docker-labs/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/vladimiracunadev-create/docker-labs/discussions)
-- 🛡️ **Seguridad**: Ver [SECURITY.md](SECURITY.md)
-
----
-
-## ⭐ ¿Te Gusta el Proyecto?
-
-Si te resulta útil:
-- ⭐ **Dale una estrella** en GitHub
-- 🔄 **Compártelo** con amigos y colegas
-- 🤝 **Contribuye** con PRs o ideas
-- 📣 **Háblanos** de tu experiencia
-
----
-
-<p align="center">
-  <strong>¡Feliz Dockering! 🐳</strong>
-</p>
-
-<p align="center">
-  Hecho con ❤️ y ☕ por <a href="https://github.com/vladimiracunadev-create">Vladimir Acuña</a>
-</p>
-
-
-
-
+Proyecto bajo [Apache License 2.0](C:/docker-labs/docker-labs/LICENSE).

@@ -209,6 +209,70 @@ docker-compose up --build
 
 ---
 
+### 05-postgres-api (FastAPI + PostgreSQL)
+
+**Objetivo**: ejecutar un backend transaccional para clientes, productos y pedidos.
+
+**Inicio rapido**:
+```bash
+cd 05-postgres-api
+docker compose up -d --build
+```
+
+**Acceso**:
+- API: http://localhost:8000
+- Swagger: http://localhost:8000/docs
+
+**Comandos utiles**:
+```bash
+docker compose ps
+docker compose logs -f api
+docker compose exec postgres psql -U postgres -d inventory
+```
+
+**Endpoints base**:
+- `GET /health`
+- `GET /ready`
+- `GET /summary`
+- `GET /customers`
+- `GET /products`
+- `GET /orders`
+
+**Escenario recomendado de aprendizaje**:
+1. consulta `GET /summary`
+2. crea un cliente
+3. crea un producto
+4. registra un pedido
+5. revisa como cambia el stock
+6. cancela el pedido y verifica la reposicion
+
+---
+
+## Recorrido recomendado de la plataforma
+
+Si quieres usar el repositorio como sistema y no solo como demos tecnicas, este es el orden recomendado:
+
+1. Abre el panel principal en `http://localhost:9090`
+2. Entra a `05-postgres-api` para entender el core del negocio
+3. Revisa `09-multi-service-app` para ver la operacion desde una interfaz mas cercana al usuario
+4. Usa el panel para confirmar estado, accesos y logs
+
+### Diferencia entre conceptos
+
+- `Estado Docker`: indica si los contenedores estan arriba
+- `Control del entorno`: levanta o detiene el stack
+- `Abrir sistema`: entra a la app o API que vive dentro del contenedor
+
+### Sistemas recomendados hoy
+
+- `05-postgres-api`: backend central
+- `09-multi-service-app`: experiencia operativa
+- `06-nginx-proxy`: siguiente paso para unificar acceso
+
+Para la hoja de ruta completa, revisa `docs/PLATFORM_ROADMAP.md`.
+
+---
+
 ## 🔧 Comandos Esenciales
 
 ### Inspeccionar el estado

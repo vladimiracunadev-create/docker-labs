@@ -1,0 +1,13 @@
+{
+  "featured": true,
+  "category": "platform",
+  "goal": "Unificar el acceso a los sistemas principales del repositorio bajo una capa de entrada comun.",
+  "primaryEntryLabel": "Gateway",
+  "recommendedActions": [
+    "Usarlo cuando quieras exponer varios sistemas con una entrada unica.",
+    "Integrarlo despues de estabilizar 05 y 09.",
+    "Documentar dominios, rutas y politicas de acceso desde este lab."
+  ],
+  "relatedLabs": ["05-postgres-api", "09-multi-service-app"],
+  "systemRole": "Capa de entrada"
+}
