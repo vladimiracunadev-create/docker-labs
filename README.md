@@ -159,43 +159,53 @@ El panel principal en [http://localhost:9090](http://localhost:9090):
 
 ---
 
-## 📚 Documentacion Recomendada
+## 📚 Documentación del Proyecto
 
-### Navegacion principal
+Como parte del estándar del ecosistema, la documentación se divide por audiencia y por objetivo. La idea no es que “adivines” qué leer: cada documento existe para resolver una necesidad concreta.
 
-| Documento | Descripcion | Cuando leerlo | Abrir |
-|---|---|---|---|
-| `Documentation Index` | Mapa general de la documentacion del repo | Cuando no sabes por donde empezar | [Abrir](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md) |
-| `Beginner Guide` | Ruta simple y guiada para novatos | Si estas empezando con Docker o con este repo | [Abrir](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md) |
-| `Install Guide` | Instalacion, requisitos y arranque del entorno | Si vas a preparar el workspace desde cero | [Abrir](C:/docker-labs/docker-labs/docs/INSTALL.md) |
-| `User Manual` | Operacion diaria del workspace y de los sistemas principales | Si ya tienes Docker andando y quieres usar el repo | [Abrir](C:/docker-labs/docker-labs/docs/USER_MANUAL.md) |
-| `Dashboard Setup` | Arquitectura, despliegue y rol del panel `9090` | Si quieres entender o mantener el control center | [Abrir](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) |
+### 🚀 Guías para iniciar y operar
 
-### Referencia tecnica
+- [🗂️ Documentation Index (docs/DOCUMENTATION_INDEX.md)](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
+  Mapa maestro de lectura para no perderte entre los documentos del repositorio.
+- [🎓 Beginner Guide (docs/BEGINNERS_GUIDE.md)](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
+  Ruta guiada para principiantes: conceptos, flujo caso a caso y orden recomendado de aprendizaje.
+- [🔧 Install Guide (docs/INSTALL.md)](C:/docker-labs/docker-labs/docs/INSTALL.md)
+  Requisitos, instalación y forma correcta de levantar el workspace local.
+- [📘 User Manual (docs/USER_MANUAL.md)](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+  Manual operativo del día a día: cómo usar el panel, qué abrir primero y cómo trabajar por casos.
+- [🖥️ Dashboard Setup (docs/DASHBOARD_SETUP.md)](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+  Explica cómo funciona el `9090`, su arquitectura y cómo gobierna el entorno Docker.
 
-| Documento | Descripcion | Cuando leerlo | Abrir |
-|---|---|---|---|
-| `Architecture` | Explica la arquitectura general y la intencion de plataforma | Si quieres entender el diseño global del repo | [Abrir](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md) |
-| `Labs Catalog` | Cataloga los 12 labs y resume su funcion | Si quieres una vista global de carpetas y roles | [Abrir](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md) |
-| `Labs Runtime Reference` | Resume imagenes, tamanos y requisitos por lab | Si necesitas decidir que puedes levantar segun tu equipo | [Abrir](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md) |
-| `Technical Specs` | Resume stacks, puertos, endpoints y contratos tecnicos | Si buscas detalle tecnico rapido | [Abrir](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md) |
+### 🏗️ Arquitectura, catálogo y specs
 
-### Estado, operacion y roadmap
+- [🏛️ Architecture (docs/ARCHITECTURE.md)](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+  Vista de arquitectura, intención del repositorio y relación entre las piezas principales.
+- [🧩 Labs Catalog (docs/LABS_CATALOG.md)](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+  Catálogo de los 12 labs con su rol dentro del ecosistema.
+- [📦 Labs Runtime Reference (docs/LABS_RUNTIME_REFERENCE.md)](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+  Imágenes oficiales, tamaños aproximados y requisitos sugeridos por lab.
+- [🧪 Technical Specs (docs/TECHNICAL_SPECS.md)](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+  Stacks, puertos, endpoints y contratos técnicos principales del workspace.
 
-| Documento | Descripcion | Cuando leerlo | Abrir |
-|---|---|---|---|
-| `Project Status` | Resume lo que ya esta consolidado y lo que sigue en evolucion | Si quieres saber el estado real del repo | [Abrir](C:/docker-labs/docker-labs/PROJECT_STATUS.md) |
-| `Platform Roadmap` | Explica la direccion futura del workspace | Si quieres ver hacia donde va el proyecto | [Abrir](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md) |
-| `Changelog` | Registra cambios relevantes y evolucion del repositorio | Si quieres revisar el historial reciente | [Abrir](C:/docker-labs/docker-labs/CHANGELOG.md) |
-| `FAQ` | Responde dudas comunes de operacion, acceso y capacidad | Si quieres respuestas rapidas sin leer toda la documentacion | [Abrir](C:/docker-labs/docker-labs/FAQ.md) |
+### 📈 Estado, operación y evolución
 
-### Lectura externa
+- [📊 Project Status (PROJECT_STATUS.md)](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+  Qué está consolidado hoy y qué sigue en evolución.
+- [🗺️ Platform Roadmap (docs/PLATFORM_ROADMAP.md)](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+  Dirección futura del workspace y prioridades de madurez.
+- [📝 Changelog (CHANGELOG.md)](C:/docker-labs/docker-labs/CHANGELOG.md)
+  Historial de cambios relevantes y evolución del repositorio.
+- [❓ FAQ (FAQ.md)](C:/docker-labs/docker-labs/FAQ.md)
+  Respuestas rápidas sobre acceso, capacidad, panel y uso operativo.
 
-| Documento | Descripcion | Para quien | Abrir |
-|---|---|---|---|
-| `For Recruiters` | Lectura rapida de valor tecnico, alcance y foco del repositorio | Reclutadores y evaluadores tecnicos | [Abrir](C:/docker-labs/docker-labs/FOR_RECRUITERS.md) |
-| `Developing` | Guia para extender, mantener o continuar la evolucion del proyecto | Quien vaya a desarrollar sobre el repo | [Abrir](C:/docker-labs/docker-labs/DEVELOPING.md) |
-| `Support` | Criterios de soporte, ayuda y mantenimiento | Quien necesite apoyo operativo o documental | [Abrir](C:/docker-labs/docker-labs/SUPPORT.md) |
+### 👀 Evaluación externa y mantenimiento
+
+- [👀 For Recruiters (FOR_RECRUITERS.md)](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
+  Valor de portafolio, evidencia técnica y recorrido rápido para evaluación.
+- [🛠️ Developing (DEVELOPING.md)](C:/docker-labs/docker-labs/DEVELOPING.md)
+  Guía para extender, mantener o continuar la evolución del proyecto.
+- [🤝 Support (SUPPORT.md)](C:/docker-labs/docker-labs/SUPPORT.md)
+  Criterios de soporte, ayuda y mantenimiento documental u operativo.
 
 ---
 
