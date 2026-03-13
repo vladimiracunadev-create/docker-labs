@@ -50,6 +50,7 @@ docker compose up -d --build
 Entradas principales:
 
 - Panel principal: [http://localhost:9090](http://localhost:9090)
+- Centro de aprendizaje: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 - Inventory Core: [http://localhost:8000](http://localhost:8000)
 - Swagger del core: [http://localhost:8000/docs](http://localhost:8000/docs)
 - Operations Portal: [http://localhost:8083](http://localhost:8083)
@@ -111,10 +112,13 @@ Tambien destaca los sistemas principales del repositorio y muestra su rol dentro
 ## Documentacion recomendada
 
 - [docs/ARCHITECTURE.md](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [docs/BEGINNERS_GUIDE.md](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
 - [docs/USER_MANUAL.md](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
 - [docs/LABS_CATALOG.md](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+- [docs/LABS_RUNTIME_REFERENCE.md](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
 - [docs/DASHBOARD_SETUP.md](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
 - [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [CHANGELOG.md](C:/docker-labs/docker-labs/CHANGELOG.md)
 - [DEVELOPING.md](C:/docker-labs/docker-labs/DEVELOPING.md)
 - [SUPPORT.md](C:/docker-labs/docker-labs/SUPPORT.md)
 - [FAQ.md](C:/docker-labs/docker-labs/FAQ.md)

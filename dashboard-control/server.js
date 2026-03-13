@@ -12,8 +12,15 @@ const port = Number(process.env.DASHBOARD_PORT || 9090);
 const staticFiles = new Map([
   ["/", { file: path.join(repoRoot, "index.html"), type: "text/html; charset=utf-8" }],
   ["/index.html", { file: path.join(repoRoot, "index.html"), type: "text/html; charset=utf-8" }],
+  ["/learning-center.html", { file: path.join(repoRoot, "learning-center.html"), type: "text/html; charset=utf-8" }],
   ["/dashboard.css", { file: path.join(repoRoot, "dashboard.css"), type: "text/css; charset=utf-8" }],
-  ["/dashboard.js", { file: path.join(repoRoot, "dashboard.js"), type: "application/javascript; charset=utf-8" }]
+  ["/dashboard.js", { file: path.join(repoRoot, "dashboard.js"), type: "application/javascript; charset=utf-8" }],
+  ["/learning-center.css", { file: path.join(repoRoot, "learning-center.css"), type: "text/css; charset=utf-8" }],
+  ["/docs/BEGINNERS_GUIDE.md", { file: path.join(repoRoot, "docs", "BEGINNERS_GUIDE.md"), type: "text/markdown; charset=utf-8" }],
+  ["/docs/LABS_RUNTIME_REFERENCE.md", { file: path.join(repoRoot, "docs", "LABS_RUNTIME_REFERENCE.md"), type: "text/markdown; charset=utf-8" }],
+  ["/docs/USER_MANUAL.md", { file: path.join(repoRoot, "docs", "USER_MANUAL.md"), type: "text/markdown; charset=utf-8" }],
+  ["/docs/LABS_CATALOG.md", { file: path.join(repoRoot, "docs", "LABS_CATALOG.md"), type: "text/markdown; charset=utf-8" }],
+  ["/CHANGELOG.md", { file: path.join(repoRoot, "CHANGELOG.md"), type: "text/markdown; charset=utf-8" }]
 ]);
 
 function execCommand(command, args, options = {}) {

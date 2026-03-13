@@ -1,279 +1,233 @@
-# Guía para Principiantes 🎓
+# Beginner Guide
 
-**Bienvenido a docker-labs**, tu laboratorio personal para dominar Docker y Docker Compose.
+Guia pensada para personas que estan comenzando con Docker, Docker Compose y este repositorio.
 
-Esta guía está diseñada para personas que están dando sus primeros pasos con contenedores y quieren aprender de forma práctica.
+## Que es este repositorio
 
----
+`docker-labs` es una coleccion de 12 entornos Docker. Cada carpeta representa un caso de uso concreto:
 
-## 🤔 ¿Qué es docker-labs?
+- algunos son sistemas de negocio
+- otros son servicios de infraestructura
+- otros son starters para practicar stacks
 
-`docker-labs` es una colección de **laboratorios independientes** que te permiten aprender Docker mediante ejemplos reales y funcionales. Cada laboratorio es un mini-proyecto completo con:
+La idea no es memorizar comandos. La idea es aprender a leer un entorno Docker, entender que resuelve y levantarlo solo cuando lo necesitas.
 
-- 🐳 Configuración Docker lista para usar
-- 💻 Código funcional de ejemplo
-- 📝 Documentación clara
-- 🎯 Un objetivo de aprendizaje específico
+## Como empezar sin perderte
 
-**No es**: Un curso teórico, un framework de producción, ni una aplicación completa.  
-**Es**: Tu espacio seguro para experimentar, romper cosas y aprender.
+La forma mas simple de trabajar es esta:
 
----
+1. Levanta solo el panel principal.
+2. Revisa los sistemas activos.
+3. Enciende un lab caso a caso.
+4. Abre el sistema real desde el boton `Abrir sistema`.
+5. Cuando termines, baja o elimina el entorno.
 
-## ✅ Prerrequisitos
+Comando recomendado:
 
-Antes de comenzar, necesitas tener instalado:
+```powershell
+scripts\start-control-center.cmd
+```
 
-### 1. Docker
-- **Windows**: [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
-- **macOS**: [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
-- **Linux**: [Docker Engine](https://docs.docker.com/engine/install/)
+Entradas utiles:
 
-### 2. Docker Compose
-- Incluido con Docker Desktop (Windows/Mac)
-- En Linux: `sudo apt-get install docker-compose-plugin`
+- `http://localhost:9090`: panel principal
+- `http://localhost:8085`: gateway unificado cuando `06` esta levantado
 
-### 3. Git
-- Para clonar el repositorio: [git-scm.com](https://git-scm.com/downloads)
+## Diferencia entre Docker y el sistema
 
-### 4. Editor de código (opcional pero recomendado)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- Extensión Docker para VS Code
+Esta es la confusion mas comun al inicio.
 
-**Verificación**:
-```bash
+- Docker: es la capa que levanta contenedores, redes y volumenes.
+- El sistema: es la aplicacion o servicio que corre dentro del contenedor.
+
+Ejemplo:
+
+- `05-postgres-api` puede estar `healthy` en Docker
+- y su sistema real se usa desde `http://localhost:8000`
+
+Por eso el panel separa:
+
+- `Estado Docker`
+- `Control del entorno`
+- `Abrir sistema`
+
+## Flujo recomendado para novatos
+
+### Paso 1. Valida prerequisitos
+
+Necesitas:
+
+- Docker Desktop o Docker Engine con Compose
+- Git
+- 8 GB de RAM como minimo practico
+
+Verificacion:
+
+```powershell
 docker --version
-docker-compose --version
+docker compose version
 git --version
 ```
 
----
+### Paso 2. Inicia el panel
 
-## 🏗️ Conceptos Básicos de Docker
-
-### Contenedor vs Imagen
-
-**Imagen**: Es como una "plantilla" o "receta". Define qué software tiene el contenedor.  
-**Contenedor**: Es la "instancia en ejecución" de una imagen. Es como cocinar el plato siguiendo la receta.
-
-```
-Imagen (php:8.1-apache) → Contenedor (tu app corriendo)
+```powershell
+scripts\start-control-center.cmd
 ```
 
-### Volúmenes
+### Paso 3. Entra al panel
 
-Los **volúmenes** permiten que los datos sobrevivan cuando el contenedor se elimina.
+Abre `http://localhost:9090`.
 
-- **Código**: Se monta desde tu máquina (host) al contenedor
-- **Datos**: Bases de datos, archivos subidos, etc.
+### Paso 4. Levanta solo un caso
 
-### Dockerfile
+Empieza por uno de estos:
 
-Un archivo de texto que contiene las instrucciones para construir una imagen:
+- `05-postgres-api`: si quieres ver un backend transaccional serio
+- `09-multi-service-app`: si quieres ver portal + backend + base de datos
+- `01-node-api`: si quieres un ejemplo muy simple
 
-```dockerfile
-FROM php:8.1-apache
-WORKDIR /var/www/html
-COPY . .
-RUN apt-get update && apt-get install -y libpng-dev
-```
+### Paso 5. Observa las piezas
 
-### docker-compose.yml
+En cada lab intenta identificar:
 
-Archivo que define **múltiples servicios** (contenedores) y cómo se conectan:
+- que contenedores levanta
+- que imagen usa
+- que puertos expone
+- que volumen persiste datos
+- cual es la entrada funcional del sistema
 
-```yaml
-services:
-  web:
-    image: php:8.1-apache
-    ports:
-      - "8080:80"
-  db:
-    image: mariadb:10.6
-```
+## Que aprender en este repo
 
----
+### Nivel 1
 
-## 📁 Estructura del Repositorio
+Aprender a:
 
-Cuando clones `docker-labs`, verás esta estructura:
+- levantar y bajar entornos
+- leer `Dockerfile`
+- leer `docker-compose.yml`
+- distinguir imagen, contenedor, puerto y volumen
 
-```
-docker-labs/
-├── README.md              # Punto de entrada principal
-├── LICENSE                # Licencia Apache 2.0
-├── docs/                  # 📖 Toda la documentación
-│   ├── BEGINNERS_GUIDE.md # ← Estás aquí
-│   ├── USER_MANUAL.md
-│   ├── LABS_CATALOG.md
-│   └── ...
-├── 01-node-api/              # 🟢 Laboratorio Node.js
-│   ├── Dockerfile
-│   ├── docker-compose.yml
-│   ├── package.json
-│   └── src/
-├── 02-php-lamp/              # 🐘 Laboratorio PHP + Apache + MariaDB
-│   ├── docker-compose.yml
-│   ├── docker/
-│   └── src/
-└── 03-python-api/            # 🐍 Laboratorio Python Flask
-    ├── Dockerfile
-    ├── docker-compose.yml
-    └── app/
-```
+Labs sugeridos:
 
-### ¿Por qué esta estructura?
+- `01-node-api`
+- `03-python-api`
+- `06-nginx-proxy`
 
-Cada carpeta (`01-node-api/`, `02-php-lamp/`, etc.) es un **laboratorio independiente**:
-- ✅ Puedes trabajar en uno sin afectar los demás
-- ✅ Cada uno tiene su propio `docker-compose.yml`
-- ✅ Puedes eliminar los que no te interesen
+### Nivel 2
 
----
+Aprender a:
 
-## 🚀 Tu Primer Laboratorio: 01-node-api
+- conectar app y base de datos
+- usar healthchecks
+- entender redes entre servicios
+- trabajar con dependencias entre contenedores
 
-Vamos a levantar tu primer contenedor paso a paso.
+Labs sugeridos:
 
-### Paso 1: Clonar el repositorio
+- `05-postgres-api`
+- `09-multi-service-app`
+- `02-php-lamp`
 
-```bash
-git clone https://github.com/vladimiracunadev-create/docker-labs.git
-cd docker-labs
-```
+### Nivel 3
 
-### Paso 2: Navegar al laboratorio
+Aprender a:
 
-```bash
-cd 01-node-api
-```
+- agregar cache
+- usar mensajeria
+- incorporar observabilidad
+- pensar en plataforma
 
-### Paso 3: Levantar el contenedor
+Labs sugeridos:
 
-```bash
-docker-compose up
-```
+- `04-redis-cache`
+- `07-rabbitmq-messaging`
+- `08-prometheus-grafana`
+- `11-elasticsearch-search`
+- `12-jenkins-ci`
 
-Verás muchas líneas de texto. ¡No te asustes! Docker está:
-1. Descargando la imagen de Node.js
-2. Instalando dependencias
-3. Levantando el servidor
+## Recomendacion de hardware
 
-### Paso 4: Probar que funciona
+### Minimo practico
 
-Abre tu navegador en: http://localhost:3000
+- CPU: 4 nucleos
+- RAM: 8 GB
+- Disco libre: 15 GB
 
-Deberías ver un mensaje JSON:
-```json
-{
-  "message": "Hello from Node.js in Docker!"
-}
-```
+Con esto puedes correr:
 
-### Paso 5: Ver los logs
+- el panel principal
+- un lab sencillo a la vez
 
-En la misma terminal, verás los logs en tiempo real. Cada petición HTTP aparece ahí.
+### Recomendado para trabajar comodo
 
-### Paso 6: Detener el contenedor
+- CPU: 6 a 8 nucleos
+- RAM: 16 GB
+- Disco libre: 30 GB SSD
 
-Presiona `Ctrl+C` en la terminal.
+Con esto puedes correr:
 
-Para detenerlo completamente:
-```bash
-docker-compose down
-```
+- `05`
+- `06`
+- `09`
 
----
+al mismo tiempo, que es hoy la experiencia principal del repositorio.
 
-## 🎯 ¿Qué Acabas de Hacer?
+### Para usar labs pesados
 
-1. ✅ Levantaste un servidor Node.js **sin instalar Node.js en tu máquina**
-2. ✅ El servidor corre **aislado** en un contenedor
-3. ✅ El código está en tu máquina, pero se ejecuta en el contenedor
-4. ✅ Puedes editar el código y ver los cambios (según configuración)
+- CPU: 8 nucleos
+- RAM: 24 GB o mas
+- Disco libre: 40 GB SSD
 
----
+Recomendado si vas a experimentar con:
 
-## 🔍 Comandos Esenciales para Principiantes
+- `08-prometheus-grafana`
+- `11-elasticsearch-search`
+- `12-jenkins-ci`
 
-### Ver contenedores activos
-```bash
-docker ps
-```
+## Glosario rapido
 
-### Ver todas las imágenes descargadas
-```bash
-docker images
-```
+- Imagen: plantilla base desde la que se crea un contenedor.
+- Contenedor: instancia en ejecucion de una imagen.
+- Volumen: almacenamiento persistente.
+- Puerto publicado: puerta de entrada desde tu maquina al contenedor.
+- Healthcheck: prueba automatica para saber si un servicio esta listo.
+- Compose: archivo que orquesta varios servicios relacionados.
 
-### Entrar a un contenedor (modo interactivo)
-```bash
-docker exec -it <nombre-contenedor> bash
-```
+## Errores comunes
 
-### Limpiar todo (cuidado: elimina contenedores detenidos)
-```bash
-docker system prune
-```
+### El panel abre, pero el sistema no
 
-### Levantar en segundo plano (detached)
-```bash
-docker-compose up -d
-```
+Posibles causas:
 
-### Ver logs de un servicio específico
-```bash
-docker-compose logs web
-```
+- el lab no esta levantado
+- el servicio aun esta iniciando
+- otro proceso ya ocupa el puerto
 
----
+### Docker esta arriba, pero la app se ve fea o vacia
 
-## 📖 Glosario de Términos
+Eso significa que el contenedor existe, pero todavia debes abrir la interfaz correcta del sistema o revisar los datos de ejemplo.
 
-| Término | Significado |
-|---------|-------------|
-| **Imagen** | Plantilla inmutable que contiene el sistema operativo, runtime y código |
-| **Contenedor** | Instancia en ejecución de una imagen |
-| **Volumen** | Espacio de almacenamiento persistente |
-| **Puerto** | Punto de comunicación (ej: 8080:80 = host:contenedor) |
-| **Servicio** | Definición de un contenedor en docker-compose |
-| **Build** | Proceso de crear una imagen desde un Dockerfile |
-| **Host** | Tu máquina física (Windows/Mac/Linux) |
-| **Bind mount** | Carpeta de tu host montada en el contenedor |
+### Mi equipo se pone lento
 
----
+Usa el modo caso a caso:
 
-## 🎓 Próximos Pasos
+- deja solo el panel arriba
+- levanta un solo lab
+- baja todo al terminar
 
-Ahora que ya levantaste tu primer lab, continúa con:
+## Ruta sugerida de aprendizaje
 
-1. 📖 **[Manual de Usuario](USER_MANUAL.md)**: Domina el flujo de trabajo completo
-2. 📋 **[Catálogo de Laboratorios](LABS_CATALOG.md)**: Explora todos los labs disponibles
-3. 🔧 **[Docker Basics](DOCKER_BASICS.md)**: Profundiza en conceptos de Docker
-4. 🏗️ **[Arquitectura](ARCHITECTURE.md)**: Entiende cómo están diseñados los laboratorios
+1. `01-node-api`
+2. `03-python-api`
+3. `05-postgres-api`
+4. `09-multi-service-app`
+5. `06-nginx-proxy`
+6. `04`, `07`, `08`, `11`, `12`
 
----
+## Documentos para seguir
 
-## 🆘 ¿Problemas?
-
-Si algo no funciona:
-1. Consulta **[Troubleshooting](TROUBLESHOOTING.md)**
-2. Revisa que Docker Desktop esté corriendo
-3. Verifica que el puerto no esté ocupado
-4. Abre un [issue en GitHub](https://github.com/vladimiracunadev-create/docker-labs/issues)
-
----
-
-## 💡 Consejos Finales
-
-- 🧪 **Experimenta**: Modifica el código, rompe cosas, aprende
-- 📝 **Lee los logs**: Ahí está el 80% de la información cuando algo falla
-- 🔄 **Reinicia**: `docker-compose down` + `docker-compose up` soluciona muchos problemas
-- 🌐 **Googlea**: "docker <tu-error>" es tu amigo
-- 🤝 **Contribuye**: Si mejoras algo, comparte tu PR
-
----
-
-**¡Felicidades!** Ya diste el primer paso en tu journey con Docker. 🚀
-
-← [Volver al README](../README.md)
+- [INSTALL](C:/docker-labs/docker-labs/docs/INSTALL.md)
+- [USER_MANUAL](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [LABS_CATALOG](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+- [LABS_RUNTIME_REFERENCE](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)

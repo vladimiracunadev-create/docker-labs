@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker Labs Learning Center</title>
+  <link rel="stylesheet" href="/learning-center.css">
+</head>
+<body>
+  <main class="knowledge-shell">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Learning Center</span>
+        <h1>Aprender Docker sin perderse en el repo</h1>
+        <p>
+          Esta vista resume el uso recomendado del workspace, el costo real aproximado de los 12 labs y
+          una ruta de aprendizaje para levantar entornos caso a caso.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/index.html">Volver al panel principal</a>
+        <a class="btn btn-secondary" href="/api/overview">Ver estado JSON</a>
+      </div>
+    </section>
+
+    <section class="grid-two">
+      <article class="panel">
+        <h2>Modo recomendado para novatos</h2>
+        <ol>
+          <li>Levanta solo el panel principal.</li>
+          <li>Elige un lab segun tu objetivo.</li>
+          <li>Usa `Levantar entorno`.</li>
+          <li>Usa `Abrir sistema` para ver la app real.</li>
+          <li>Al terminar, usa `Bajar todos los Docker` o apaga solo ese lab.</li>
+        </ol>
+      </article>
+
+      <article class="panel">
+        <h2>Hardware recomendado</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Escenario</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Disco</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Panel + 1 lab liviano</td>
+              <td>4 nucleos</td>
+              <td>8 GB</td>
+              <td>15 GB</td>
+            </tr>
+            <tr>
+              <td>Plataforma principal 05 + 06 + 09</td>
+              <td>6 nucleos</td>
+              <td>16 GB</td>
+              <td>30 GB SSD</td>
+            </tr>
+            <tr>
+              <td>Labs pesados</td>
+              <td>8 nucleos</td>
+              <td>24 GB o mas</td>
+              <td>40 GB SSD</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <div>
+          <span class="section-kicker">Runtime Matrix</span>
+          <h2>Los 12 casos del repositorio</h2>
+        </div>
+        <p>
+          Tamanos aproximados y requisitos orientados a entender el costo de correr cada entorno.
+          Los valores varian por arquitectura y fecha.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Lab</th>
+              <th>Rol</th>
+              <th>Imagen oficial</th>
+              <th>Version en repo</th>
+              <th>Tamano ref.</th>
+              <th>RAM min.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>01</td><td>API inicial</td><td>node</td><td>node:20-alpine</td><td>~46 MB</td><td>1.5 GB</td></tr>
+            <tr><td>02</td><td>LAMP clasico</td><td>php + mariadb + phpmyadmin</td><td>8.3 / 10.6 / latest</td><td>~800 MB stack</td><td>3 GB</td></tr>
+            <tr><td>03</td><td>API Python</td><td>python</td><td>python:3.12-slim</td><td>~41 MB</td><td>1.5 GB</td></tr>
+            <tr><td>04</td><td>Cache</td><td>node + redis</td><td>20-alpine / 7-alpine</td><td>~96 MB base</td><td>2 GB</td></tr>
+            <tr><td>05</td><td>Core transaccional</td><td>python + postgres</td><td>3.12-slim / 15</td><td>~674 MB</td><td>3 GB</td></tr>
+            <tr><td>06</td><td>Gateway</td><td>nginx</td><td>nginx:alpine</td><td>~34.5 MB</td><td>1 GB</td></tr>
+            <tr><td>07</td><td>Mensajeria</td><td>rabbitmq + node</td><td>3-management / 20-alpine</td><td>~158 MB</td><td>2.5 GB</td></tr>
+            <tr><td>08</td><td>Observabilidad</td><td>prometheus + grafana</td><td>latest / latest</td><td>~346 MB</td><td>4 GB</td></tr>
+            <tr><td>09</td><td>Portal operativo</td><td>nginx + mongo + node</td><td>alpine / 7 / 20-alpine</td><td>~1.26 GB</td><td>4 GB</td></tr>
+            <tr><td>10</td><td>Servicio rapido</td><td>golang + alpine</td><td>1.21-alpine / latest</td><td>runtime ~3.7 MB</td><td>1 GB</td></tr>
+            <tr><td>11</td><td>Busqueda</td><td>python + elasticsearch</td><td>3.12-slim / 8.11.0</td><td>~782 MB</td><td>6 GB</td></tr>
+            <tr><td>12</td><td>CI</td><td>jenkins/jenkins</td><td>lts</td><td>~278 MB + volumen</td><td>4 GB</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cards">
+      <article class="panel">
+        <h2>Ruta de aprendizaje</h2>
+        <p>Orden sugerido para entender el repo de menor a mayor complejidad.</p>
+        <ol>
+          <li>01 Node API</li>
+          <li>03 Python API</li>
+          <li>05 Inventory Core</li>
+          <li>09 Operations Portal</li>
+          <li>06 Platform Gateway</li>
+          <li>04, 07, 08, 11, 12 como capacidades</li>
+        </ol>
+      </article>
+
+      <article class="panel">
+        <h2>Que mirar en cada lab</h2>
+        <ul>
+          <li>Imagen base y tag usados.</li>
+          <li>Puertos publicados.</li>
+          <li>Volumenes persistentes.</li>
+          <li>Healthchecks y dependencias.</li>
+          <li>Entrada funcional real del sistema.</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>Documentos clave</h2>
+        <div class="doc-links">
+          <a href="/docs/BEGINNERS_GUIDE.md" target="_blank" rel="noreferrer">Beginner Guide</a>
+          <a href="/docs/LABS_RUNTIME_REFERENCE.md" target="_blank" rel="noreferrer">Labs Runtime Reference</a>
+          <a href="/docs/USER_MANUAL.md" target="_blank" rel="noreferrer">User Manual</a>
+          <a href="/docs/LABS_CATALOG.md" target="_blank" rel="noreferrer">Labs Catalog</a>
+          <a href="/CHANGELOG.md" target="_blank" rel="noreferrer">Changelog</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Fuentes oficiales usadas en esta referencia</h2>
+      <p>
+        Docker Hub official images y registros oficiales de proveedores. La tabla larga y el detalle completo
+        quedaron documentados tambien en <code>docs/LABS_RUNTIME_REFERENCE.md</code>.
+      </p>
+    </section>
+  </main>
+</body>
+</html>

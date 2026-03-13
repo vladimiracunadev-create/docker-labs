@@ -1,104 +1,51 @@
 # Changelog
 
-Todos los cambios notables a este proyecto serán documentados en este archivo.
+Todos los cambios relevantes del repositorio se registran aqui.
 
-El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
-
----
+El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el versionado del proyecto sigue una linea semantica cuando se publiquen releases formales.
 
 ## [Unreleased]
 
-### En Desarrollo
-- Futuros laboratorios planificados (ver [ROADMAP.md](ROADMAP.md))
+### Added
 
----
+- Panel principal con control centralizado de labs, lectura de estado y acciones globales de `bajar todo` y `eliminar entornos del repo`
+- `Inventory Core` en `05-postgres-api` como backend transaccional con clientes, productos, pedidos, seed, healthchecks y portada HTML
+- `Operations Portal` en `09-multi-service-app` como portal operativo conectado a `05`
+- `Platform Gateway` en `06-nginx-proxy` como punto de entrada unificado a panel, core y portal
+- `FOR_RECRUITERS.md`, `PROJECT_STATUS.md`, `DEVELOPING.md`, `SUPPORT.md` y `FAQ.md`
+- `docs/LABS_RUNTIME_REFERENCE.md` como referencia de imagenes, versiones, tamanos y requisitos de los 12 labs
+- `learning-center.html` como centro HTML de aprendizaje dentro del ambiente local
+
+### Changed
+
+- El repositorio deja de presentarse solo como una coleccion de demos y pasa a explicarse como plataforma modular de sistemas dockerizados
+- El dashboard ahora distingue entre estado Docker, control operativo y acceso al sistema real
+- `05`, `06` y `09` quedaron alineados como columna vertebral del workspace
+- La documentacion principal se reescribio para mantener coherencia entre narrativa, arquitectura y estado real de entrega
+
+### Fixed
+
+- Correcciones de coherencia entre README, roadmap, catalogo y estado real de los labs
+- Ajustes de navegacion para volver al menu principal desde los sistemas activos
+- Limpieza de documentos con problemas de codificacion y textos heredados
+
+### Documentation
+
+- Nueva guia para principiantes orientada a uso caso a caso y restricciones reales de hardware
+- Referencia operativa con requerimientos minimos y stack por lab
+- Centro de aprendizaje embebido en HTML dentro del panel principal
 
 ## [1.0.0] - 2026-01-21
 
-### 🎉 Release Inicial con Documentación Profesional
-
-Este release marca la transformación de docker-labs a un proyecto con documentación de nivel profesional.
-
 ### Added
 
-#### 📖 Documentación Completa
-- Creada carpeta `docs/` con estructura organizada
-- **BEGINNERS_GUIDE.md**: Guía paso a paso para principiantes
-- **USER_MANUAL.md**: Manual completo de uso de todos los laboratorios
-- **INSTALL.md**: Instrucciones de instalación multi-OS (Windows, macOS, Linux)
-- **ARCHITECTURE.md**: Diagramas Mermaid y diseño técnico
-- **LABS_CATALOG.md**: Catálogo detallado de todos los laboratorios
-- **DOCKER_BASICS.md**: Conceptos fundamentales de Docker
-- **TECHNICAL_SPECS.md**: Especificaciones técnicas y versiones
-- **TROUBLESHOOTING.md**: Guía completa de solución de problemas
-- **BEST_PRACTICES.md**: Mejores prácticas de Docker y desarrollo
-- **MAINTAINERS.md**: Guía para mantenedores del proyecto
-
-#### 📋 Políticas y Gobernanza
-- **CODE_OF_CONDUCT.md**: Código de conducta para la comunidad
-- **CHANGELOG.md**: Este archivo (registro de cambios)
-
-#### ✨ Mejoras en Archivos Existentes
-- **README.md**: Completamente rediseñado con emojis, navegación clara y badges
-- **CONTRIBUTING.md**: Mejorado con ejemplos y templates
-- **ROADMAP.md**: Formato mejorado con tablas y prioridades
-- **SECURITY.md**: Política de seguridad más detallada
-
-#### 🧪 Laboratorios
-- **01-node-api**: API REST con Node.js y Express
-- **02-php-lamp**: Stack LAMP completo (PHP + Apache + MariaDB + phpMyAdmin)
-- **03-python-api**: API REST con Python y Flask
-
-### Changed
-- README principal ahora con sección hero atractiva
-- Mejora en navegación hacia documentación especializada
-- Estructura más clara y profesional en todos los archivos
-
-### Documentation
-- Agregados diagramas Mermaid para arquitectura
-- Links cruzados entre documentos para fácil navegación
-- Ejemplos de código en todos los laboratorios
-- Tablas comparativas y especificaciones técnicas
-
----
+- Estructura documental base en `docs/`
+- Politicas del repositorio
+- Primer bloque de labs documentados
 
 ## [0.1.0] - 2026-01-14
 
 ### Added
+
 - Estructura inicial del repositorio
-- Laboratorios básicos: 01-node-api, 02-php-lamp, 03-python-api
-- Archivos básicos: README, LICENSE, CONTRIBUTING, ROADMAP, SECURITY
-- Configuración de .gitignore y .dockerignore
-
----
-
-## Tipos de Cambios
-
-- **Added**: Nuevas funcionalidades
-- **Changed**: Cambios en funcionalidades existentes
-- **Deprecated**: Funcionalidades que se eliminarán pronto
-- **Removed**: Funcionalidades eliminadas
-- **Fixed**: Correcciones de bugs
-- **Security**: Cambios relacionados con seguridad
-
----
-
-## ¿Cómo Contribuir al CHANGELOG?
-
-Al crear un PR, agrega tu cambio en la sección `[Unreleased]` siguiendo el formato:
-
-```markdown
-### Added
-- Nueva funcionalidad X (#123)
-
-### Fixed
-- Corregido bug Y (#124)
-```
-
-Los mantenedores moverán los cambios a la versión correspondiente durante el release.
-
----
-
-[Unreleased]: https://github.com/vladimiracunadev-create/docker-labs/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/vladimiracunadev-create/docker-labs/releases/tag/v1.0.0
-[0.1.0]: https://github.com/vladimiracunadev-create/docker-labs/releases/tag/v0.1.0
+- Primeros labs del proyecto
