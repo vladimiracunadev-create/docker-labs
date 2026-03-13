@@ -24,7 +24,9 @@ const els = {
   logsTitle: document.getElementById("logs-title"),
   logsOutput: document.getElementById("logs-output"),
   refresh: document.getElementById("refresh-all"),
-  startAll: document.getElementById("start-all")
+  startAll: document.getElementById("start-all"),
+  stopAll: document.getElementById("stop-all"),
+  removeAll: document.getElementById("remove-all")
 };
 
 function formatTimestamp(value) {
@@ -326,6 +328,22 @@ async function runAction(labId, action) {
   await loadOverview(labId);
 }
 
+async function runWorkspaceAction(action, confirmationMessage = "") {
+  if (confirmationMessage && !window.confirm(confirmationMessage)) {
+    return;
+  }
+
+  els.logsOutput.textContent = "Ejecutando accion global sobre los entornos del repositorio...";
+  const payload = await fetchJson(`/api/workspace/${action}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({})
+  });
+
+  els.logsOutput.textContent = payload.output || "Accion global completada.";
+  await loadOverview(state.selectedLabId);
+}
+
 async function loadLogs(labId) {
   const payload = await fetchJson(`/api/labs/${labId}/logs`, {
     method: "POST",
@@ -375,6 +393,8 @@ els.startAll.addEventListener("click", async () => {
     }
   }
 });
+els.stopAll.addEventListener("click", () => runWorkspaceAction("stop-all", "Esto bajara todos los entornos Docker de este repositorio. Deseas continuar?"));
+els.removeAll.addEventListener("click", () => runWorkspaceAction("remove-all", "Esto eliminara contenedores, redes y volumenes de los entornos de este repositorio. Deseas continuar?"));
 
 loadOverview().catch((error) => {
   els.logsOutput.textContent = error.message;

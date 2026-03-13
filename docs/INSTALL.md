@@ -25,6 +25,24 @@ Antes de instalar Docker, asegúrate de tener:
 *   **Git:** [Descargar última versión](https://git-scm.com/downloads).
 *   **Editor de Código:** Recomendamos [VS Code](https://code.visualstudio.com/) con la extensión "Docker".
 
+### Recomendacion operativa realista
+
+No necesitas levantar todos los labs al mismo tiempo.
+
+Modo recomendado segun recursos:
+
+- **8 GB RAM**: panel principal + un sistema a la vez
+- **16 GB RAM**: panel principal + `05` + `09` + `06`
+- **24 GB RAM o mas**: plataforma principal + capacidades complementarias como monitoreo, mensajeria o busqueda
+
+En este repositorio, el flujo mas sano es:
+
+1. levantar solo el panel principal
+2. elegir el sistema que quieres usar
+3. levantar ese entorno caso a caso
+
+Eso reduce consumo de CPU, RAM y disco, y evita que Docker Desktop se vuelva innecesariamente pesado.
+
 ---
 
 ## 🖥️ Instalación de Docker

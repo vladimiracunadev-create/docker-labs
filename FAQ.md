@@ -10,6 +10,22 @@ El panel principal:
 
 [http://localhost:9090](http://localhost:9090)
 
+## Puedo levantar solo el panel y despues ir caso a caso
+
+Si. De hecho ese es el modo recomendado cuando quieres cuidar recursos.
+
+Lo normal es:
+
+- dejar el panel principal arriba
+- revisar estados
+- levantar solo el sistema que vas a usar
+
+## Cuanto hardware necesito realmente
+
+- `8 GB RAM`: suficiente para panel y un entorno a la vez
+- `16 GB RAM`: comodo para `05 + 09 + 06`
+- `24 GB RAM o mas`: mejor para sumar observabilidad, busqueda o mensajeria
+
 ## Que sistemas conviene abrir primero
 
 - `05-postgres-api`

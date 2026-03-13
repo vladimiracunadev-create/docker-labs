@@ -215,9 +215,58 @@ async function handleLabAction(lab, action, payload = {}) {
   throw new Error(`Unsupported action: ${action}`);
 }
 
+async function handleWorkspaceAction(action) {
+  const outputs = [];
+  const targets = [...labs].reverse();
+
+  for (const lab of targets) {
+    try {
+      if (action === "stop-all") {
+        const result = await dockerCompose(lab.composeFile, ["down"]);
+        if ((result.stdout || result.stderr || "").trim()) {
+          outputs.push(`## ${lab.id}\n${(result.stdout || result.stderr).trim()}`);
+        }
+      } else if (action === "remove-all") {
+        const result = await dockerCompose(lab.composeFile, ["down", "--volumes", "--remove-orphans"]);
+        if ((result.stdout || result.stderr || "").trim()) {
+          outputs.push(`## ${lab.id}\n${(result.stdout || result.stderr).trim()}`);
+        }
+      } else {
+        throw new Error(`Unsupported workspace action: ${action}`);
+      }
+    } catch (error) {
+      outputs.push(`## ${lab.id}\n${error.stderr || error.message || String(error)}`);
+    }
+  }
+
+  return {
+    ok: true,
+    action,
+    output: outputs.join("\n\n").trim()
+  };
+}
+
 async function handleApi(request, response, pathname) {
   if (pathname === "/api/overview" && request.method === "GET") {
     sendJson(response, 200, await getOverview());
+    return;
+  }
+
+  if (pathname === "/api/workspace/stop-all" && request.method === "POST") {
+    const result = await handleWorkspaceAction("stop-all");
+    sendJson(response, 200, {
+      ...result,
+      overview: await getOverview()
+    });
+    return;
+  }
+
+  if (pathname === "/api/workspace/remove-all" && request.method === "POST") {
+    const result = await handleWorkspaceAction("remove-all");
+    sendJson(response, 200, {
+      ...result,
+      overview: await getOverview()
+    });
     return;
   }
 
