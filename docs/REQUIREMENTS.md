@@ -1,6 +1,10 @@
 # Requirements
 
-Requisitos minimos y recomendados para ejecutar `docker-labs` con una expectativa realista.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Revisa este documento antes de levantar varios servicios o si quieres saber hasta donde conviene cargar Docker en tu equipo
+
+---
 
 ## Requisitos base
 
@@ -26,8 +30,8 @@ Requisitos minimos y recomendados para ejecutar `docker-labs` con una expectativ
 Los requisitos reales dependen del modo de uso.  
 Por eso el proyecto recomienda levantar el panel primero y despues decidir que sistemas encender.
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [Environment Setup](C:/docker-labs/docker-labs/ENVIRONMENT_SETUP.md)
-- [Operating Modes](C:/docker-labs/docker-labs/OPERATING-MODES.md)
+- [INSTALL.md](INSTALL.md)
+- [../ENVIRONMENT_SETUP.md](../ENVIRONMENT_SETUP.md)
+- [../OPERATING-MODES.md](../OPERATING-MODES.md)

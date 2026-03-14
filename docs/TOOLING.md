@@ -1,6 +1,10 @@
 # Tooling
 
-Herramientas principales utilizadas para operar, desarrollar y mantener el workspace.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Referencia corta de herramientas para operar, desarrollar y mantener el workspace
+
+---
 
 ## Herramientas de runtime
 
@@ -26,8 +30,8 @@ Herramientas principales utilizadas para operar, desarrollar y mantener el works
 | Learning Center | Referencia HTML dentro del entorno |
 | Markdown docs | Gobernanza documental del repo |
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
-- [Environment Setup](C:/docker-labs/docker-labs/ENVIRONMENT_SETUP.md)
-- [Documentation Index](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
+- [TECHNICAL_SPECS.md](TECHNICAL_SPECS.md)
+- [../ENVIRONMENT_SETUP.md](../ENVIRONMENT_SETUP.md)
+- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)

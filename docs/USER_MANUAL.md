@@ -109,11 +109,11 @@ El panel sugiere:
 
 - no levantes todo si no lo necesitas
 - usa el gateway para navegar mejor
-- revisa [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md) antes de mezclar labs pesados
+- revisa [Labs Runtime Reference](LABS_RUNTIME_REFERENCE.md) antes de mezclar labs pesados
 - usa `remove-all` solo cuando quieras limpiar tambien volumenes
 
 ## 🔗 Documentos relacionados
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
-- [FAQ](C:/docker-labs/docker-labs/FAQ.md)
+- [README](../README.md)
+- [Dashboard Setup](DASHBOARD_SETUP.md)
+- [FAQ](../FAQ.md)

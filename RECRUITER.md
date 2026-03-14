@@ -1,76 +1,93 @@
-# Recruiter Guide
+# Guia Estrategica para Reclutadores (RECRUITER)
 
-Guia rapida para evaluar `docker-labs` como pieza de portafolio tecnico.
+> **Version**: 1.4  
+> **Estado**: Operativo  
+> **Audiencia**: Reclutadores, hiring managers, lideres tecnicos  
+> **Executive Summary**: `docker-labs` demuestra criterio para transformar laboratorios Docker en una plataforma modular con control centralizado, backend transaccional, portal operativo y gateway comun.
 
-## Que es
+---
 
-`docker-labs` evoluciono desde una coleccion de laboratorios Docker hacia una plataforma modular con cuatro piezas visibles:
+## Valor de negocio y vision
 
-| Componente | Estado | Valor |
-|---|---|---|
-| `05-postgres-api` | Funcional | Backend transaccional serio |
-| `09-multi-service-app` | Funcional | Portal operativo integrado |
-| `06-nginx-proxy` | Funcional | Gateway de acceso |
-| `dashboard-control` | Funcional | Workspace y diagnostico |
+Este proyecto no intenta impresionar con cantidad de carpetas. Su valor esta en mostrar como un repositorio de laboratorios puede evolucionar hacia una experiencia de workspace mas seria, navegable y auditable.
 
-## Que demuestra
+### Que evidencia entrega hoy
 
-- Docker y Docker Compose aplicados a multiples stacks
-- Integracion real entre servicios
-- Modelado backend con FastAPI y PostgreSQL
-- Portal operativo conectado a un core transaccional
-- Capa de gateway y experiencia de workspace
-- Documentacion tecnica con enfoque de producto
+| Area | Evidencia |
+|---|---|
+| Docker / Compose | Operacion de multiples stacks desde un panel central |
+| Backend | Core transaccional con FastAPI y PostgreSQL |
+| Full stack | Portal operativo conectado a un backend real |
+| Infraestructura | Gateway Nginx y control de entorno |
+| Documentacion | Ruta por audiencias, estado, requisitos y runbook |
 
-## Como revisarlo rapido
+## Que mirar en 5 minutos
 
-1. abrir el panel principal en [http://localhost:9090](http://localhost:9090)
-2. revisar el diagnostico del runtime
-3. abrir `Inventory Core`
-4. abrir `Operations Portal`
-5. abrir `Platform Gateway`
+Si quieres evaluar el repo rapido, este es el recorrido recomendado:
 
-Con eso se entiende la historia principal del repositorio sin recorrer las 12 carpetas.
+1. Abre [README.md](README.md)
+2. Revisa [PROJECT_STATUS.md](PROJECT_STATUS.md)
+3. Entra a [http://localhost:9090](http://localhost:9090)
+4. Abre [05-postgres-api/README.md](05-postgres-api/README.md)
+5. Abre [09-multi-service-app/README.md](09-multi-service-app/README.md)
+6. Valida [06-nginx-proxy/README.md](06-nginx-proxy/README.md)
 
-## Que mirar
+Con ese recorrido se entiende la historia principal del repositorio sin necesidad de revisar los 12 labs.
 
-### Criterio tecnico
+## Decisiones arquitectonicas que vale la pena notar
 
-- [05-postgres-api](05-postgres-api/README.md)
-- [09-multi-service-app](09-multi-service-app/README.md)
-- [06-nginx-proxy](06-nginx-proxy/README.md)
-- [dashboard-control/server.js](dashboard-control/server.js)
+1. **Panel dockerizado como entrada principal**  
+   El workspace no depende de recordar puertos sueltos; se gobierna desde `9090`.
 
-### Criterio de producto
+2. **Core transaccional antes que frontend vistoso**  
+   La implementacion partio por `05-postgres-api` para definir dominio, salud y contratos.
 
-- el repositorio no se vende como demos sueltas
-- los sistemas principales tienen objetivo y relacion entre si
-- existe una entrada operativa comun
+3. **Gateway como capa de integracion**  
+   `06-nginx-proxy` convierte servicios separados en una experiencia de plataforma.
 
-### Criterio documental
+4. **Modo caso a caso segun capacidad del host**  
+   El proyecto incorpora diagnostico de recursos para decidir que conviene levantar.
 
-- [README](README.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Project Status](PROJECT_STATUS.md)
-- [Platform Roadmap](docs/PLATFORM_ROADMAP.md)
+## Habilidades tecnicas demostradas
+
+| Area | Competencias visibles |
+|---|---|
+| Backend | FastAPI, modelado transaccional, PostgreSQL, healthchecks |
+| Frontend / integracion | Portal operativo, consumo de API, navegacion cruzada |
+| DevOps | Docker, Compose, gateway, healthchecks, CI base |
+| Operacion | Diagnostico del host, runbook, modos de uso, troubleshooting |
+| Documentacion | Arquitectura, requisitos, release guide, recruiter guide |
 
 ## Estado actual
 
-El proyecto ya funciona como:
+| Componente | Estado | Lectura recomendada |
+|---|---|---|
+| `dashboard-control` | Operativo | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) |
+| `05-postgres-api` | Operativo | [05-postgres-api/README.md](05-postgres-api/README.md) |
+| `09-multi-service-app` | Operativo | [09-multi-service-app/README.md](09-multi-service-app/README.md) |
+| `06-nginx-proxy` | Operativo | [06-nginx-proxy/README.md](06-nginx-proxy/README.md) |
+| Labs secundarios | En evolucion | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
 
-- workspace local util
-- activo de portafolio tecnico
-- base de evolucion hacia una plataforma mas integrada
+## Lo que el proyecto si es hoy
 
-Todavia no intenta ser:
+- un workspace local util y demostrable
+- un activo de portafolio tecnico con narrativa clara
+- una base coherente para crecer hacia una plataforma mas madura
+
+## Lo que todavia no intenta vender
 
 - un reemplazo completo de Docker Desktop
-- una plataforma productiva final
-- un set de 12 labs totalmente homogeneos
+- una plataforma productiva cerrada
+- doce labs ya homologados al mismo nivel de profundidad
 
-## Lectura recomendada
+## Documentos a revisar despues
 
-- [README](README.md)
-- [RECRUITER.md](RECRUITER.md)
-- [PROJECT_STATUS.md](PROJECT_STATUS.md)
-- [docs/PLATFORM_ROADMAP.md](docs/PLATFORM_ROADMAP.md)
+| Documento | Motivo |
+|---|---|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Entender la estructura del sistema |
+| [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md) | Ver stacks, puertos y contratos |
+| [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) | Validar costo operativo real del entorno |
+| [docs/PLATFORM_ROADMAP.md](docs/PLATFORM_ROADMAP.md) | Conocer direccion y madurez futura |
+
+> [!TIP]
+> Si deseas evaluar el repositorio sin entrar al codigo de inmediato, entra primero al panel en [http://localhost:9090](http://localhost:9090) y luego recorre `Inventory Core`, `Operations Portal` y `Platform Gateway`.

@@ -25,10 +25,10 @@ El panel en `9090` existe para resolver cuatro problemas:
 
 Componentes:
 
-1. [dashboard-control/docker-compose.yml](C:/docker-labs/docker-labs/dashboard-control/docker-compose.yml)
-2. [dashboard-control/Dockerfile](C:/docker-labs/docker-labs/dashboard-control/Dockerfile)
-3. [dashboard-control/server.js](C:/docker-labs/docker-labs/dashboard-control/server.js)
-4. [index.html](C:/docker-labs/docker-labs/index.html), [dashboard.js](C:/docker-labs/docker-labs/dashboard.js), [dashboard.css](C:/docker-labs/docker-labs/dashboard.css)
+1. [dashboard-control/docker-compose.yml](../dashboard-control/docker-compose.yml)
+2. [dashboard-control/Dockerfile](../dashboard-control/Dockerfile)
+3. [dashboard-control/server.js](../dashboard-control/server.js)
+4. [index.html](../index.html), [dashboard.js](../dashboard.js), [dashboard.css](../dashboard.css)
 
 ## ⚙️ Como funciona
 
@@ -110,7 +110,7 @@ curl http://localhost:9090/api/diagnostics
 
 ## 📚 Documentos relacionados
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [FAQ](C:/docker-labs/docker-labs/FAQ.md)
+- [README](../README.md)
+- [Install Guide](INSTALL.md)
+- [User Manual](USER_MANUAL.md)
+- [FAQ](../FAQ.md)

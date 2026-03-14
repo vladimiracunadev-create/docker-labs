@@ -53,6 +53,6 @@ En este repo no hace falta levantar todo a la vez. Lo más sano es:
 
 ## Sigue leyendo
 
-- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [Beginner Guide](BEGINNERS_GUIDE.md)
+- [Install Guide](INSTALL.md)
+- [User Manual](USER_MANUAL.md)

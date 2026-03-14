@@ -12,9 +12,9 @@ Este repo no requiere levantar los 12 labs a la vez. El flujo recomendado es:
 
 Relacion con otros documentos:
 
-- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
-- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+- [Beginner Guide](BEGINNERS_GUIDE.md)
+- [Dashboard Setup](DASHBOARD_SETUP.md)
+- [Labs Runtime Reference](LABS_RUNTIME_REFERENCE.md)
 
 ## 🧰 Requisitos
 

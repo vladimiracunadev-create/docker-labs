@@ -1,14 +1,18 @@
 # Runbook
 
-Manual operativo rapido para administrar el workspace en el dia a dia.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Guia de operacion rapida para el dia a dia del workspace
+
+---
 
 ## Acciones frecuentes
 
-### Levantar el panel principal
-
-```powershell
-scripts\start-control-center.cmd
-```
+| Accion | Comando |
+|---|---|
+| Levantar el panel principal | `scripts\start-control-center.cmd` |
+| Levantar la plataforma principal | `docker compose -f dashboard-control\docker-compose.yml up -d --build` + stacks principales |
+| Bajar la plataforma principal | `docker compose -f ... down` por cada stack |
 
 ### Levantar la plataforma principal
 
@@ -38,7 +42,7 @@ docker compose -f dashboard-control\docker-compose.yml down
 | Portal | [http://localhost:8083](http://localhost:8083) |
 | Gateway | [http://localhost:8085](http://localhost:8085) |
 
-## Incidencias comunes
+## Respuesta a incidencias comunes
 
 | Problema | Respuesta operativa |
 |---|---|
@@ -47,8 +51,8 @@ docker compose -f dashboard-control\docker-compose.yml down
 | Gateway sin rutas | Valida que `05`, `09` y `9090` esten levantados |
 | Docker saturado | Baja todo y vuelve a levantar en modo caso a caso |
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Troubleshooting](C:/docker-labs/docker-labs/docs/TROUBLESHOOTING.md)
-- [Operating Modes](C:/docker-labs/docker-labs/OPERATING-MODES.md)
-- [Compatibility](C:/docker-labs/docker-labs/COMPATIBILITY.md)
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- [OPERATING-MODES.md](OPERATING-MODES.md)
+- [COMPATIBILITY.md](COMPATIBILITY.md)

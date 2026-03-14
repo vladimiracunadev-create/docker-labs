@@ -4,7 +4,7 @@ Hoja de ruta general de `docker-labs`.
 
 ## Propósito
 
-Este archivo conserva la dirección macro del proyecto. Para el plan más detallado de la plataforma principal, revisa [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md).
+Este archivo conserva la direccion macro del proyecto. Para el plan mas detallado de la plataforma principal, revisa [Platform Roadmap](docs/PLATFORM_ROADMAP.md).
 
 ## Visión
 

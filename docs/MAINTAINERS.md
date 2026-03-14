@@ -28,7 +28,7 @@ Un maintainer en `docker-labs` debe cuidar:
 
 ## Lecturas recomendadas
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Developing](C:/docker-labs/docker-labs/DEVELOPING.md)
-- [Contributing](C:/docker-labs/docker-labs/CONTRIBUTING.md)
-- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [README](../README.md)
+- [Developing](../DEVELOPING.md)
+- [Contributing](../CONTRIBUTING.md)
+- [Platform Roadmap](PLATFORM_ROADMAP.md)

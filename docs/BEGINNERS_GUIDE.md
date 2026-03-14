@@ -14,9 +14,9 @@ Empieza asi:
 
 Documentos relacionados:
 
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+- [Install Guide](INSTALL.md)
+- [User Manual](USER_MANUAL.md)
+- [Labs Runtime Reference](LABS_RUNTIME_REFERENCE.md)
 
 ## 🧱 Que es este repositorio
 

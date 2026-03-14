@@ -1,13 +1,12 @@
 # System Specs
 
-Resumen ejecutivo de las especificaciones del sistema para quienes necesitan una lectura rapida de capacidades y componentes.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Vista ejecutiva del sistema para entender capacidades y componentes sin entrar todavia al detalle tecnico
 
-## Objetivo
+---
 
-Este documento no reemplaza a [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md).  
-Existe para dar una vista corta y profesional del sistema como producto y workspace.
-
-## Componentes principales
+## Resumen de componentes principales
 
 | Componente | Stack | Puerto principal | Estado esperado |
 |---|---|---|---|
@@ -18,7 +17,7 @@ Existe para dar una vista corta y profesional del sistema como producto y worksp
 
 ## Capacidades visibles
 
-| Capacidad | Presente |
+| Capacidad | Presencia |
 |---|---|
 | Control Docker por lab | Si |
 | Diagnostico de host y Docker | Si |
@@ -27,16 +26,26 @@ Existe para dar una vista corta y profesional del sistema como producto y worksp
 | Learning Center integrado | Si |
 | Gateway comun | Si |
 
+## Rutas principales del usuario
+
+| Entrada | Uso |
+|---|---|
+| [http://localhost:9090](http://localhost:9090) | Control y diagnostico del workspace |
+| [http://localhost:8000](http://localhost:8000) | Inventory Core |
+| [http://localhost:8000/docs](http://localhost:8000/docs) | Swagger del core |
+| [http://localhost:8083](http://localhost:8083) | Operations Portal |
+| [http://localhost:8085](http://localhost:8085) | Platform Gateway |
+
 ## Requisitos operativos recomendados
 
-| Escenario | Sugerencia |
+| Escenario | Recomendacion |
 |---|---|
-| Desarrollo liviano | Panel + 1 lab |
+| Desarrollo liviano | Panel + un lab |
 | Demo principal | `9090` + `05` + `06` + `09` |
 | Infraestructura avanzada | Levantar servicios pesados de forma aislada |
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
-- [Requirements](C:/docker-labs/docker-labs/docs/REQUIREMENTS.md)
-- [Compatibility](C:/docker-labs/docker-labs/COMPATIBILITY.md)
+- [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md)
+- [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)
+- [COMPATIBILITY.md](COMPATIBILITY.md)

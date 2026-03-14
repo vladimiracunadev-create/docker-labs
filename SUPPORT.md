@@ -6,10 +6,10 @@ Guía breve para pedir ayuda en `docker-labs`.
 
 Revisa primero:
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
-- [Troubleshooting](C:/docker-labs/docker-labs/docs/TROUBLESHOOTING.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [README](README.md)
+- [User Manual](docs/USER_MANUAL.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Dashboard Setup](docs/DASHBOARD_SETUP.md)
 
 ## Cómo pedir ayuda
 

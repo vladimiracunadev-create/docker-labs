@@ -1,60 +1,54 @@
 # Operating Modes
 
-Modos recomendados para usar `docker-labs` segun el objetivo de trabajo y la capacidad de tu equipo.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Abre este documento si no sabes si conviene levantar todo o solo una parte del repositorio
 
-## 1. Modo panel primero
+---
+
+## Modo 1: Panel primero
 
 Levanta solo el Control Center en `9090`.
 
-### Cuando usarlo
+| Cuando usarlo | Ventaja |
+|---|---|
+| No sabes aun que lab abrir | Tomas decisiones con diagnostico real |
+| Tienes recursos limitados | Evitas cargar Docker sin necesidad |
+| Quieres revisar el estado del entorno | El panel te muestra capacidad y estado |
 
-- Cuando no sabes aun que lab abrir
-- Cuando quieres revisar diagnostico del host
-- Cuando tienes recursos limitados
-
-### Ventaja
-
-Te permite decidir con criterio antes de cargar Docker innecesariamente.
-
-## 2. Modo caso a caso
+## Modo 2: Caso a caso
 
 Levanta el panel y un solo lab operativo segun necesidad.
 
-### Cuando usarlo
+| Escenario | Ejemplo |
+|---|---|
+| Aprender un stack puntual | `9090` + `05` |
+| Mostrar una capacidad concreta | `9090` + `06` |
+| Trabajar con host limitado | `9090` + `09` |
 
-- Para estudiar un stack especifico
-- Para equipos con 8 GB de RAM o menos
-- Para demos enfocadas
-
-### Ejemplos
-
-- `9090` + `05`
-- `9090` + `06`
-- `9090` + `09`
-
-## 3. Modo plataforma principal
+## Modo 3: Plataforma principal
 
 Levanta `9090`, `05`, `06` y `09`.
 
-### Cuando usarlo
+| Cuando usarlo | Valor |
+|---|---|
+| Demo profesional del repo | Muestra la historia principal completa |
+| Revisión de integracion | Se valida panel, core, portal y gateway |
+| Trabajo funcional sobre la plataforma | Entorno mas cercano a la experiencia objetivo |
 
-- Para mostrar el valor completo del repo
-- Para revisar la experiencia integrada
-- Para una demo profesional del workspace
+## Modo 4: Infra especializada
 
-## 4. Modo infra especializada
-
-Levanta uno de los servicios pesados como `08`, `11` o `12`, idealmente sin saturar la plataforma principal.
+Levanta un servicio pesado como `08`, `11` o `12`, idealmente sin saturar la plataforma principal.
 
 ## Recomendacion operativa
 
-1. Empieza por `9090`.
-2. Revisa diagnostico.
-3. Elige el modo de trabajo.
-4. Si Docker queda justo, baja todo antes de probar otro escenario.
+1. Empieza por `9090`
+2. Revisa diagnostico
+3. Elige el modo de trabajo
+4. Si Docker queda justo, baja todo antes de probar otro escenario
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Environment Setup](C:/docker-labs/docker-labs/ENVIRONMENT_SETUP.md)
-- [Requirements](C:/docker-labs/docker-labs/docs/REQUIREMENTS.md)
-- [Compatibility](C:/docker-labs/docker-labs/COMPATIBILITY.md)
+- [ENVIRONMENT_SETUP.md](ENVIRONMENT_SETUP.md)
+- [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)
+- [COMPATIBILITY.md](COMPATIBILITY.md)

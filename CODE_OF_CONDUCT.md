@@ -24,8 +24,8 @@ Queremos que contribuir o participar en este proyecto sea una experiencia libre 
 
 Si necesitas reportar un problema:
 
-- revisa [Maintainers Guide](C:/docker-labs/docker-labs/docs/MAINTAINERS.md)
-- usa los canales indicados en [Support](C:/docker-labs/docker-labs/SUPPORT.md)
+- revisa [Maintainers Guide](docs/MAINTAINERS.md)
+- usa los canales indicados en [Support](SUPPORT.md)
 
 ## Aplicación
 

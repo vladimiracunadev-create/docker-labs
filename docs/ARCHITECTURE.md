@@ -41,7 +41,7 @@ flowchart LR
 
 Componente:
 
-- [dashboard-control/server.js](C:/docker-labs/docker-labs/dashboard-control/server.js)
+- [dashboard-control/server.js](../dashboard-control/server.js)
 
 Responsabilidades:
 
@@ -54,7 +54,7 @@ Responsabilidades:
 
 Componente:
 
-- [05-postgres-api/README.md](C:/docker-labs/docker-labs/05-postgres-api/README.md)
+- [05-postgres-api/README.md](../05-postgres-api/README.md)
 
 Responsabilidades:
 
@@ -68,7 +68,7 @@ Responsabilidades:
 
 Componente:
 
-- [09-multi-service-app/README.md](C:/docker-labs/docker-labs/09-multi-service-app/README.md)
+- [09-multi-service-app/README.md](../09-multi-service-app/README.md)
 
 Responsabilidades:
 
@@ -80,7 +80,7 @@ Responsabilidades:
 
 Componente:
 
-- [06-nginx-proxy/README.md](C:/docker-labs/docker-labs/06-nginx-proxy/README.md)
+- [06-nginx-proxy/README.md](../06-nginx-proxy/README.md)
 
 Responsabilidades:
 
@@ -116,7 +116,7 @@ flowchart TD
 
 ## 📚 Documentos relacionados
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
-- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [README](../README.md)
+- [Dashboard Setup](DASHBOARD_SETUP.md)
+- [Technical Specs](TECHNICAL_SPECS.md)
+- [Platform Roadmap](PLATFORM_ROADMAP.md)

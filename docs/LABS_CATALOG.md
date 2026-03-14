@@ -25,38 +25,38 @@ Catálogo de los 12 labs del repositorio y su lugar dentro del workspace.
 
 - rol: core del negocio
 - objetivo: clientes, productos, pedidos y stock
-- abrir: [README](C:/docker-labs/docker-labs/05-postgres-api/README.md)
+- abrir: [README](../05-postgres-api/README.md)
 
 ### `09-multi-service-app`
 
 - rol: portal operativo
 - objetivo: visualizar y operar sobre el core
-- abrir: [README](C:/docker-labs/docker-labs/09-multi-service-app/README.md)
+- abrir: [README](../09-multi-service-app/README.md)
 
 ### `06-nginx-proxy`
 
 - rol: gateway
 - objetivo: unificar accesos a panel, core y portal
-- abrir: [README](C:/docker-labs/docker-labs/06-nginx-proxy/README.md)
+- abrir: [README](../06-nginx-proxy/README.md)
 
 ## 🧰 Capacidades complementarias
 
 | Lab | Cuándo usarlo | Abrir |
 |---|---|---|
-| `04-redis-cache` | Cuando quieras demostrar cache y mejora de respuesta | [README](C:/docker-labs/docker-labs/04-redis-cache/README.md) |
-| `07-rabbitmq-messaging` | Cuando quieras mostrar procesos desacoplados | [README](C:/docker-labs/docker-labs/07-rabbitmq-messaging/README.md) |
-| `08-prometheus-grafana` | Cuando quieras monitoreo y métricas | [README](C:/docker-labs/docker-labs/08-prometheus-grafana/README.md) |
-| `11-elasticsearch-search` | Cuando quieras búsqueda o indexación | [README](C:/docker-labs/docker-labs/11-elasticsearch-search/README.md) |
-| `12-jenkins-ci` | Cuando quieras automatización de pipelines | [README](C:/docker-labs/docker-labs/12-jenkins-ci/README.md) |
+| `04-redis-cache` | Cuando quieras demostrar cache y mejora de respuesta | [README](../04-redis-cache/README.md) |
+| `07-rabbitmq-messaging` | Cuando quieras mostrar procesos desacoplados | [README](../07-rabbitmq-messaging/README.md) |
+| `08-prometheus-grafana` | Cuando quieras monitoreo y metricas | [README](../08-prometheus-grafana/README.md) |
+| `11-elasticsearch-search` | Cuando quieras busqueda o indexacion | [README](../11-elasticsearch-search/README.md) |
+| `12-jenkins-ci` | Cuando quieras automatizacion de pipelines | [README](../12-jenkins-ci/README.md) |
 
 ## 🌱 Starters
 
 | Lab | Valor principal | Abrir |
 |---|---|---|
-| `01-node-api` | Entender una API Dockerizada simple | [README](C:/docker-labs/docker-labs/01-node-api/README.md) |
-| `02-php-lamp` | Ver un stack LAMP clásico | [README](C:/docker-labs/docker-labs/02-php-lamp/README.md) |
-| `03-python-api` | Ver una API Python mínima | [README](C:/docker-labs/docker-labs/03-python-api/README.md) |
-| `10-go-api` | Ver un servicio pequeño y rápido | [README](C:/docker-labs/docker-labs/10-go-api/README.md) |
+| `01-node-api` | Entender una API Dockerizada simple | [README](../01-node-api/README.md) |
+| `02-php-lamp` | Ver un stack LAMP clasico | [README](../02-php-lamp/README.md) |
+| `03-python-api` | Ver una API Python minima | [README](../03-python-api/README.md) |
+| `10-go-api` | Ver un servicio pequeno y rapido | [README](../10-go-api/README.md) |
 
 ## 🧭 Orden recomendado
 
@@ -69,6 +69,6 @@ Catálogo de los 12 labs del repositorio y su lugar dentro del workspace.
 
 ## 🔗 Documentos relacionados
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Labs Runtime Reference](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+- [README](../README.md)
+- [Labs Runtime Reference](LABS_RUNTIME_REFERENCE.md)
+- [Technical Specs](TECHNICAL_SPECS.md)

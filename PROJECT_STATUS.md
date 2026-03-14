@@ -1,44 +1,64 @@
-# 📊 Project Status
+# Project Status
 
-Estado actual del repositorio y de la plataforma principal.
+> **Version**: 1.4  
+> **Estado general**: Operativo con mejoras en curso  
+> **Alcance actual**: Panel dockerizado, core transaccional, portal operativo y gateway funcional
+
+---
 
 ## Resumen ejecutivo
 
-`docker-labs` ya ofrece un workspace local operativo con panel, core, portal y gateway. Aún no es una plataforma cerrada ni homogénea en sus 12 labs, pero sí tiene una columna vertebral clara.
+`docker-labs` ya ofrece una experiencia principal usable compuesta por `9090`, `05`, `09` y `06`. El repositorio tiene una columna vertebral clara, documentacion operativa suficiente y una narrativa de plataforma. Lo que sigue en evolucion es la homogeneizacion de los labs secundarios y el endurecimiento tecnico del ecosistema completo.
 
-## Estado actual
+## Estado de la plataforma principal
 
 | Componente | Estado | Nota |
 |---|---|---|
-| `dashboard-control` | 🟢 Operativo | Dockerizado y con diagnóstico |
-| `05-postgres-api` | 🟢 Operativo | Core transaccional documentado |
-| `09-multi-service-app` | 🟢 Operativo | Integrado con `05` |
-| `06-nginx-proxy` | 🟢 Operativo | Gateway funcional |
-| Labs complementarios | 🟡 En evolución | Útiles, pero aún no todos al mismo estándar |
+| `dashboard-control` | OPERATIVO | Dockerizado y con diagnostico del host |
+| `05-postgres-api` | OPERATIVO | Core transaccional documentado |
+| `09-multi-service-app` | OPERATIVO | Integrado con `05` |
+| `06-nginx-proxy` | OPERATIVO | Gateway funcional |
+| Learning Center | OPERATIVO | Material de apoyo dentro del panel |
 
-## Consolidado
+## Estado por area
+
+| Area | Estado | Comentario |
+|---|---|---|
+| Experiencia principal del workspace | Consolidada | La historia principal del repo ya se puede demostrar |
+| Documentacion troncal | Consolidada | README, recruiter, status, requirements y runbook ya existen |
+| Diagnostico de capacidad del host | Consolidado | El panel ayuda a decidir que levantar |
+| Estilo editorial de los 12 labs | En evolucion | Todavia falta elevar algunos README secundarios |
+| Automatizacion profunda de pruebas | En evolucion | Existe CI base, pero no cobertura total del ecosistema |
+| Kubernetes / despliegue avanzado | En evolucion | Hay base documental, pero no una operacion completa unificada |
+
+## Lo consolidado
 
 - panel principal operativo y dockerizado en `9090`
-- diagnóstico de capacidad del equipo y del runtime Docker
+- diagnostico de host y runtime Docker
 - `05`, `06` y `09` como experiencia principal de plataforma
-- navegación clara entre sistemas
-- documentación troncal alineada con el estado real
+- navegacion clara entre sistemas
+- documentacion por audiencia y por objetivo
 
-## En evolución
+## Lo que sigue en evolucion
 
-- estandarización editorial de todos los labs
-- automatización de pruebas más profunda
-- endurecimiento de despliegue y Kubernetes
-- mayor coherencia narrativa en labs secundarios
+- estandarizacion editorial de los labs secundarios
+- mayor profundidad funcional en algunos stacks complementarios
+- pruebas integradas mas fuertes entre servicios
+- endurecimiento de despliegue y observabilidad
 
-## Lo que el proyecto sí es hoy
+## Riesgos o limites actuales
 
-- un workspace usable
-- un activo de portafolio técnico
-- una base para seguir creciendo con criterio
+| Riesgo | Impacto |
+|---|---|
+| Recursos limitados del host | Obliga a levantar casos de forma selectiva |
+| Desnivel entre labs principales y secundarios | Puede generar una experiencia desigual |
+| Expectativas infladas sobre "reemplazar Docker Desktop" | El repo no busca eso todavia |
 
-## Lo que todavía no es
+## Recomendacion de lectura
 
-- un reemplazo completo de Docker Desktop
-- una plataforma productiva terminada
-- un ecosistema totalmente homogéneo en todos sus labs
+| Si quieres... | Abre |
+|---|---|
+| Entender la historia principal | [README.md](README.md) |
+| Evaluar el repo rapido | [RECRUITER.md](RECRUITER.md) |
+| Ver direccion futura | [docs/PLATFORM_ROADMAP.md](docs/PLATFORM_ROADMAP.md) |
+| Ver el catalogo completo | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |

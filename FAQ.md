@@ -57,6 +57,6 @@ Si. El panel ya ofrece:
 
 ## 🔗 Donde sigo leyendo
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [README](README.md)
+- [Install Guide](docs/INSTALL.md)
+- [Dashboard Setup](docs/DASHBOARD_SETUP.md)

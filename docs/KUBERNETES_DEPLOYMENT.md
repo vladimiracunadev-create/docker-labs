@@ -29,7 +29,7 @@ Esta guía no pretende vender que todos los labs ya están listos para Kubernete
 
 Archivos:
 
-- [05-postgres-api/k8s/deployment.yaml](C:/docker-labs/docker-labs/05-postgres-api/k8s/deployment.yaml)
+- [05-postgres-api/k8s/deployment.yaml](../05-postgres-api/k8s/deployment.yaml)
 
 Flujo:
 
@@ -59,6 +59,6 @@ Si tu objetivo es mostrar una ruta seria a Kubernetes, hoy céntrate en:
 
 ## Documentos relacionados
 
-- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
-- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+- [Architecture](ARCHITECTURE.md)
+- [Platform Roadmap](PLATFORM_ROADMAP.md)
+- [Technical Specs](TECHNICAL_SPECS.md)

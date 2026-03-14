@@ -46,6 +46,6 @@ Buenas prácticas para desarrollar, mantener y ampliar `docker-labs`.
 
 ## Referencias
 
-- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
-- [Security Policy](C:/docker-labs/docker-labs/SECURITY.md)
-- [Developing](C:/docker-labs/docker-labs/DEVELOPING.md)
+- [Technical Specs](TECHNICAL_SPECS.md)
+- [Security Policy](../SECURITY.md)
+- [Developing](../DEVELOPING.md)

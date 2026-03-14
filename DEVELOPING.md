@@ -36,7 +36,7 @@ Guía para extender `docker-labs` sin romper la coherencia del repositorio.
 
 ## Referencias internas
 
-- [05-postgres-api/README.md](C:/docker-labs/docker-labs/05-postgres-api/README.md)
-- [09-multi-service-app/README.md](C:/docker-labs/docker-labs/09-multi-service-app/README.md)
-- [06-nginx-proxy/README.md](C:/docker-labs/docker-labs/06-nginx-proxy/README.md)
-- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [05-postgres-api/README.md](05-postgres-api/README.md)
+- [09-multi-service-app/README.md](09-multi-service-app/README.md)
+- [06-nginx-proxy/README.md](06-nginx-proxy/README.md)
+- [Dashboard Setup](docs/DASHBOARD_SETUP.md)

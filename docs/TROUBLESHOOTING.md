@@ -94,6 +94,6 @@ Si tu Docker tiene menos de `16 GB`, usa modo caso a caso.
 
 ## Documentos relacionados
 
-- [FAQ](C:/docker-labs/docker-labs/FAQ.md)
-- [Install Guide](C:/docker-labs/docker-labs/docs/INSTALL.md)
-- [User Manual](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [FAQ](../FAQ.md)
+- [Install Guide](INSTALL.md)
+- [User Manual](USER_MANUAL.md)

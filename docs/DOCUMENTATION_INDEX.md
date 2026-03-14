@@ -1,63 +1,60 @@
-# 🗂️ Documentation Index
+# Documentation Index
 
-Mapa rapido de la documentacion principal del repositorio.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Empieza aqui si no sabes que documento abrir primero
 
-## Inicio
+---
 
-| Documento | Descripcion |
-|---|---|
-| [README](../README.md) | Portada principal, estado del workspace y rutas recomendadas |
-| [Beginner Guide](BEGINNERS_GUIDE.md) | Introduccion para novatos y ruta de aprendizaje |
-| [Install Guide](INSTALL.md) | Instalacion, requisitos y arranque del entorno |
-| [Requirements](REQUIREMENTS.md) | Requisitos minimos y recomendados del host y de Docker |
-| [Environment Setup](../ENVIRONMENT_SETUP.md) | Preparacion del equipo, Docker Desktop y orden de arranque |
+## Como usar este indice
 
-## Operacion
+Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para que la navegacion sea directa tambien desde GitHub.
 
-| Documento | Descripcion |
-|---|---|
-| [User Manual](USER_MANUAL.md) | Uso diario del workspace y operacion por casos |
-| [Dashboard Setup](DASHBOARD_SETUP.md) | Como funciona el panel `9090` |
-| [FAQ](../FAQ.md) | Preguntas comunes de uso y capacidad |
-| [Operating Modes](../OPERATING-MODES.md) | Modos de uso segun objetivo y capacidad del equipo |
-| [Runbook](../RUNBOOK.md) | Arranque, apagado y respuesta operativa rapida |
+## Inicio y operacion
 
-## Referencia tecnica
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| README | Todos | Portada principal, estado del workspace y rutas recomendadas | [Abrir](../README.md) |
+| Beginner Guide | Principiantes | Introduccion para novatos y orden de aprendizaje | [Abrir](BEGINNERS_GUIDE.md) |
+| Install Guide | Todos | Instalacion, requisitos y arranque del entorno | [Abrir](INSTALL.md) |
+| Requirements | Todos | Requisitos minimos y recomendados del host y de Docker | [Abrir](REQUIREMENTS.md) |
+| Environment Setup | Operadores | Preparacion del equipo, Docker Desktop y orden de arranque | [Abrir](../ENVIRONMENT_SETUP.md) |
+| User Manual | Usuarios del workspace | Uso diario del panel y operacion por casos | [Abrir](USER_MANUAL.md) |
+| Dashboard Setup | Dev / DevOps | Arquitectura y operacion del panel `9090` | [Abrir](DASHBOARD_SETUP.md) |
+| Operating Modes | Todos | Modos de uso segun capacidad del equipo | [Abrir](../OPERATING-MODES.md) |
+| Runbook | Operadores | Arranque, apagado y respuesta operativa rapida | [Abrir](../RUNBOOK.md) |
 
-| Documento | Descripcion |
-|---|---|
-| [Architecture](ARCHITECTURE.md) | Arquitectura general del repositorio |
-| [Technical Specs](TECHNICAL_SPECS.md) | Stacks, puertos y especificaciones principales |
-| [System Specs](../SYSTEM_SPECS.md) | Vista ejecutiva de componentes y capacidades del sistema |
-| [Labs Catalog](LABS_CATALOG.md) | Catalogo de los 12 labs |
-| [Labs Runtime Reference](LABS_RUNTIME_REFERENCE.md) | Imagenes, tamanos y requisitos |
-| [File Architecture](../FILE_ARCHITECTURE.md) | Mapa de carpetas y responsabilidades del repo |
-| [Tooling](TOOLING.md) | Herramientas principales de runtime y desarrollo |
+## Arquitectura y referencia tecnica
 
-## Estandares del ecosistema
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Architecture | Tecnico | Arquitectura general del repositorio | [Abrir](ARCHITECTURE.md) |
+| Technical Specs | Tecnico | Stacks, puertos y contratos principales | [Abrir](TECHNICAL_SPECS.md) |
+| System Specs | Ejecutivo / tecnico | Vista corta de componentes y capacidades | [Abrir](../SYSTEM_SPECS.md) |
+| Labs Catalog | Todos | Rol narrativo de los 12 labs | [Abrir](LABS_CATALOG.md) |
+| Labs Runtime Reference | Operadores | Imagenes, tamanos y requisitos por lab | [Abrir](LABS_RUNTIME_REFERENCE.md) |
+| File Architecture | Tecnico | Mapa de carpetas y responsabilidades | [Abrir](../FILE_ARCHITECTURE.md) |
+| Tooling | Tecnico | Herramientas de runtime y desarrollo | [Abrir](TOOLING.md) |
+| Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](../COMPATIBILITY.md) |
+| Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](../GLOSSARY.md) |
 
-| Documento | Descripcion |
-|---|---|
-| [Compatibility](../COMPATIBILITY.md) | Compatibilidad por sistema operativo, modo y puertos |
-| [Glossary](../GLOSSARY.md) | Glosario base del workspace y terminos Docker |
-| [Killed Practices](../killed.md) | Practicas y decisiones que el proyecto evita |
-| [Security](../SECURITY.md) | Politica de seguridad y reporte responsable |
-| [Contributing](../CONTRIBUTING.md) | Flujo de contribucion y colaboracion |
-| [Code of Conduct](../CODE_OF_CONDUCT.md) | Normas de convivencia del proyecto |
+## Estado, release y gobernanza
 
-## Estado del proyecto
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Project Status | Todos | Estado consolidado y areas en evolucion | [Abrir](../PROJECT_STATUS.md) |
+| Platform Roadmap | Todos | Direccion futura del workspace | [Abrir](PLATFORM_ROADMAP.md) |
+| Changelog | Todos | Historial de cambios relevantes | [Abrir](../CHANGELOG.md) |
+| Release Guide | Maintainers | Checklist de release y coherencia editorial | [Abrir](../RELEASE.md) |
+| Killed Practices | Tecnico / liderazgo | Practicas y decisiones que el proyecto evita | [Abrir](../killed.md) |
+| Security | DevSecOps | Politica de seguridad y reporte responsable | [Abrir](../SECURITY.md) |
+| Contributing | Colaboradores | Flujo de contribucion y colaboracion | [Abrir](../CONTRIBUTING.md) |
+| Code of Conduct | Comunidad | Normas de convivencia del proyecto | [Abrir](../CODE_OF_CONDUCT.md) |
+| Support | Maintainers | Soporte y criterios de ayuda | [Abrir](../SUPPORT.md) |
+| Developing | Devs | Guia para extender y mantener el repo | [Abrir](../DEVELOPING.md) |
 
-| Documento | Descripcion |
-|---|---|
-| [Project Status](../PROJECT_STATUS.md) | Estado consolidado y areas en evolucion |
-| [Platform Roadmap](PLATFORM_ROADMAP.md) | Direccion futura del workspace |
-| [Changelog](../CHANGELOG.md) | Cambios relevantes del proyecto |
-| [Release Guide](../RELEASE.md) | Checklist de release para mantener coherencia |
+## Evaluacion externa
 
-## Lectura externa
-
-| Documento | Descripcion |
-|---|---|
-| [Recruiter Guide](../RECRUITER.md) | Lectura rapida para evaluadores y reclutadores |
-| [Support](../SUPPORT.md) | Soporte y criterios de ayuda |
-| [Developing](../DEVELOPING.md) | Guia para extender o mantener el repo |
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Recruiter Guide | Reclutadores / managers | Lectura rapida para evaluar valor de portafolio y madurez tecnica | [Abrir](../RECRUITER.md) |

@@ -6,9 +6,9 @@ Guía breve para colaborar en `docker-labs`.
 
 Lee primero:
 
-- [README](C:/docker-labs/docker-labs/README.md)
-- [Developing](C:/docker-labs/docker-labs/DEVELOPING.md)
-- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [README](README.md)
+- [Developing](DEVELOPING.md)
+- [Platform Roadmap](docs/PLATFORM_ROADMAP.md)
 
 ## Qué contribuciones suman más
 

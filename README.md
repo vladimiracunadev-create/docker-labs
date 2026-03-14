@@ -9,82 +9,35 @@
 
 ---
 
-## Implementacion Profesional del Workspace
+## Implementacion Profesional del Workspace (v1.4)
 
-`docker-labs` ya no se entiende solo como una coleccion de contenedores sueltos. Hoy funciona como un workspace modular con:
+> **Estado**: Operativo  
+> **CI**: Activo  
+> **Audiencia**: Principiantes, DevOps, backend, full stack, reclutadores  
+> **Entrada principal**: [http://localhost:9090](http://localhost:9090)
 
-1. 🧠 un core transaccional para entidades de negocio
-2. 🖥️ una capa operativa para visualizar y operar el flujo
-3. 🌐 un gateway para unificar accesos
-4. 🐳 un control center dockerizado para gobernar el entorno
-5. 🧰 servicios complementarios para performance, mensajeria, observabilidad, busqueda y CI
+**Executive Summary**: `docker-labs` ya no se presenta como una coleccion de demos sueltas. Hoy funciona como un workspace modular con una historia principal clara: un panel dockerizado para operar el entorno, un core transaccional, un portal operativo y un gateway comun.
 
-Tip
+## Que resuelve este repositorio
 
-Si quieres entender el repositorio rapido, entra primero a [http://localhost:9090](http://localhost:9090), luego abre `Inventory Core`, `Operations Portal` y `Platform Gateway`.
-
----
-
-## 📊 Estado del Workspace
-
-| Componente | Estado | Rol | Entrada |
-|---|---|---|---|
-| `dashboard-control` | 🟢 OPERATIVO | Control Center | [http://localhost:9090](http://localhost:9090) |
-| `05-postgres-api` | 🟢 OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
-| `09-multi-service-app` | 🟢 OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
-| `06-nginx-proxy` | 🟢 OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
-| `Learning Center` | 🟢 OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
-
-### Estado de Capacidades
-
-| Capacidad | Estado | Detalle |
+| Capa | Componente | Valor |
 |---|---|---|
-| Panel dockerizado | 🟢 | `dashboard-control` corre en `9090` como contenedor |
-| Diagnostico del host y Docker | 🟢 | `GET /api/diagnostics` cruza navegador + runtime Docker |
-| Control por lab | 🟢 | `start`, `stop`, `restart`, `rebuild`, `logs` |
-| Control global | 🟢 | `bajar todos` y `eliminar entornos del repo` |
-| Gateway funcional | 🟢 | `06` enruta a panel, core y portal |
-| Core documentado | 🟢 | `05` tiene sistema, Swagger, healthchecks y summary |
-| Portal integrado | 🟢 | `09` consume `05` y agrega capa operativa |
-| CI base | 🟢 | Workflow Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Labs secundarios al mismo estandar editorial | 🟡 | Aun falta elevar todos los README por carpeta |
+| Workspace | `dashboard-control` | Permite levantar, detener, diagnosticar y entender el estado del entorno Docker |
+| Core | `05-postgres-api` | Provee un backend transaccional con clientes, productos, pedidos y stock |
+| Operacion | `09-multi-service-app` | Agrega una experiencia operativa sobre el core |
+| Entrada comun | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
+| Aprendizaje | `learning-center.html` | Entrega contexto formativo dentro del ambiente local |
 
----
+## Quickstart recomendado
 
-## ✨ Caracteristicas Principales
+Si quieres ver el repo funcionando sin perderte, sigue este orden:
 
-- ✅ Workspace gobernado desde un panel dockerizado en `9090`
-- ✅ Diferenciacion clara entre `Estado Docker` y `Abrir sistema`
-- ✅ Core de negocio con FastAPI + PostgreSQL
-- ✅ Portal operativo con Node.js + MongoDB + frontend Nginx
-- ✅ Gateway central con Nginx
-- ✅ Diagnostico de CPU, RAM y carga de Docker para decidir que conviene levantar
-- ✅ Learning Center integrado dentro del ambiente local
-- ✅ CI de Docker Compose en GitHub Actions
-- ✅ Documentacion pensada para novatos, operadores, reclutadores y mantenedores
-
----
-
-## 🧭 ¿Por donde empezar?
-
-| Si eres... | Ruta recomendada | Que mirar |
-|---|---|---|
-| Principiante | [Beginner Guide](docs/BEGINNERS_GUIDE.md) | Conceptos, flujo caso a caso y como no perderte |
-| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Estado, diagnostico y apertura de sistemas |
-| Dev / DevOps | [Dashboard Setup](docs/DASHBOARD_SETUP.md) | Panel, Compose, gateway y operacion del repo |
-| Backend | [05-postgres-api](05-postgres-api/README.md) | Core transaccional, healthchecks y Swagger |
-| Full stack / producto | [09-multi-service-app](09-multi-service-app/README.md) | Portal operativo e integracion con el core |
-| Reclutador / manager | [Recruiter Guide](RECRUITER.md) | Ruta corta de evaluacion y acceso a la historia principal del repo |
-
----
-
-## 🚀 Ejecucion Rapida
-
-### Opcion recomendada
-
-```powershell
-scripts\start-control-center.cmd
-```
+1. Ejecuta `scripts\start-control-center.cmd`
+2. Abre [http://localhost:9090](http://localhost:9090)
+3. Revisa el diagnostico del host y de Docker
+4. Abre `Inventory Core`
+5. Abre `Operations Portal`
+6. Abre `Platform Gateway`
 
 Entradas principales:
 
@@ -95,18 +48,58 @@ Entradas principales:
 - Operations Portal: [http://localhost:8083](http://localhost:8083)
 - Platform Gateway: [http://localhost:8085](http://localhost:8085)
 
-### Opcion manual
+## Estado actual del workspace
 
-```powershell
-docker compose -f dashboard-control\docker-compose.yml up -d --build
-docker compose -f 05-postgres-api\docker-compose.yml up -d --build
-docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
-docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
+| Componente | Estado | Rol | Entrada |
+|---|---|---|---|
+| `dashboard-control` | OPERATIVO | Control Center dockerizado | [http://localhost:9090](http://localhost:9090) |
+| `05-postgres-api` | OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| `09-multi-service-app` | OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
+| `06-nginx-proxy` | OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
+| Learning Center | OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
+
+### Capacidades visibles
+
+| Capacidad | Estado | Detalle |
+|---|---|---|
+| Panel dockerizado | Activo | El Control Center corre como contenedor propio |
+| Diagnostico de host y Docker | Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
+| Control por lab | Activo | `start`, `stop`, `restart`, `rebuild`, `logs` |
+| Control global | Activo | `bajar todos` y `eliminar entornos del repo` |
+| Gateway integrado | Activo | `06` enruta a panel, core y portal |
+| Core documentado | Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
+| Portal conectado | Activo | `09` consume el core y agrega capa operativa |
+| CI base | Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
+| Estandar editorial completo en los 12 labs | En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
+
+## Ruta recomendada por perfil
+
+| Perfil | Documento o entrada | Objetivo |
+|---|---|---|
+| Principiante | [docs/BEGINNERS_GUIDE.md](docs/BEGINNERS_GUIDE.md) | Entender Docker, el flujo caso a caso y el orden recomendado |
+| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Ver estado, diagnostico y accesos del entorno |
+| Dev / DevOps | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) | Entender el panel, Compose, gateway y operacion |
+| Backend | [05-postgres-api/README.md](05-postgres-api/README.md) | Revisar el core transaccional, contratos y salud |
+| Full stack / producto | [09-multi-service-app/README.md](09-multi-service-app/README.md) | Revisar la experiencia operativa sobre el core |
+| Reclutador / manager | [RECRUITER.md](RECRUITER.md) | Recorrer el valor del repo en pocos minutos |
+
+## Arquitectura del workspace
+
+```mermaid
+flowchart LR
+    User["Usuario / Operador"] --> Panel["Control Center :9090"]
+    User --> Gateway["Platform Gateway :8085"]
+    Panel --> Core["Inventory Core :8000"]
+    Panel --> Portal["Operations Portal :8083"]
+    Gateway --> Panel
+    Gateway --> Core
+    Gateway --> Portal
+    Portal --> Core
+    Core --> Postgres[("PostgreSQL")]
+    Portal --> Mongo[("MongoDB")]
 ```
 
----
-
-## 🧩 Taxonomia del Repositorio
+## Taxonomia del repositorio
 
 ### Sistemas principales
 
@@ -136,128 +129,71 @@ docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 | `03-python-api` | API Python sencilla |
 | `10-go-api` | Servicio ligero y rapido |
 
----
+## Documentacion del Proyecto
 
-## 🖥️ Control Center
+El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documento responde una necesidad concreta y se puede abrir directamente desde aqui.
 
-El panel principal en [http://localhost:9090](http://localhost:9090):
+### Inicio y operacion
 
-- muestra estado Docker real
-- controla `docker compose` por lab
-- distingue entre `Estado Docker` y `Abrir sistema`
-- lee capacidad del host y de Docker
-- recomienda que conviene levantar segun memoria y carga actuales
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Documentation Index | Todos | Mapa maestro de lectura | [Abrir](docs/DOCUMENTATION_INDEX.md) |
+| Beginner Guide | Principiantes | Primeros pasos con Docker y con el repo | [Abrir](docs/BEGINNERS_GUIDE.md) |
+| Install Guide | Todos | Instalacion y arranque correcto del workspace | [Abrir](docs/INSTALL.md) |
+| Requirements | Todos | Requisitos minimos y recomendados del host y de Docker | [Abrir](docs/REQUIREMENTS.md) |
+| Environment Setup | Operadores | Preparacion del equipo y orden sugerido de arranque | [Abrir](ENVIRONMENT_SETUP.md) |
+| User Manual | Usuarios del workspace | Uso diario del panel y de los sistemas activos | [Abrir](docs/USER_MANUAL.md) |
+| Dashboard Setup | Dev / DevOps | Como funciona el `9090` y como gobierna el entorno | [Abrir](docs/DASHBOARD_SETUP.md) |
+| Operating Modes | Todos | Cuando conviene usar modo panel primero, caso a caso o plataforma principal | [Abrir](OPERATING-MODES.md) |
+| Runbook | Operadores | Arranque, apagado y respuesta a incidencias comunes | [Abrir](RUNBOOK.md) |
 
-### Endpoints relevantes
+### Arquitectura y referencia tecnica
 
-- `GET /api/overview`
-- `GET /api/diagnostics`
-- `POST /api/labs/:id/start`
-- `POST /api/labs/:id/stop`
-- `POST /api/workspace/stop-all`
-- `POST /api/workspace/remove-all`
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Architecture | Tecnico | Relacion entre panel, core, portal y gateway | [Abrir](docs/ARCHITECTURE.md) |
+| Labs Catalog | Todos | Rol de los 12 labs dentro del ecosistema | [Abrir](docs/LABS_CATALOG.md) |
+| Labs Runtime Reference | Operadores | Imagenes oficiales, tamanos y requisitos por lab | [Abrir](docs/LABS_RUNTIME_REFERENCE.md) |
+| Technical Specs | Tecnico | Stacks, puertos, endpoints y contratos | [Abrir](docs/TECHNICAL_SPECS.md) |
+| System Specs | Ejecutivo / tecnico | Vista corta del sistema como plataforma | [Abrir](SYSTEM_SPECS.md) |
+| File Architecture | Tecnico | Mapa de carpetas y responsabilidades | [Abrir](FILE_ARCHITECTURE.md) |
+| Tooling | Tecnico | Herramientas principales de runtime y desarrollo | [Abrir](docs/TOOLING.md) |
+| Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](COMPATIBILITY.md) |
+| Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](GLOSSARY.md) |
 
----
+### Estado, release y gobernanza
 
-## 📚 Documentación del Proyecto
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Project Status | Todos | Que esta consolidado hoy y que sigue en evolucion | [Abrir](PROJECT_STATUS.md) |
+| Platform Roadmap | Todos | Direccion futura y prioridades de madurez | [Abrir](docs/PLATFORM_ROADMAP.md) |
+| Changelog | Todos | Historial de cambios relevantes | [Abrir](CHANGELOG.md) |
+| Release Guide | Maintainers | Checklist de publicacion coherente | [Abrir](RELEASE.md) |
+| Killed Practices | Tecnico / liderazgo | Practicas y enfoques que el repo evita | [Abrir](killed.md) |
+| Support | Maintainers | Criterios de soporte y continuidad | [Abrir](SUPPORT.md) |
+| Developing | Devs | Como extender y mantener el workspace | [Abrir](DEVELOPING.md) |
+| Security | DevSecOps | Alcance y politica de seguridad | [Abrir](SECURITY.md) |
+| Contributing | Colaboradores | Flujo de contribucion y estandar de trabajo | [Abrir](CONTRIBUTING.md) |
+| Code of Conduct | Comunidad | Marco de convivencia del proyecto | [Abrir](CODE_OF_CONDUCT.md) |
 
-Como parte del estándar del ecosistema, la documentación se divide por audiencia y por objetivo. La idea no es que “adivines” qué leer: cada documento existe para resolver una necesidad concreta.
+### Evaluacion externa
 
-### 🚀 Guías para iniciar y operar
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Recruiter Guide | Reclutadores / managers | Recorrido rapido del valor de portafolio y madurez tecnica | [Abrir](RECRUITER.md) |
 
-- [🗂️ Documentation Index (docs/DOCUMENTATION_INDEX.md)](docs/DOCUMENTATION_INDEX.md)
-  Mapa maestro de lectura para no perderte entre los documentos del repositorio.
-- [🎓 Beginner Guide (docs/BEGINNERS_GUIDE.md)](docs/BEGINNERS_GUIDE.md)
-  Ruta guiada para principiantes: conceptos, flujo caso a caso y orden recomendado de aprendizaje.
-- [🔧 Install Guide (docs/INSTALL.md)](docs/INSTALL.md)
-  Requisitos, instalación y forma correcta de levantar el workspace local.
-- [🧰 Requirements (docs/REQUIREMENTS.md)](docs/REQUIREMENTS.md)
-  Requisitos mínimos y recomendados para saber hasta dónde conviene levantar Docker en tu equipo.
-- [🛠️ Environment Setup (ENVIRONMENT_SETUP.md)](ENVIRONMENT_SETUP.md)
-  Preparación práctica del host, Docker Desktop y orden sugerido de arranque.
-- [📘 User Manual (docs/USER_MANUAL.md)](docs/USER_MANUAL.md)
-  Manual operativo del día a día: cómo usar el panel, qué abrir primero y cómo trabajar por casos.
-- [🖥️ Dashboard Setup (docs/DASHBOARD_SETUP.md)](docs/DASHBOARD_SETUP.md)
-  Explica cómo funciona el `9090`, su arquitectura y cómo gobierna el entorno Docker.
-- [🎛️ Operating Modes (OPERATING-MODES.md)](OPERATING-MODES.md)
-  Explica cuándo conviene usar modo panel primero, caso a caso o plataforma principal.
-- [📟 Runbook (RUNBOOK.md)](RUNBOOK.md)
-  Manual corto de operación, arranque, apagado y respuesta a incidencias comunes.
+## Lo que este repo es hoy
 
-### 🏗️ Arquitectura, catálogo y specs
+- un workspace usable para aprender y operar stacks Docker
+- un activo de portafolio tecnico con una historia principal clara
+- una base seria para seguir integrando servicios y fortalecer practicas DevOps
 
-- [🏛️ Architecture (docs/ARCHITECTURE.md)](docs/ARCHITECTURE.md)
-  Vista de arquitectura, intención del repositorio y relación entre las piezas principales.
-- [🧩 Labs Catalog (docs/LABS_CATALOG.md)](docs/LABS_CATALOG.md)
-  Catálogo de los 12 labs con su rol dentro del ecosistema.
-- [📦 Labs Runtime Reference (docs/LABS_RUNTIME_REFERENCE.md)](docs/LABS_RUNTIME_REFERENCE.md)
-  Imágenes oficiales, tamaños aproximados y requisitos sugeridos por lab.
-- [🧪 Technical Specs (docs/TECHNICAL_SPECS.md)](docs/TECHNICAL_SPECS.md)
-  Stacks, puertos, endpoints y contratos técnicos principales del workspace.
-- [📐 System Specs (SYSTEM_SPECS.md)](SYSTEM_SPECS.md)
-  Vista ejecutiva del sistema, sus componentes principales y capacidades visibles.
-- [🗃️ File Architecture (FILE_ARCHITECTURE.md)](FILE_ARCHITECTURE.md)
-  Mapa rápido del repositorio para saber dónde vive cada responsabilidad.
-- [🔌 Tooling (docs/TOOLING.md)](docs/TOOLING.md)
-  Herramientas principales del workspace, tanto de runtime como de desarrollo.
+## Lo que todavia no busca ser
 
-### 📈 Estado, operación y evolución
+- un reemplazo completo de Docker Desktop
+- una plataforma productiva terminada en sus 12 labs
+- un ecosistema ya homogeneo en todas sus carpetas
 
-- [📊 Project Status (PROJECT_STATUS.md)](PROJECT_STATUS.md)
-  Qué está consolidado hoy y qué sigue en evolución.
-- [🗺️ Platform Roadmap (docs/PLATFORM_ROADMAP.md)](docs/PLATFORM_ROADMAP.md)
-  Dirección futura del workspace y prioridades de madurez.
-- [📝 Changelog (CHANGELOG.md)](CHANGELOG.md)
-  Historial de cambios relevantes y evolución del repositorio.
-- [❓ FAQ (FAQ.md)](FAQ.md)
-  Respuestas rápidas sobre acceso, capacidad, panel y uso operativo.
-- [🚚 Release Guide (RELEASE.md)](RELEASE.md)
-  Checklist de publicación para no desalinear código, documentación y experiencia operativa.
-- [✅ Compatibility (COMPATIBILITY.md)](COMPATIBILITY.md)
-  Matriz de compatibilidad, puertos y advertencias prácticas por entorno.
-
-### 🧭 Operacion avanzada y estandares del ecosistema
-
-- [📚 Glossary (GLOSSARY.md)](GLOSSARY.md)
-  Glosario base del workspace, Docker y terminología operativa del proyecto.
-- [🧹 Killed Practices (killed.md)](killed.md)
-  Prácticas, enfoques y atajos que el proyecto evita de forma intencional.
-- [🧷 Support (SUPPORT.md)](SUPPORT.md)
-  Criterios de soporte, ayuda y continuidad documental u operativa.
-- [🛠️ Developing (DEVELOPING.md)](DEVELOPING.md)
-  Guía para extender, mantener o continuar la evolución del workspace.
-- [🔐 Security (SECURITY.md)](SECURITY.md)
-  Política de reporte responsable y alcance de seguridad del repositorio.
-- [🤝 Contributing (CONTRIBUTING.md)](CONTRIBUTING.md)
-  Flujo esperado para contribuciones, convenciones y buenas prácticas de colaboración.
-- [🧑‍⚖️ Code of Conduct (CODE_OF_CONDUCT.md)](CODE_OF_CONDUCT.md)
-  Estándar de convivencia para mantener colaboración segura y profesional.
-
-### 👀 Evaluación externa y mantenimiento
-
-- [🧭 Recruiter Guide (RECRUITER.md)](RECRUITER.md)
-  Ruta principal de lectura para evaluación externa, revisión ejecutiva y contexto de portafolio.
-
----
-
-## 🎯 Que mejora este enfoque
-
-Este repositorio gana valor cuando cada carpeta deja de ser "otro Docker" y pasa a ser:
-
-- un sistema con objetivo
-- un entorno instalable
-- una pieza de una plataforma mayor
-- una base de aprendizaje reutilizable
-
----
-
-## 🔭 Direccion recomendada
-
-1. Consolidar `05`, `09`, `06` y `9090` como experiencia principal.
-2. Estandarizar metadata y README de las 12 carpetas.
-3. Reforzar pruebas, CI y observabilidad.
-4. Convertir mas labs en capacidades integradas, no en demos aisladas.
-
-## 📄 Licencia
+## Licencia
 
 Proyecto bajo [Apache License 2.0](LICENSE).

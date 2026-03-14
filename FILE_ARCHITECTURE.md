@@ -1,29 +1,26 @@
 # File Architecture
 
-Mapa de archivos y carpetas del workspace para entender rapido donde vive cada responsabilidad.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Abre este documento si quieres entender rapido donde vive cada responsabilidad en el repo
 
-## Objetivo
-
-Este documento responde:
-
-> "¿Como esta organizado el repositorio y donde debo entrar segun lo que quiero hacer?"
+---
 
 ## Vista general
 
-| Ruta | Rol |
-|---|---|
-| [`README.md`](C:/docker-labs/docker-labs/README.md) | Portada principal del proyecto |
-| [`dashboard-control/`](C:/docker-labs/docker-labs/dashboard-control/server.js) | Control Center dockerizado |
-| [`05-postgres-api/`](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Core transaccional principal |
-| [`09-multi-service-app/`](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Portal operativo |
-| [`06-nginx-proxy/`](C:/docker-labs/docker-labs/06-nginx-proxy/README.md) | Gateway de acceso |
-| [`docs/`](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md) | Documentacion estructural, tecnica y operativa |
-| [`scripts/`](C:/docker-labs/docker-labs/scripts/start-control-center.cmd) | Scripts locales de apoyo |
-| [`01-12/`](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md) | Labs individuales y sus stacks |
+| Ruta | Rol | Abrir |
+|---|---|---|
+| `README.md` | Portada principal del proyecto | [Abrir](README.md) |
+| `dashboard-control/` | Control Center dockerizado | [Abrir](dashboard-control/server.js) |
+| `05-postgres-api/` | Core transaccional principal | [Abrir](05-postgres-api/README.md) |
+| `09-multi-service-app/` | Portal operativo | [Abrir](09-multi-service-app/README.md) |
+| `06-nginx-proxy/` | Gateway de acceso | [Abrir](06-nginx-proxy/README.md) |
+| `docs/` | Documentacion estructural, tecnica y operativa | [Abrir](docs/DOCUMENTATION_INDEX.md) |
+| `scripts/` | Scripts locales de apoyo | [Abrir](scripts/start-control-center.cmd) |
 
 ## Distribucion por capas
 
-### 1. Workspace
+### Workspace
 
 - `dashboard-control/`
 - `index.html`
@@ -31,13 +28,13 @@ Este documento responde:
 - `dashboard.css`
 - `learning-center.html`
 
-### 2. Plataforma principal
+### Plataforma principal
 
 - `05-postgres-api/`
 - `09-multi-service-app/`
 - `06-nginx-proxy/`
 
-### 3. Infraestructura complementaria
+### Infraestructura complementaria
 
 - `04-redis-cache/`
 - `07-rabbitmq-messaging/`
@@ -45,34 +42,25 @@ Este documento responde:
 - `11-elasticsearch-search/`
 - `12-jenkins-ci/`
 
-### 4. Startes y demos de apoyo
+### Starters y demos
 
 - `01-node-api/`
 - `02-php-lamp/`
 - `03-python-api/`
 - `10-go-api/`
 
-### 5. Gobernanza documental
-
-- `CHANGELOG.md`
-- `PROJECT_STATUS.md`
-- `ROADMAP.md`
-- `DEVELOPING.md`
-- `SUPPORT.md`
-- `SECURITY.md`
-
 ## Donde entrar segun tu objetivo
 
-| Si quieres... | Entra aqui |
+| Si quieres... | Documento |
 |---|---|
-| Ver el sistema funcionando | [README](C:/docker-labs/docker-labs/README.md) o [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) |
-| Operar el repo | [RUNBOOK](C:/docker-labs/docker-labs/RUNBOOK.md) |
-| Entender estructura | [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md) |
-| Cambiar stacks o puertos | [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md) |
-| Ver requisitos y compatibilidad | [Requirements](C:/docker-labs/docker-labs/docs/REQUIREMENTS.md) y [Compatibility](C:/docker-labs/docker-labs/COMPATIBILITY.md) |
+| Ver el sistema funcionando | [README.md](README.md) |
+| Operar el repo | [RUNBOOK.md](RUNBOOK.md) |
+| Entender la arquitectura | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Cambiar stacks o puertos | [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md) |
+| Ver el catalogo completo | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
-- [Labs Catalog](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
-- [Documentation Index](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md)
+- [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)

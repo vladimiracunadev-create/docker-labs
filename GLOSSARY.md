@@ -1,6 +1,10 @@
 # Glossary
 
-Glosario base para entender la terminologia que se usa en `docker-labs`.
+> **Version**: 1.4  
+> **Estado**: Activo  
+> **Uso recomendado**: Ideal para principiantes o para lectura rapida cuando un termino del repo no se entiende a la primera
+
+---
 
 ## Terminos del workspace
 
@@ -34,8 +38,8 @@ Glosario base para entender la terminologia que se usa en `docker-labs`.
 | Modo caso a caso | Levantar solo el panel y despues un lab segun necesidad |
 | Plataforma principal | `9090` + `05` + `06` + `09` |
 
-## Lectura relacionada
+## Documentos relacionados
 
-- [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
-- [Docker Basics](C:/docker-labs/docker-labs/docs/DOCKER_BASICS.md)
-- [Operating Modes](C:/docker-labs/docker-labs/OPERATING-MODES.md)
+- [docs/BEGINNERS_GUIDE.md](docs/BEGINNERS_GUIDE.md)
+- [docs/DOCKER_BASICS.md](docs/DOCKER_BASICS.md)
+- [OPERATING-MODES.md](OPERATING-MODES.md)
