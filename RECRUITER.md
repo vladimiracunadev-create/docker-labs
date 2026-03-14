@@ -1,17 +1,17 @@
-# Guia Estrategica para Reclutadores (RECRUITER)
+# 👀 Guia Estrategica para Reclutadores (RECRUITER)
 
 > **Version**: 1.4  
-> **Estado**: Operativo  
-> **Audiencia**: Reclutadores, hiring managers, lideres tecnicos  
+> **Estado**: 🟢 Operativo  
+> **Audiencia**: 👥 Reclutadores, hiring managers, lideres tecnicos  
 > **Executive Summary**: `docker-labs` demuestra criterio para transformar laboratorios Docker en una plataforma modular con control centralizado, backend transaccional, portal operativo y gateway comun.
 
 ---
 
-## Valor de negocio y vision
+## 💼 Valor de negocio y vision
 
 Este proyecto no intenta impresionar con cantidad de carpetas. Su valor esta en mostrar como un repositorio de laboratorios puede evolucionar hacia una experiencia de workspace mas seria, navegable y auditable.
 
-### Que evidencia entrega hoy
+### 📌 Que evidencia entrega hoy
 
 | Area | Evidencia |
 |---|---|
@@ -21,7 +21,7 @@ Este proyecto no intenta impresionar con cantidad de carpetas. Su valor esta en 
 | Infraestructura | Gateway Nginx y control de entorno |
 | Documentacion | Ruta por audiencias, estado, requisitos y runbook |
 
-## Que mirar en 5 minutos
+## ⚡ Que mirar en 5 minutos
 
 Si quieres evaluar el repo rapido, este es el recorrido recomendado:
 
@@ -34,7 +34,7 @@ Si quieres evaluar el repo rapido, este es el recorrido recomendado:
 
 Con ese recorrido se entiende la historia principal del repositorio sin necesidad de revisar los 12 labs.
 
-## Decisiones arquitectonicas que vale la pena notar
+## 🏗️ Decisiones arquitectonicas que vale la pena notar
 
 1. **Panel dockerizado como entrada principal**  
    El workspace no depende de recordar puertos sueltos; se gobierna desde `9090`.
@@ -48,7 +48,7 @@ Con ese recorrido se entiende la historia principal del repositorio sin necesida
 4. **Modo caso a caso segun capacidad del host**  
    El proyecto incorpora diagnostico de recursos para decidir que conviene levantar.
 
-## Habilidades tecnicas demostradas
+## 🧠 Habilidades tecnicas demostradas
 
 | Area | Competencias visibles |
 |---|---|
@@ -58,29 +58,29 @@ Con ese recorrido se entiende la historia principal del repositorio sin necesida
 | Operacion | Diagnostico del host, runbook, modos de uso, troubleshooting |
 | Documentacion | Arquitectura, requisitos, release guide, recruiter guide |
 
-## Estado actual
+## 📊 Estado actual
 
 | Componente | Estado | Lectura recomendada |
 |---|---|---|
-| `dashboard-control` | Operativo | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) |
-| `05-postgres-api` | Operativo | [05-postgres-api/README.md](05-postgres-api/README.md) |
-| `09-multi-service-app` | Operativo | [09-multi-service-app/README.md](09-multi-service-app/README.md) |
-| `06-nginx-proxy` | Operativo | [06-nginx-proxy/README.md](06-nginx-proxy/README.md) |
-| Labs secundarios | En evolucion | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
+| `dashboard-control` | 🟢 Operativo | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) |
+| `05-postgres-api` | 🟢 Operativo | [05-postgres-api/README.md](05-postgres-api/README.md) |
+| `09-multi-service-app` | 🟢 Operativo | [09-multi-service-app/README.md](09-multi-service-app/README.md) |
+| `06-nginx-proxy` | 🟢 Operativo | [06-nginx-proxy/README.md](06-nginx-proxy/README.md) |
+| Labs secundarios | 🟡 En evolucion | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
 
-## Lo que el proyecto si es hoy
+## ✅ Lo que el proyecto si es hoy
 
 - un workspace local util y demostrable
 - un activo de portafolio tecnico con narrativa clara
 - una base coherente para crecer hacia una plataforma mas madura
 
-## Lo que todavia no intenta vender
+## 🚧 Lo que todavia no intenta vender
 
 - un reemplazo completo de Docker Desktop
 - una plataforma productiva cerrada
 - doce labs ya homologados al mismo nivel de profundidad
 
-## Documentos a revisar despues
+## 📚 Documentos a revisar despues
 
 | Documento | Motivo |
 |---|---|

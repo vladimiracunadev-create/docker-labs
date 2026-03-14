@@ -9,16 +9,16 @@
 
 ---
 
-## Implementacion Profesional del Workspace (v1.4)
+## 🚀 Implementacion Profesional del Workspace (v1.4)
 
-> **Estado**: Operativo  
-> **CI**: Activo  
-> **Audiencia**: Principiantes, DevOps, backend, full stack, reclutadores  
-> **Entrada principal**: [http://localhost:9090](http://localhost:9090)
+> **Estado**: 🟢 Operativo  
+> **CI**: 🟢 Activo  
+> **Audiencia**: 👥 Principiantes, DevOps, backend, full stack, reclutadores  
+> **Entrada principal**: 🖥️ [http://localhost:9090](http://localhost:9090)
 
 **Executive Summary**: `docker-labs` ya no se presenta como una coleccion de demos sueltas. Hoy funciona como un workspace modular con una historia principal clara: un panel dockerizado para operar el entorno, un core transaccional, un portal operativo y un gateway comun.
 
-## Que resuelve este repositorio
+## 🎯 Que resuelve este repositorio
 
 | Capa | Componente | Valor |
 |---|---|---|
@@ -28,7 +28,7 @@
 | Entrada comun | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
 | Aprendizaje | `learning-center.html` | Entrega contexto formativo dentro del ambiente local |
 
-## Quickstart recomendado
+## ⚡ Quickstart recomendado
 
 Si quieres ver el repo funcionando sin perderte, sigue este orden:
 
@@ -48,31 +48,31 @@ Entradas principales:
 - Operations Portal: [http://localhost:8083](http://localhost:8083)
 - Platform Gateway: [http://localhost:8085](http://localhost:8085)
 
-## Estado actual del workspace
+## 📊 Estado actual del workspace
 
 | Componente | Estado | Rol | Entrada |
 |---|---|---|---|
-| `dashboard-control` | OPERATIVO | Control Center dockerizado | [http://localhost:9090](http://localhost:9090) |
-| `05-postgres-api` | OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
-| `09-multi-service-app` | OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
-| `06-nginx-proxy` | OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
-| Learning Center | OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
+| `dashboard-control` | 🟢 OPERATIVO | Control Center dockerizado | [http://localhost:9090](http://localhost:9090) |
+| `05-postgres-api` | 🟢 OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| `09-multi-service-app` | 🟢 OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
+| `06-nginx-proxy` | 🟢 OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
+| Learning Center | 🟢 OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
 
-### Capacidades visibles
+### ✅ Capacidades visibles
 
 | Capacidad | Estado | Detalle |
 |---|---|---|
-| Panel dockerizado | Activo | El Control Center corre como contenedor propio |
-| Diagnostico de host y Docker | Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
-| Control por lab | Activo | `start`, `stop`, `restart`, `rebuild`, `logs` |
-| Control global | Activo | `bajar todos` y `eliminar entornos del repo` |
-| Gateway integrado | Activo | `06` enruta a panel, core y portal |
-| Core documentado | Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
-| Portal conectado | Activo | `09` consume el core y agrega capa operativa |
-| CI base | Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Estandar editorial completo en los 12 labs | En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
+| Panel dockerizado | 🟢 Activo | El Control Center corre como contenedor propio |
+| Diagnostico de host y Docker | 🟢 Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
+| Control por lab | 🟢 Activo | `start`, `stop`, `restart`, `rebuild`, `logs` |
+| Control global | 🟢 Activo | `bajar todos` y `eliminar entornos del repo` |
+| Gateway integrado | 🟢 Activo | `06` enruta a panel, core y portal |
+| Core documentado | 🟢 Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
+| Portal conectado | 🟢 Activo | `09` consume el core y agrega capa operativa |
+| CI base | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
+| Estandar editorial completo en los 12 labs | 🟡 En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
 
-## Ruta recomendada por perfil
+## 🧭 Ruta recomendada por perfil
 
 | Perfil | Documento o entrada | Objetivo |
 |---|---|---|
@@ -83,7 +83,7 @@ Entradas principales:
 | Full stack / producto | [09-multi-service-app/README.md](09-multi-service-app/README.md) | Revisar la experiencia operativa sobre el core |
 | Reclutador / manager | [RECRUITER.md](RECRUITER.md) | Recorrer el valor del repo en pocos minutos |
 
-## Arquitectura del workspace
+## 🏗️ Arquitectura del workspace
 
 ```mermaid
 flowchart LR
@@ -107,9 +107,9 @@ flowchart LR
     portal --> mongo
 ```
 
-## Taxonomia del repositorio
+## 🧩 Taxonomia del repositorio
 
-### Sistemas principales
+### 🧠 Sistemas principales
 
 | Carpeta | Tipo | Objetivo |
 |---|---|---|
@@ -118,7 +118,7 @@ flowchart LR
 | [06-nginx-proxy](06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
 | [dashboard-control](dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
 
-### Servicios de infraestructura
+### 🧰 Servicios de infraestructura
 
 | Carpeta | Capacidad | Estado narrativo |
 |---|---|---|
@@ -128,7 +128,7 @@ flowchart LR
 | `11-elasticsearch-search` | Busqueda | Complementario |
 | `12-jenkins-ci` | CI y automatizacion | Complementario |
 
-### Starters y demos
+### 🧪 Starters y demos
 
 | Carpeta | Enfoque |
 |---|---|
@@ -137,11 +137,11 @@ flowchart LR
 | `03-python-api` | API Python sencilla |
 | `10-go-api` | Servicio ligero y rapido |
 
-## Documentacion del Proyecto
+## 📚 Documentacion del Proyecto
 
 El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documento responde una necesidad concreta y se puede abrir directamente desde aqui.
 
-### Inicio y operacion
+### 🚀 Inicio y operacion
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -155,7 +155,7 @@ El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documen
 | Operating Modes | Todos | Cuando conviene usar modo panel primero, caso a caso o plataforma principal | [Abrir](OPERATING-MODES.md) |
 | Runbook | Operadores | Arranque, apagado y respuesta a incidencias comunes | [Abrir](RUNBOOK.md) |
 
-### Arquitectura y referencia tecnica
+### 🏗️ Arquitectura y referencia tecnica
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -169,7 +169,7 @@ El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documen
 | Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](COMPATIBILITY.md) |
 | Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](GLOSSARY.md) |
 
-### Estado, release y gobernanza
+### 📈 Estado, release y gobernanza
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -184,24 +184,24 @@ El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documen
 | Contributing | Colaboradores | Flujo de contribucion y estandar de trabajo | [Abrir](CONTRIBUTING.md) |
 | Code of Conduct | Comunidad | Marco de convivencia del proyecto | [Abrir](CODE_OF_CONDUCT.md) |
 
-### Evaluacion externa
+### 👀 Evaluacion externa
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
 | Recruiter Guide | Reclutadores / managers | Recorrido rapido del valor de portafolio y madurez tecnica | [Abrir](RECRUITER.md) |
 
-## Lo que este repo es hoy
+## ✅ Lo que este repo es hoy
 
 - un workspace usable para aprender y operar stacks Docker
 - un activo de portafolio tecnico con una historia principal clara
 - una base seria para seguir integrando servicios y fortalecer practicas DevOps
 
-## Lo que todavia no busca ser
+## 🚧 Lo que todavia no busca ser
 
 - un reemplazo completo de Docker Desktop
 - una plataforma productiva terminada en sus 12 labs
 - un ecosistema ya homogeneo en todas sus carpetas
 
-## Licencia
+## 📄 Licencia
 
 Proyecto bajo [Apache License 2.0](LICENSE).

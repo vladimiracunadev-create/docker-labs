@@ -1,16 +1,16 @@
-# Documentation Index
+# 🗂️ Documentation Index
 
 > **Version**: 1.4  
-> **Estado**: Activo  
-> **Uso recomendado**: Empieza aqui si no sabes que documento abrir primero
+> **Estado**: 🟢 Activo  
+> **Uso recomendado**: 📍 Empieza aqui si no sabes que documento abrir primero
 
 ---
 
-## Como usar este indice
+## 🧭 Como usar este indice
 
 Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para que la navegacion sea directa tambien desde GitHub.
 
-## Inicio y operacion
+## 🚀 Inicio y operacion
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -24,7 +24,7 @@ Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para
 | Operating Modes | Todos | Modos de uso segun capacidad del equipo | [Abrir](../OPERATING-MODES.md) |
 | Runbook | Operadores | Arranque, apagado y respuesta operativa rapida | [Abrir](../RUNBOOK.md) |
 
-## Arquitectura y referencia tecnica
+## 🏗️ Arquitectura y referencia tecnica
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -38,7 +38,7 @@ Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para
 | Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](../COMPATIBILITY.md) |
 | Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](../GLOSSARY.md) |
 
-## Estado, release y gobernanza
+## 📈 Estado, release y gobernanza
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
@@ -53,7 +53,7 @@ Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para
 | Support | Maintainers | Soporte y criterios de ayuda | [Abrir](../SUPPORT.md) |
 | Developing | Devs | Guia para extender y mantener el repo | [Abrir](../DEVELOPING.md) |
 
-## Evaluacion externa
+## 👀 Evaluacion externa
 
 | Documento | Audiencia | Que resuelve | Abrir |
 |---|---|---|---|
