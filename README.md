@@ -87,16 +87,24 @@ Entradas principales:
 
 ```mermaid
 flowchart LR
-    User["Usuario / Operador"] --> Panel["Control Center :9090"]
-    User --> Gateway["Platform Gateway :8085"]
-    Panel --> Core["Inventory Core :8000"]
-    Panel --> Portal["Operations Portal :8083"]
-    Gateway --> Panel
-    Gateway --> Core
-    Gateway --> Portal
-    Portal --> Core
-    Core --> Postgres[("PostgreSQL")]
-    Portal --> Mongo[("MongoDB")]
+    user[Usuario y operador]
+    panel[Control Center 9090]
+    gateway[Platform Gateway 8085]
+    core[Inventory Core 8000]
+    portal[Operations Portal 8083]
+    postgres[(PostgreSQL)]
+    mongo[(MongoDB)]
+
+    user --> panel
+    user --> gateway
+    panel --> core
+    panel --> portal
+    gateway --> panel
+    gateway --> core
+    gateway --> portal
+    portal --> core
+    core --> postgres
+    portal --> mongo
 ```
 
 ## Taxonomia del repositorio
