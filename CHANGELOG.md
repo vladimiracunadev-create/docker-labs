@@ -36,6 +36,7 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 - Centro de aprendizaje embebido en HTML dentro del panel principal
 - Reescritura de la documentacion troncal, tecnica y operativa con navegacion editorial mas clara
 - README fortalecido con estado del workspace, CI visible y rutas de lectura por perfil
+- Se incorporan documentos de estandar del ecosistema: `ENVIRONMENT_SETUP.md`, `FILE_ARCHITECTURE.md`, `GLOSSARY.md`, `SYSTEM_SPECS.md`, `COMPATIBILITY.md`, `OPERATING-MODES.md`, `RELEASE.md`, `RUNBOOK.md`, `RECRUITER.md`, `killed.md`, `docs/REQUIREMENTS.md` y `docs/TOOLING.md`
 
 ## [1.0.0] - 2026-01-21
 

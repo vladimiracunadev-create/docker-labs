@@ -74,7 +74,7 @@ Si quieres entender el repositorio rapido, entra primero a [http://localhost:909
 | Dev / DevOps | [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) | Panel, Compose, gateway y operacion del repo |
 | Backend | [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Core transaccional, healthchecks y Swagger |
 | Full stack / producto | [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Portal operativo e integracion con el core |
-| Reclutador / manager | [For Recruiters](C:/docker-labs/docker-labs/FOR_RECRUITERS.md) | Valor de portafolio, criterio tecnico y narrativa |
+| Reclutador / manager | [Recruiter Shortcut](C:/docker-labs/docker-labs/RECRUITER.md) | Ruta corta de evaluacion y acceso a la historia principal del repo |
 
 ---
 
@@ -171,10 +171,18 @@ Como parte del estándar del ecosistema, la documentación se divide por audienc
   Ruta guiada para principiantes: conceptos, flujo caso a caso y orden recomendado de aprendizaje.
 - [🔧 Install Guide (docs/INSTALL.md)](C:/docker-labs/docker-labs/docs/INSTALL.md)
   Requisitos, instalación y forma correcta de levantar el workspace local.
+- [🧰 Requirements (docs/REQUIREMENTS.md)](C:/docker-labs/docker-labs/docs/REQUIREMENTS.md)
+  Requisitos mínimos y recomendados para saber hasta dónde conviene levantar Docker en tu equipo.
+- [🛠️ Environment Setup (ENVIRONMENT_SETUP.md)](C:/docker-labs/docker-labs/ENVIRONMENT_SETUP.md)
+  Preparación práctica del host, Docker Desktop y orden sugerido de arranque.
 - [📘 User Manual (docs/USER_MANUAL.md)](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
   Manual operativo del día a día: cómo usar el panel, qué abrir primero y cómo trabajar por casos.
 - [🖥️ Dashboard Setup (docs/DASHBOARD_SETUP.md)](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
   Explica cómo funciona el `9090`, su arquitectura y cómo gobierna el entorno Docker.
+- [🎛️ Operating Modes (OPERATING-MODES.md)](C:/docker-labs/docker-labs/OPERATING-MODES.md)
+  Explica cuándo conviene usar modo panel primero, caso a caso o plataforma principal.
+- [📟 Runbook (RUNBOOK.md)](C:/docker-labs/docker-labs/RUNBOOK.md)
+  Manual corto de operación, arranque, apagado y respuesta a incidencias comunes.
 
 ### 🏗️ Arquitectura, catálogo y specs
 
@@ -186,6 +194,12 @@ Como parte del estándar del ecosistema, la documentación se divide por audienc
   Imágenes oficiales, tamaños aproximados y requisitos sugeridos por lab.
 - [🧪 Technical Specs (docs/TECHNICAL_SPECS.md)](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
   Stacks, puertos, endpoints y contratos técnicos principales del workspace.
+- [📐 System Specs (SYSTEM_SPECS.md)](C:/docker-labs/docker-labs/SYSTEM_SPECS.md)
+  Vista ejecutiva del sistema, sus componentes principales y capacidades visibles.
+- [🗃️ File Architecture (FILE_ARCHITECTURE.md)](C:/docker-labs/docker-labs/FILE_ARCHITECTURE.md)
+  Mapa rápido del repositorio para saber dónde vive cada responsabilidad.
+- [🔌 Tooling (docs/TOOLING.md)](C:/docker-labs/docker-labs/docs/TOOLING.md)
+  Herramientas principales del workspace, tanto de runtime como de desarrollo.
 
 ### 📈 Estado, operación y evolución
 
@@ -197,15 +211,34 @@ Como parte del estándar del ecosistema, la documentación se divide por audienc
   Historial de cambios relevantes y evolución del repositorio.
 - [❓ FAQ (FAQ.md)](C:/docker-labs/docker-labs/FAQ.md)
   Respuestas rápidas sobre acceso, capacidad, panel y uso operativo.
+- [🚚 Release Guide (RELEASE.md)](C:/docker-labs/docker-labs/RELEASE.md)
+  Checklist de publicación para no desalinear código, documentación y experiencia operativa.
+- [✅ Compatibility (COMPATIBILITY.md)](C:/docker-labs/docker-labs/COMPATIBILITY.md)
+  Matriz de compatibilidad, puertos y advertencias prácticas por entorno.
+
+### 🧭 Operacion avanzada y estandares del ecosistema
+
+- [📚 Glossary (GLOSSARY.md)](C:/docker-labs/docker-labs/GLOSSARY.md)
+  Glosario base del workspace, Docker y terminología operativa del proyecto.
+- [🧹 Killed Practices (killed.md)](C:/docker-labs/docker-labs/killed.md)
+  Prácticas, enfoques y atajos que el proyecto evita de forma intencional.
+- [🧷 Support (SUPPORT.md)](C:/docker-labs/docker-labs/SUPPORT.md)
+  Criterios de soporte, ayuda y continuidad documental u operativa.
+- [🛠️ Developing (DEVELOPING.md)](C:/docker-labs/docker-labs/DEVELOPING.md)
+  Guía para extender, mantener o continuar la evolución del workspace.
+- [🔐 Security (SECURITY.md)](C:/docker-labs/docker-labs/SECURITY.md)
+  Política de reporte responsable y alcance de seguridad del repositorio.
+- [🤝 Contributing (CONTRIBUTING.md)](C:/docker-labs/docker-labs/CONTRIBUTING.md)
+  Flujo esperado para contribuciones, convenciones y buenas prácticas de colaboración.
+- [🧑‍⚖️ Code of Conduct (CODE_OF_CONDUCT.md)](C:/docker-labs/docker-labs/CODE_OF_CONDUCT.md)
+  Estándar de convivencia para mantener colaboración segura y profesional.
 
 ### 👀 Evaluación externa y mantenimiento
 
 - [👀 For Recruiters (FOR_RECRUITERS.md)](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
   Valor de portafolio, evidencia técnica y recorrido rápido para evaluación.
-- [🛠️ Developing (DEVELOPING.md)](C:/docker-labs/docker-labs/DEVELOPING.md)
-  Guía para extender, mantener o continuar la evolución del proyecto.
-- [🤝 Support (SUPPORT.md)](C:/docker-labs/docker-labs/SUPPORT.md)
-  Criterios de soporte, ayuda y mantenimiento documental u operativo.
+- [🧭 Recruiter Shortcut (RECRUITER.md)](C:/docker-labs/docker-labs/RECRUITER.md)
+  Ruta de lectura todavía más corta para evaluación externa o revisión ejecutiva.
 
 ---
 
