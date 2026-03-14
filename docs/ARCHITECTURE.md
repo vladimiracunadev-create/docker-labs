@@ -1,505 +1,122 @@
-# Arquitectura 🏗️
+# 🏗️ Architecture
 
-Documentación técnica sobre el diseño y arquitectura de **docker-labs**.
+Visión técnica del workspace `docker-labs`.
 
----
+## 📌 Objetivo de arquitectura
 
-## 🎯 Filosofía de Diseño
+La arquitectura del repositorio busca equilibrar tres cosas:
 
-docker-labs sigue tres principios fundamentales:
+- aprendizaje práctico
+- operación local clara
+- evolución de algunos labs hacia productos modulares
 
-1. **🔗 Independencia Modular**: Cada laboratorio puede funcionar de forma aislada
-2. **📦 Separación de Responsabilidades**: Código (host) / Runtime (contenedor) / Datos (volúmenes)
-3. **🎓 Aprendizaje Progresivo**: De básico a avanzado
+## 📊 Estado arquitectónico
 
----
+| Capa | Estado | Rol |
+|---|---|---|
+| `dashboard-control` | 🟢 Operativo | Control del workspace y diagnóstico |
+| `05-postgres-api` | 🟢 Operativo | Core transaccional |
+| `09-multi-service-app` | 🟢 Operativo | Portal operativo |
+| `06-nginx-proxy` | 🟢 Operativo | Gateway |
+| Labs complementarios | 🟡 Parcial | Capacidades e infraestructura |
 
-## 🗂️ Estructura General del Repositorio
-
-```mermaid
-graph TD
-    A[docker-labs] --> B[docs/]
-    A --> C[01-node-api/]
-    A --> D[02-php-lamp/]
-    A --> E[03-python-api/]
-    
-    B --> B1[Guías para usuarios]
-    B --> B2[Documentación técnica]
-    
-    C --> C1[Dockerfile]
-    C --> C2[docker-compose.yml]
-    C --> C3[Código fuente]
-    
-    D --> D1[docker-compose.yml]
-    D --> D2[docker/ configs]
-    D --> D3[Código fuente]
-    
-    E --> E1[Dockerfile]
-    E --> E2[docker-compose.yml]
-    E --> E3[Código fuente]
-    
-    style A fill:#2196F3,color:#fff
-    style B fill:#4CAF50,color:#fff
-    style C fill:#FF9800,color:#fff
-    style D fill:#9C27B0,color:#fff
-    style E fill:#F44336,color:#fff
-```
-
----
-
-## 🧩 Capas de Arquitectura
-
-### Capa 1: Host (Tu máquina)
-
-```
-┌─────────────────────────────────────┐
-│         Sistema Operativo           │
-│  (Windows / macOS / Linux)          │
-│                                     │
-│  ├── Docker Engine                  │
-│  ├── Código fuente (git clone)     │
-│  └── Editor (VS Code)               │
-└─────────────────────────────────────┘
-```
-
-**Responsabilidades**:
-- Almacenar el código fuente
-- Ejecutar Docker Engine
-- Editar archivos
-
----
-
-### Capa 2: Docker (Contenedores)
-
-```
-┌─────────────────────────────────────┐
-│        Docker Engine                │
-│                                     │
-│  ┌──────────┐  ┌──────────┐        │
-│  │Container │  │Container │        │
-│  │  Web     │  │   DB     │        │
-│  └──────────┘  └──────────┘        │
-│       ↓              ↓              │
-│  ┌──────────────────────┐          │
-│  │  Docker Network      │          │
-│  └──────────────────────┘          │
-└─────────────────────────────────────┘
-```
-
-**Responsabilidades**:
-- Ejecutar aplicaciones aisladas
-- Gestionar redes entre contenedores
-- Mapear puertos y volúmenes
-
----
-
-### Capa 3: Volúmenes (Persistencia)
-
-```
-┌─────────────────────────────────────┐
-│      Docker Volumes                 │
-│                                     │
-│  ├── db-data (MariaDB)              │
-│  ├── bind mounts (código)           │
-│  └── named volumes (logs)           │
-└─────────────────────────────────────┘
-```
-
-**Responsabilidades**:
-- Persistir datos de bases de datos
-- Sincronizar código en tiempo real
-- Almacenar archivos generados
-
----
-
-## 🟢 Arquitectura: 01-node-api
-
-### Diagrama de Componentes
+## 🧱 Capas del sistema
 
 ```mermaid
 flowchart LR
-    A[Browser] -->|HTTP :3000| B[Docker Network]
-    B --> C[Node Container]
-    C --> D[Express App]
-    D --> E[src/index.js]
-    
-    F[Host: 01-node-api/] -.->|bind mount| E
-    
-    style C fill:#68a063,color:#fff
-    style D fill:#303030,color:#fff
-    style F fill:#f0db4f,color:#000
+    Browser["Browser / User"] --> Control["Control Center :9090"]
+    Browser --> Gateway["Platform Gateway :8085"]
+    Gateway --> Core["Inventory Core :8000"]
+    Gateway --> Portal["Operations Portal :8083"]
+    Portal --> Core
+    Control --> Docker["Docker Engine / Docker Desktop"]
+    Control --> Repo["Repo Metadata + Docs"]
+    Core --> Postgres[("PostgreSQL")]
+    Portal --> Mongo[("MongoDB")]
 ```
 
-### docker-compose.yml
+## 🧠 Lectura por piezas
 
-```yaml
-services:
-  web:
-    build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./src:/app/src
-    environment:
-      - NODE_ENV=development
-```
+### 1. Control Center
 
-### Flujo de Datos
+Componente:
 
-1. **Editas** `src/index.js` en tu máquina (host)
-2. **Bind mount** sincroniza el archivo al contenedor inmediatamente
-3. **Nodemon** detecta el cambio y reinicia el servidor
-4. **Browser** recibe la respuesta actualizada en `:3000`
+- [dashboard-control/server.js](C:/docker-labs/docker-labs/dashboard-control/server.js)
 
-### Responsabilidades
+Responsabilidades:
 
-| Componente | Responsabilidad |
-|------------|-----------------|
-| Dockerfile | Definir imagen base (Node 18) + deps |
-| docker-compose | Levantar servicio + puertos + volúmenes |
-| src/ | Código fuente de la aplicación |
-| package.json | Dependencias npm |
+- listar y diagnosticar labs
+- ejecutar `docker compose`
+- exponer `overview` y `diagnostics`
+- centralizar accesos y operaciones del workspace
 
----
+### 2. Inventory Core
 
-## 🐘 Arquitectura: 02-php-lamp
+Componente:
 
-### Diagrama de Componentes
+- [05-postgres-api/README.md](C:/docker-labs/docker-labs/05-postgres-api/README.md)
+
+Responsabilidades:
+
+- clientes
+- productos
+- pedidos
+- stock
+- resumen operativo
+
+### 3. Operations Portal
+
+Componente:
+
+- [09-multi-service-app/README.md](C:/docker-labs/docker-labs/09-multi-service-app/README.md)
+
+Responsabilidades:
+
+- mostrar datos operativos del core
+- ofrecer una cara más cercana al usuario
+- persistir watchlist y contexto auxiliar
+
+### 4. Platform Gateway
+
+Componente:
+
+- [06-nginx-proxy/README.md](C:/docker-labs/docker-labs/06-nginx-proxy/README.md)
+
+Responsabilidades:
+
+- unificar entrada al panel, core y portal
+- evitar experiencia fragmentada por puertos
+
+## 🗂️ Taxonomía del repositorio
+
+| Tipo | Qué incluye | Intención |
+|---|---|---|
+| `platform` | `05`, `06`, `09`, `dashboard-control` | Experiencia principal |
+| `infra` | `04`, `07`, `08`, `11`, `12` | Capacidades complementarias |
+| `starter` | `01`, `02`, `03`, `10` | Aprendizaje y base de futuros productos |
+
+## 🔄 Flujo operativo principal
 
 ```mermaid
-flowchart TB
-    A[Browser] -->|:8080| B[Apache + PHP Container]
-    A -->|:8081| C[phpMyAdmin Container]
-    
-    B --> D[MariaDB Container]
-    C --> D
-    
-    E[Host: src/] -.->|bind mount| B
-    D --> F[(db-data volume)]
-    
-    style B fill:#777bb3,color:#fff
-    style C fill:#6c78af,color:#fff
-    style D fill:#003545,color:#fff
-    style F fill:#f39c12,color:#fff
+flowchart TD
+    A["Levantar Control Center"] --> B["Revisar diagnostics"]
+    B --> C["Elegir lab o plataforma"]
+    C --> D["Levantar entorno"]
+    D --> E["Abrir sistema"]
+    E --> F["Revisar logs / healthchecks"]
+    F --> G["Bajar o eliminar entornos"]
 ```
 
-### docker-compose.yml
-
-```yaml
-services:
-  web:
-    build: ./docker
-    ports:
-      - "8080:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - db
-  
-  db:
-    image: mariadb:10.6
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: testdb
-    volumes:
-      - db-data:/var/lib/mysql
-  
-  phpmyadmin:
-    image: phpmyadmin:latest
-    ports:
-      - "8081:80"
-
-volumes:
-  db-data:
-```
-
-### Flujo de Datos
-
-1. **Browser** → `:8080` → **Apache** procesa PHP
-2. **PHP** → conecta a **MariaDB** (`db:3306`)
-3. **MariaDB** → lee/escribe en volumen `db-data`
-4. **phpMyAdmin** → gestiona BD visualmente (`:8081`)
-
-### Responsabilidades
-
-| Componente | Responsabilidad |
-|------------|-----------------|
-| docker/Dockerfile | Imagen PHP + extensiones |
-| docker-compose.yml | Orquestar 3 servicios |
-| src/ | Código PHP de la aplicación |
-| db-data (volume) | Persistir datos de MariaDB |
-
----
-
-## 🐍 Arquitectura: 03-python-api
-
-### Diagrama de Componentes
-
-```mermaid
-flowchart LR
-    A[Browser] -->|HTTP :5000| B[Docker Network]
-    B --> C[Python Container]
-    C --> D[Flask App]
-    D --> E[app/main.py]
-    
-    F[Host: app/] -.->|bind mount| E
-    
-    style C fill:#3776ab,color:#fff
-    style D fill:#000,color:#fff
-    style F fill:#ffd343,color:#000
-```
-
-### docker-compose.yml
-
-```yaml
-services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./app:/app
-    environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
-```
-
-### Flujo de Datos
-
-1. **Editas** `app/main.py` en tu máquina
-2. **Bind mount** sincroniza al contenedor
-3. **Flask debug mode** recarga automáticamente
-4. **Browser** ve cambios en `:5000`
-
-### Responsabilidades
-
-| Componente | Responsabilidad |
-|------------|-----------------|
-| Dockerfile | Imagen Python 3.10 + pip install |
-| docker-compose | Levantar servicio con debug |
-| app/ | Código Flask |
-| requirements.txt | Dependencias Python |
-
----
-
-## 05-postgres-api: Arquitectura
-
-### Proposito
-
-`05-postgres-api` se diseno como un servicio central de negocio para el repositorio. Su rol es demostrar como empaquetar un backend transaccional con Docker cuando existen relaciones entre entidades, reglas de stock y operaciones consistentes.
-
-### Diagrama de Componentes
-
-```mermaid
-flowchart LR
-    A[Client or Frontend] -->|HTTP :8000| B[FastAPI Container]
-    B --> C[Inventory Core]
-    C --> D[(PostgreSQL 15)]
-    D --> E[(postgres_data volume)]
-```
-
-### Responsabilidades
-
-| Componente | Responsabilidad |
-|------------|-----------------|
-| FastAPI app | Exponer contratos HTTP y validar datos |
-| SQLAlchemy | Persistencia y modelo relacional |
-| PostgreSQL | Integridad, transacciones y consulta estructurada |
-| Volume `postgres_data` | Persistencia local del inventario |
-
-### Flujo de Negocio
-
-1. El servicio inicia y verifica conectividad con PostgreSQL.
-2. Se crean tablas base y seed inicial.
-3. Los clientes y productos se registran por API.
-4. Un pedido confirmado descuenta stock.
-5. Un pedido cancelado devuelve stock al catalogo.
-
----
-
-## Arquitectura de Plataforma Actual
-
-El repositorio esta evolucionando desde labs independientes hacia una plataforma modular compuesta por sistemas principales y capacidades de soporte.
-
-### Sistemas principales
-
-- `05-postgres-api`: core transaccional
-- `09-multi-service-app`: portal operativo
-- `06-nginx-proxy`: futura capa de entrada comun
-
-### Lectura recomendada
-
-1. `05` resuelve la verdad transaccional del negocio.
-2. `09` vuelve visible esa operacion para usuarios finales.
-3. `06` puede unificar accesos cuando la plataforma pase de puertos sueltos a una experiencia integrada.
-
-### Mapa conceptual
-
-```mermaid
-flowchart LR
-    A["Control Center"] --> B["05 Inventory Core"]
-    A --> C["09 Operations Portal"]
-    B --> C
-    D["06 Gateway"] -. integra .-> B
-    D -. integra .-> C
-    E["Infra Labs"] -. complementan .-> B
-    E -. complementan .-> C
-```
-
-Este modelo ayuda a que cada carpeta tenga un rol claro dentro del repositorio y evita que el proyecto se perciba como una suma desordenada de demos.
-
----
-
-## 🌐 Redes Docker
-
-Cada `docker-compose.yml` crea una red privada automáticamente:
-
-```
-┌──────────────────────────────┐
-│  docker-labs_default network │
-│                              │
-│  ┌─────────┐  ┌─────────┐   │
-│  │   web   │  │   db    │   │
-│  │ :3000   │  │ :3306   │   │
-│  └─────────┘  └─────────┘   │
-│       ↕            ↕         │
-└───────┼────────────┼─────────┘
-        │            │
-        ↓            ↓
-   localhost:3000  (no expuesto)
-```
-
-**Características**:
-- Los contenedores se ven entre sí por **nombre de servicio**
-- Comunicación interna por puertos nativos (3306, 80, etc.)
-- Solo los puertos mapeados son accesibles desde el host
-
----
-
-## 📦 Gestión de Volúmenes
-
-### Bind Mounts (Desarrollo)
-
-```yaml
-volumes:
-  - ./src:/var/www/html  # Host → Contenedor
-```
-
-**Ventajas**:
-- Edición en tiempo real
-- Fácil debugging
-- No pierdes el código al destruir contenedor
-
-**Desventajas**:
-- Performance en Windows/macOS (solución: WSL2)
-
----
-
-### Named Volumes (Datos)
-
-```yaml
-volumes:
-  - db-data:/var/lib/mysql
-
-volumes:
-  db-data:
-```
-
-**Ventajas**:
-- Persistencia garantizada
-- Performance nativa
-- Gestionados por Docker
-
-**Desventajas**:
-- No están en el host directamente
-- Requieren `docker volume rm` para eliminar
-
----
-
-## 🔀 Patrones de Diseño Aplicados
-
-### 1. Separation of Concerns
-
-```
-Presentación  → Apache/Nginx/Express
-Lógica        → PHP/Node/Python
-Datos         → MariaDB/MySQL/PostgreSQL
-```
-
-### 2. Configuration as Code
-
-Todo está en archivos versionables:
-- `Dockerfile` → Imagen
-- `docker-compose.yml` → Orquestación
-- `.env` → Variables sensibles (gitignore)
-
-### 3. Immutable Infrastructure
-
-Las imágenes son **inmutables**:
-- Cambios en deps → `docker-compose build`
-- Cambios en código → Hot reload (bind mount)
-
----
-
-## 🔐 Seguridad por Capas
-
-1. **Network Isolation**: Servicios en red privada
-2. **Port Mapping**: Solo exponemos lo necesario
-3. **Environment Variables**: Secretos en `.env` (no en repo)
-4. **User Permissions**: Contenedores no corren como root (best practice)
-
----
-
-## 🚀 Escalabilidad (Conceptual)
-
-Aunque estos labs son para desarrollo local, la arquitectura permite escalar:
-
-```bash
-# Escalar servicio web a 3 réplicas
-docker-compose up --scale web=3
-```
-
-Con un load balancer (Nginx/Traefik), podrías distribuir tráfico.
-
----
-
-## 📊 Diagrama General de Interacciones
-
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Host as Host Machine
-    participant Docker as Docker Engine
-    participant Container as Container
-    participant Volume as Volume
-    
-    Dev->>Host: git clone
-    Dev->>Host: Edita código
-    Host->>Docker: docker-compose up
-    Docker->>Container: Crea contenedor
-    Docker->>Volume: Monta volumen
-    Host-->>Container: Bind mount (código)
-    Container->>Volume: Escribe datos
-    Dev->>Host: http://localhost:3000
-    Host->>Container: Proxy request
-    Container-->>Host: Response
-    Host-->>Dev: Muestra en browser
-```
-
----
-
-## 🎓 Recursos para Profundizar
-
-### Documentación Oficial
-- [Docker Architecture](https://docs.docker.com/get-started/overview/)
-- [Docker Networking](https://docs.docker.com/network/)
-- [Docker Volumes](https://docs.docker.com/storage/volumes/)
-
-### Guías en este repo
-- 📋 [Catálogo de Labs](LABS_CATALOG.md) - Detalles de cada laboratorio
-- 🔧 [Specs Técnicas](TECHNICAL_SPECS.md) - Versiones y estándares
-- 🎯 [Best Practices](BEST_PRACTICES.md) - Mejores prácticas
-
----
-
-← [Volver al README](../README.md)
+## 🧩 Principios de diseño
+
+1. Un lab debe resolver un problema concreto.
+2. La documentación debe coincidir con lo que realmente entrega el sistema.
+3. El panel debe explicar el entorno, no solo controlarlo.
+4. La plataforma principal debe sentirse integrada, no como puertos aislados.
+
+## 📚 Documentos relacionados
+
+- [README](C:/docker-labs/docker-labs/README.md)
+- [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)

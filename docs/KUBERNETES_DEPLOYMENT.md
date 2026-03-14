@@ -1,259 +1,64 @@
-# ☸️ Despliegue con Kubernetes
+# ☸️ Kubernetes Deployment
 
-Esta guía explica cómo desplegar los laboratorios de docker-labs en un cluster de Kubernetes, migrando de Docker Compose a orquestación nativa de contenedores.
+Guía de despliegue de `docker-labs` hacia Kubernetes.
 
-## 📋 Requisitos Previos
+## Estado actual
 
-- **Cluster Kubernetes**: Minikube (local), Kind, o un cluster en la nube (AKS, EKS, GKE).
-- **kubectl**: Herramienta de línea de comandos para Kubernetes.
-- **Docker**: Para construir imágenes.
-- **Registro de imágenes**: Docker Hub, ECR, o un registro local accesible por el cluster.
+| Área | Estado |
+|---|---|
+| `05-postgres-api` | 🟢 Tiene manifiesto base |
+| Resto de labs | 🟡 Parcial o pendiente de endurecimiento |
+| Estrategia completa de plataforma | 🔴 Aún no consolidada |
 
-### Instalación de Minikube (Recomendado para Local)
+## Alcance real
 
-```bash
-# Windows con Chocolatey
-choco install minikube kubernetes-cli
+Esta guía no pretende vender que todos los labs ya están listos para Kubernetes de producción. Hoy sirve para:
 
-# O descarga directa desde https://minikube.sigs.k8s.io/docs/start/
+- entender la dirección de despliegue
+- usar `05` como referencia
+- identificar qué piezas faltan endurecer
 
-# Iniciar cluster
-minikube start
+## Flujo recomendado
 
-# Verificar
-kubectl get nodes
-```
+1. construir la imagen del lab
+2. publicarla en un registro accesible
+3. aplicar manifiestos del caso
+4. verificar servicio y health
 
-## 🏗️ Preparación de Imágenes
+## Referencia principal: `05-postgres-api`
 
-Antes de desplegar, construye y sube las imágenes personalizadas a un registro.
+Archivos:
 
-### 01-node-api
+- [05-postgres-api/k8s/deployment.yaml](C:/docker-labs/docker-labs/05-postgres-api/k8s/deployment.yaml)
 
-```bash
-cd 01-node-api
-docker build -t tuusuario/node-api:v1 .
-docker push tuusuario/node-api:v1
-```
+Flujo:
 
-### 02-php-lamp (Web)
-
-```bash
-cd 02-php-lamp
-docker build -t tuusuario/php-lamp-web:v1 ./docker/php
-docker push tuusuario/php-lamp-web:v1
-```
-
-### 03-python-api
-
-```bash
-cd 03-python-api
-docker build -t tuusuario/python-api:v1 .
-docker push tuusuario/python-api:v1
-```
-
-### 04-redis-cache
-
-```bash
-cd 04-redis-cache
-docker build -t tuusuario/redis-cache-api:v1 .
-docker push tuusuario/redis-cache-api:v1
-```
-
-### 05-postgres-api
-
-```bash
+```powershell
 cd 05-postgres-api
 docker build -t tuusuario/inventory-core-api:v1 .
 docker push tuusuario/inventory-core-api:v1
+
+kubectl apply -f k8s/deployment.yaml
 ```
 
-### 06-nginx-proxy
+## Qué falta antes de hablar de despliegue maduro
 
-```bash
-cd 06-nginx-proxy
-docker build -t tuusuario/nginx-proxy:v1 .
-docker push tuusuario/nginx-proxy:v1
-```
+- manifests consistentes para más labs
+- configuración separada por entorno
+- secrets reales
+- ingress o gateway definido
+- observabilidad y estrategia de rollout
 
-### 07-rabbitmq-messaging
+## Recomendación honesta
 
-Usa imágenes oficiales: `rabbitmq:3-management`
+Si tu objetivo es mostrar una ruta seria a Kubernetes, hoy céntrate en:
 
-### 08-prometheus-grafana
+- `05-postgres-api`
+- luego `06-nginx-proxy`
+- y solo después en integrar más piezas
 
-Usa imágenes oficiales: `prom/prometheus`, `grafana/grafana`
+## Documentos relacionados
 
-### 09-multi-service-app
-
-```bash
-cd 09-multi-service-app/backend
-docker build -t tuusuario/multi-backend:v1 .
-docker push tuusuario/multi-backend:v1
-```
-
-### 10-go-api
-
-```bash
-cd 10-go-api
-docker build -t tuusuario/go-api:v1 .
-docker push tuusuario/go-api:v1
-```
-
-### 11-elasticsearch-search
-
-```bash
-cd 11-elasticsearch-search
-docker build -t tuusuario/elasticsearch-api:v1 .
-docker push tuusuario/elasticsearch-api:v1
-```
-
-### 12-jenkins-ci
-
-Usa imagen oficial: `jenkins/jenkins:lts`
-
-> **Nota**: Reemplaza `tuusuario` con tu nombre de usuario en Docker Hub. Para MariaDB y phpMyAdmin, usa las imágenes oficiales (`mariadb:11`, `phpmyadmin:latest`).
-
-## 🚀 Despliegue por Laboratorio
-
-### 01-node-api
-
-```bash
-cd 01-node-api/k8s
-kubectl apply -f deployment.yaml
-```
-
-**Acceso**:
-- `minikube service node-api-service` (abre en navegador)
-- O: `kubectl get services` para ver la IP externa.
-
-### 02-php-lamp
-
-```bash
-cd 02-php-lamp/k8s
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
-```
-
-**Acceso**:
-- Web: `minikube service php-lamp-web-service`
-- phpMyAdmin: `minikube service phpmyadmin-service`
-
-> **Nota**: La base de datos usa PersistentVolumeClaim para persistencia. Ajusta variables de entorno en `deployment.yaml` si es necesario.
-
-### 03-python-api
-
-```bash
-cd 03-python-api/k8s
-kubectl apply -f deployment.yaml
-```
-
-**Acceso**:
-- `minikube service python-api-service`
-
-### 04-redis-cache
-
-```bash
-cd 04-redis-cache/k8s
-kubectl apply -f deployment.yaml
-```
-
-**Acceso**:
-- `minikube service redis-cache-api-service`
-
-### 05-postgres-api
-
-```bash
-cd 05-postgres-api/k8s
-kubectl apply -f deployment.yaml
-kubectl port-forward svc/postgres-api-service 8000:8000
-```
-
-**Acceso**:
-- `http://localhost:8000`
-
-### 06-nginx-proxy
-
-```bash
-cd 06-nginx-proxy/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 07-rabbitmq-messaging
-
-```bash
-cd 07-rabbitmq-messaging/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 08-prometheus-grafana
-
-```bash
-cd 08-prometheus-grafana/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 09-multi-service-app
-
-```bash
-cd 09-multi-service-app/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 10-go-api
-
-```bash
-cd 10-go-api/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 11-elasticsearch-search
-
-```bash
-cd 11-elasticsearch-search/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-### 12-jenkins-ci
-
-```bash
-cd 12-jenkins-ci/k8s
-kubectl apply -f deployment.yaml  # Crear si no existe
-```
-
-## 🔧 Comandos Útiles
-
-```bash
-# Ver estado de pods
-kubectl get pods
-
-# Ver logs de un pod
-kubectl logs <pod-name>
-
-# Escalar deployment
-kubectl scale deployment node-api --replicas=3
-
-# Actualizar imagen
-kubectl set image deployment/node-api api=tuusuario/node-api:v2
-
-# Eliminar todo
-kubectl delete -f k8s/
-
-# Acceder a un pod (debugging)
-kubectl exec -it <pod-name> -- /bin/bash
-```
-
-## 🐛 Troubleshooting
-
-- **Imagen no encontrada**: Asegúrate de que la imagen esté subida y accesible. Para Minikube, usa `minikube docker-env` para compartir imágenes locales.
-- **Puertos ocupados**: Cambia `type: LoadBalancer` a `type: NodePort` si hay conflictos.
-- **Volúmenes**: En clusters locales, los hostPath pueden no persistir; considera usar PersistentVolumes reales.
-- **Secrets**: Para passwords, crea Secrets de K8s en lugar de env vars plaintext.
-
-## 📚 Recursos Adicionales
-
-- [Documentación oficial de Kubernetes](https://kubernetes.io/docs/)
-- [Minikube Docs](https://minikube.sigs.k8s.io/docs/)
-- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
-
-¡Ahora puedes orquestar tus labs con Kubernetes! 🎉
+- [Architecture](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [Technical Specs](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)

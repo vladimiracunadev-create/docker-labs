@@ -34,6 +34,8 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 - Nueva guia para principiantes orientada a uso caso a caso y restricciones reales de hardware
 - Referencia operativa con requerimientos minimos y stack por lab
 - Centro de aprendizaje embebido en HTML dentro del panel principal
+- Reescritura de la documentacion troncal, tecnica y operativa con navegacion editorial mas clara
+- README fortalecido con estado del workspace, CI visible y rutas de lectura por perfil
 
 ## [1.0.0] - 2026-01-21
 

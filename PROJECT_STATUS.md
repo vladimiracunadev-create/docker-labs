@@ -1,34 +1,44 @@
-# Project Status
+# 📊 Project Status
 
-Estado resumido del repositorio.
+Estado actual del repositorio y de la plataforma principal.
 
-## Actualmente consolidado
+## Resumen ejecutivo
+
+`docker-labs` ya ofrece un workspace local operativo con panel, core, portal y gateway. Aún no es una plataforma cerrada ni homogénea en sus 12 labs, pero sí tiene una columna vertebral clara.
+
+## Estado actual
+
+| Componente | Estado | Nota |
+|---|---|---|
+| `dashboard-control` | 🟢 Operativo | Dockerizado y con diagnóstico |
+| `05-postgres-api` | 🟢 Operativo | Core transaccional documentado |
+| `09-multi-service-app` | 🟢 Operativo | Integrado con `05` |
+| `06-nginx-proxy` | 🟢 Operativo | Gateway funcional |
+| Labs complementarios | 🟡 En evolución | Útiles, pero aún no todos al mismo estándar |
+
+## Consolidado
 
 - panel principal operativo y dockerizado en `9090`
-- `05-postgres-api` funcional y documentado
-- `09-multi-service-app` funcional e integrado con `05`
-- `06-nginx-proxy` funcional como gateway de entrada
-- diagnostico de capacidad del equipo y del runtime Docker integrado al panel
+- diagnóstico de capacidad del equipo y del runtime Docker
+- `05`, `06` y `09` como experiencia principal de plataforma
+- navegación clara entre sistemas
+- documentación troncal alineada con el estado real
 
-## Actualmente en evolucion
+## En evolución
 
-- estandarizacion documental completa de todos los labs
-- alineacion de labs secundarios con la narrativa de plataforma
-- automatizacion de pruebas y verificacion
+- estandarización editorial de todos los labs
+- automatización de pruebas más profunda
+- endurecimiento de despliegue y Kubernetes
+- mayor coherencia narrativa en labs secundarios
 
-## Intencion del proyecto
+## Lo que el proyecto sí es hoy
 
-Este repositorio no busca impresionar por cantidad de carpetas, sino por capacidad de convertir entornos Docker en sistemas con objetivo claro y evolucion coherente.
+- un workspace usable
+- un activo de portafolio técnico
+- una base para seguir creciendo con criterio
 
-## Lo que no intenta ser todavia
+## Lo que todavía no es
 
+- un reemplazo completo de Docker Desktop
 - una plataforma productiva terminada
-- un reemplazo de Docker Desktop
-- una coleccion completamente homogenea en todos sus labs
-
-## Lo que si ya ofrece
-
-- una experiencia de workspace usable
-- sistemas principales navegables
-- documentacion suficiente para entender el enfoque
-- base para seguir creciendo con criterio
+- un ecosistema totalmente homogéneo en todos sus labs

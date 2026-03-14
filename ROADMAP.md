@@ -1,55 +1,52 @@
-# Roadmap
+# 🛣️ Roadmap
 
 Hoja de ruta general de `docker-labs`.
 
-Este archivo conserva la direccion macro del proyecto. Para el plan detallado de la plataforma actual, revisa [docs/PLATFORM_ROADMAP.md](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md).
+## Propósito
 
-## Vision
+Este archivo conserva la dirección macro del proyecto. Para el plan más detallado de la plataforma principal, revisa [Platform Roadmap](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md).
+
+## Visión
 
 Convertir `docker-labs` en una plataforma modular que permita:
 
-- aprender Docker con casos practicos
+- aprender Docker con casos prácticos
 - mostrar arquitectura y criterio de producto
 - reutilizar entornos como base de sistemas reales
 
 ## Prioridad actual
 
-La prioridad ya no es agregar labs por cantidad. La prioridad es consolidar:
+La prioridad ya no es sumar labs por cantidad. La prioridad es consolidar:
 
-- `05-postgres-api` como core transaccional
-- `09-multi-service-app` como portal operativo
-- `06-nginx-proxy` como gateway de entrada
-- el panel principal como centro de control del workspace
+- `dashboard-control`
+- `05-postgres-api`
+- `09-multi-service-app`
+- `06-nginx-proxy`
 
-## Proximas mejoras
+## Ejes de evolución
 
 ### Plataforma
 
-- integrar mejor `06` con rutas y dominios mas producto
-- mejorar navegacion cruzada entre `05`, `09` y el panel
-- reforzar estados y automatizacion del control center
+- reforzar integración entre panel, core, portal y gateway
+- mejorar navegación y flujo de operación
 
-### Calidad tecnica
+### Calidad técnica
 
-- smoke tests para `05 + 09 + 06`
-- verificaciones de CI mas claras
-- mayor coherencia en metadata por lab
+- pruebas más profundas
+- CI más expresivo
+- mejor estandarización de metadata
 
-### Capas complementarias
+### Capacidades complementarias
 
-- observabilidad con `08-prometheus-grafana`
-- mensajeria con `07-rabbitmq-messaging`
-- cache y performance con `04-redis-cache`
-- busqueda con `11-elasticsearch-search`
+- observabilidad
+- mensajería
+- cache
+- búsqueda
 
 ## Criterio de crecimiento
 
-Un nuevo lab solo suma si cumple al menos una de estas condiciones:
+Un nuevo lab solo suma si:
 
 - extiende la plataforma principal
-- enseña una capacidad concreta que el repo todavia no cubre
-- puede evolucionar en un sistema con identidad propia
-
-## Resultado esperado
-
-El objetivo es que el repositorio deje de percibirse como una coleccion de ejemplos y pase a verse como una plataforma de trabajo modular, presentable y tecnicamente defendible.
+- cubre una capacidad concreta que aún falta
+- puede evolucionar con identidad propia
