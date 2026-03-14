@@ -12,7 +12,7 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 - `Inventory Core` en `05-postgres-api` como backend transaccional con clientes, productos, pedidos, seed, healthchecks y portada HTML
 - `Operations Portal` en `09-multi-service-app` como portal operativo conectado a `05`
 - `Platform Gateway` en `06-nginx-proxy` como punto de entrada unificado a panel, core y portal
-- `FOR_RECRUITERS.md`, `PROJECT_STATUS.md`, `DEVELOPING.md`, `SUPPORT.md` y `FAQ.md`
+- `RECRUITER.md`, `PROJECT_STATUS.md`, `DEVELOPING.md`, `SUPPORT.md` y `FAQ.md`
 - `docs/LABS_RUNTIME_REFERENCE.md` como referencia de imagenes, versiones, tamanos y requisitos de los 12 labs
 - `learning-center.html` como centro HTML de aprendizaje dentro del ambiente local
 

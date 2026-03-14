@@ -3,9 +3,9 @@
 > Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y evolucion de productos.
 
 [![CI](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](C:/docker-labs/docker-labs/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Workspace Status](https://img.shields.io/badge/workspace-operational-2e8b57)](http://localhost:9090)
-[![Platform Focus](https://img.shields.io/badge/focus-core%20%2B%20portal%20%2B%20gateway-c96a2b)](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+[![Platform Focus](https://img.shields.io/badge/focus-core%20%2B%20portal%20%2B%20gateway-c96a2b)](PROJECT_STATUS.md)
 
 ---
 
@@ -46,7 +46,7 @@ Si quieres entender el repositorio rapido, entra primero a [http://localhost:909
 | Gateway funcional | 🟢 | `06` enruta a panel, core y portal |
 | Core documentado | 🟢 | `05` tiene sistema, Swagger, healthchecks y summary |
 | Portal integrado | 🟢 | `09` consume `05` y agrega capa operativa |
-| CI base | 🟢 | Workflow Compose en [.github/workflows/ci.yml](C:/docker-labs/docker-labs/.github/workflows/ci.yml) |
+| CI base | 🟢 | Workflow Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
 | Labs secundarios al mismo estandar editorial | 🟡 | Aun falta elevar todos los README por carpeta |
 
 ---
@@ -69,12 +69,12 @@ Si quieres entender el repositorio rapido, entra primero a [http://localhost:909
 
 | Si eres... | Ruta recomendada | Que mirar |
 |---|---|---|
-| Principiante | [Beginner Guide](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md) | Conceptos, flujo caso a caso y como no perderte |
+| Principiante | [Beginner Guide](docs/BEGINNERS_GUIDE.md) | Conceptos, flujo caso a caso y como no perderte |
 | Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Estado, diagnostico y apertura de sistemas |
-| Dev / DevOps | [Dashboard Setup](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md) | Panel, Compose, gateway y operacion del repo |
-| Backend | [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Core transaccional, healthchecks y Swagger |
-| Full stack / producto | [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Portal operativo e integracion con el core |
-| Reclutador / manager | [Recruiter Shortcut](C:/docker-labs/docker-labs/RECRUITER.md) | Ruta corta de evaluacion y acceso a la historia principal del repo |
+| Dev / DevOps | [Dashboard Setup](docs/DASHBOARD_SETUP.md) | Panel, Compose, gateway y operacion del repo |
+| Backend | [05-postgres-api](05-postgres-api/README.md) | Core transaccional, healthchecks y Swagger |
+| Full stack / producto | [09-multi-service-app](09-multi-service-app/README.md) | Portal operativo e integracion con el core |
+| Reclutador / manager | [Recruiter Guide](RECRUITER.md) | Ruta corta de evaluacion y acceso a la historia principal del repo |
 
 ---
 
@@ -112,10 +112,10 @@ docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 
 | Carpeta | Tipo | Objetivo |
 |---|---|---|
-| [05-postgres-api](C:/docker-labs/docker-labs/05-postgres-api/README.md) | Plataforma | Resolver clientes, productos, pedidos y stock |
-| [09-multi-service-app](C:/docker-labs/docker-labs/09-multi-service-app/README.md) | Plataforma | Dar una experiencia operativa sobre el core |
-| [06-nginx-proxy](C:/docker-labs/docker-labs/06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
-| [dashboard-control](C:/docker-labs/docker-labs/dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
+| [05-postgres-api](05-postgres-api/README.md) | Plataforma | Resolver clientes, productos, pedidos y stock |
+| [09-multi-service-app](09-multi-service-app/README.md) | Plataforma | Dar una experiencia operativa sobre el core |
+| [06-nginx-proxy](06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
+| [dashboard-control](dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
 
 ### Servicios de infraestructura
 
@@ -165,80 +165,78 @@ Como parte del estándar del ecosistema, la documentación se divide por audienc
 
 ### 🚀 Guías para iniciar y operar
 
-- [🗂️ Documentation Index (docs/DOCUMENTATION_INDEX.md)](C:/docker-labs/docker-labs/docs/DOCUMENTATION_INDEX.md)
+- [🗂️ Documentation Index (docs/DOCUMENTATION_INDEX.md)](docs/DOCUMENTATION_INDEX.md)
   Mapa maestro de lectura para no perderte entre los documentos del repositorio.
-- [🎓 Beginner Guide (docs/BEGINNERS_GUIDE.md)](C:/docker-labs/docker-labs/docs/BEGINNERS_GUIDE.md)
+- [🎓 Beginner Guide (docs/BEGINNERS_GUIDE.md)](docs/BEGINNERS_GUIDE.md)
   Ruta guiada para principiantes: conceptos, flujo caso a caso y orden recomendado de aprendizaje.
-- [🔧 Install Guide (docs/INSTALL.md)](C:/docker-labs/docker-labs/docs/INSTALL.md)
+- [🔧 Install Guide (docs/INSTALL.md)](docs/INSTALL.md)
   Requisitos, instalación y forma correcta de levantar el workspace local.
-- [🧰 Requirements (docs/REQUIREMENTS.md)](C:/docker-labs/docker-labs/docs/REQUIREMENTS.md)
+- [🧰 Requirements (docs/REQUIREMENTS.md)](docs/REQUIREMENTS.md)
   Requisitos mínimos y recomendados para saber hasta dónde conviene levantar Docker en tu equipo.
-- [🛠️ Environment Setup (ENVIRONMENT_SETUP.md)](C:/docker-labs/docker-labs/ENVIRONMENT_SETUP.md)
+- [🛠️ Environment Setup (ENVIRONMENT_SETUP.md)](ENVIRONMENT_SETUP.md)
   Preparación práctica del host, Docker Desktop y orden sugerido de arranque.
-- [📘 User Manual (docs/USER_MANUAL.md)](C:/docker-labs/docker-labs/docs/USER_MANUAL.md)
+- [📘 User Manual (docs/USER_MANUAL.md)](docs/USER_MANUAL.md)
   Manual operativo del día a día: cómo usar el panel, qué abrir primero y cómo trabajar por casos.
-- [🖥️ Dashboard Setup (docs/DASHBOARD_SETUP.md)](C:/docker-labs/docker-labs/docs/DASHBOARD_SETUP.md)
+- [🖥️ Dashboard Setup (docs/DASHBOARD_SETUP.md)](docs/DASHBOARD_SETUP.md)
   Explica cómo funciona el `9090`, su arquitectura y cómo gobierna el entorno Docker.
-- [🎛️ Operating Modes (OPERATING-MODES.md)](C:/docker-labs/docker-labs/OPERATING-MODES.md)
+- [🎛️ Operating Modes (OPERATING-MODES.md)](OPERATING-MODES.md)
   Explica cuándo conviene usar modo panel primero, caso a caso o plataforma principal.
-- [📟 Runbook (RUNBOOK.md)](C:/docker-labs/docker-labs/RUNBOOK.md)
+- [📟 Runbook (RUNBOOK.md)](RUNBOOK.md)
   Manual corto de operación, arranque, apagado y respuesta a incidencias comunes.
 
 ### 🏗️ Arquitectura, catálogo y specs
 
-- [🏛️ Architecture (docs/ARCHITECTURE.md)](C:/docker-labs/docker-labs/docs/ARCHITECTURE.md)
+- [🏛️ Architecture (docs/ARCHITECTURE.md)](docs/ARCHITECTURE.md)
   Vista de arquitectura, intención del repositorio y relación entre las piezas principales.
-- [🧩 Labs Catalog (docs/LABS_CATALOG.md)](C:/docker-labs/docker-labs/docs/LABS_CATALOG.md)
+- [🧩 Labs Catalog (docs/LABS_CATALOG.md)](docs/LABS_CATALOG.md)
   Catálogo de los 12 labs con su rol dentro del ecosistema.
-- [📦 Labs Runtime Reference (docs/LABS_RUNTIME_REFERENCE.md)](C:/docker-labs/docker-labs/docs/LABS_RUNTIME_REFERENCE.md)
+- [📦 Labs Runtime Reference (docs/LABS_RUNTIME_REFERENCE.md)](docs/LABS_RUNTIME_REFERENCE.md)
   Imágenes oficiales, tamaños aproximados y requisitos sugeridos por lab.
-- [🧪 Technical Specs (docs/TECHNICAL_SPECS.md)](C:/docker-labs/docker-labs/docs/TECHNICAL_SPECS.md)
+- [🧪 Technical Specs (docs/TECHNICAL_SPECS.md)](docs/TECHNICAL_SPECS.md)
   Stacks, puertos, endpoints y contratos técnicos principales del workspace.
-- [📐 System Specs (SYSTEM_SPECS.md)](C:/docker-labs/docker-labs/SYSTEM_SPECS.md)
+- [📐 System Specs (SYSTEM_SPECS.md)](SYSTEM_SPECS.md)
   Vista ejecutiva del sistema, sus componentes principales y capacidades visibles.
-- [🗃️ File Architecture (FILE_ARCHITECTURE.md)](C:/docker-labs/docker-labs/FILE_ARCHITECTURE.md)
+- [🗃️ File Architecture (FILE_ARCHITECTURE.md)](FILE_ARCHITECTURE.md)
   Mapa rápido del repositorio para saber dónde vive cada responsabilidad.
-- [🔌 Tooling (docs/TOOLING.md)](C:/docker-labs/docker-labs/docs/TOOLING.md)
+- [🔌 Tooling (docs/TOOLING.md)](docs/TOOLING.md)
   Herramientas principales del workspace, tanto de runtime como de desarrollo.
 
 ### 📈 Estado, operación y evolución
 
-- [📊 Project Status (PROJECT_STATUS.md)](C:/docker-labs/docker-labs/PROJECT_STATUS.md)
+- [📊 Project Status (PROJECT_STATUS.md)](PROJECT_STATUS.md)
   Qué está consolidado hoy y qué sigue en evolución.
-- [🗺️ Platform Roadmap (docs/PLATFORM_ROADMAP.md)](C:/docker-labs/docker-labs/docs/PLATFORM_ROADMAP.md)
+- [🗺️ Platform Roadmap (docs/PLATFORM_ROADMAP.md)](docs/PLATFORM_ROADMAP.md)
   Dirección futura del workspace y prioridades de madurez.
-- [📝 Changelog (CHANGELOG.md)](C:/docker-labs/docker-labs/CHANGELOG.md)
+- [📝 Changelog (CHANGELOG.md)](CHANGELOG.md)
   Historial de cambios relevantes y evolución del repositorio.
-- [❓ FAQ (FAQ.md)](C:/docker-labs/docker-labs/FAQ.md)
+- [❓ FAQ (FAQ.md)](FAQ.md)
   Respuestas rápidas sobre acceso, capacidad, panel y uso operativo.
-- [🚚 Release Guide (RELEASE.md)](C:/docker-labs/docker-labs/RELEASE.md)
+- [🚚 Release Guide (RELEASE.md)](RELEASE.md)
   Checklist de publicación para no desalinear código, documentación y experiencia operativa.
-- [✅ Compatibility (COMPATIBILITY.md)](C:/docker-labs/docker-labs/COMPATIBILITY.md)
+- [✅ Compatibility (COMPATIBILITY.md)](COMPATIBILITY.md)
   Matriz de compatibilidad, puertos y advertencias prácticas por entorno.
 
 ### 🧭 Operacion avanzada y estandares del ecosistema
 
-- [📚 Glossary (GLOSSARY.md)](C:/docker-labs/docker-labs/GLOSSARY.md)
+- [📚 Glossary (GLOSSARY.md)](GLOSSARY.md)
   Glosario base del workspace, Docker y terminología operativa del proyecto.
-- [🧹 Killed Practices (killed.md)](C:/docker-labs/docker-labs/killed.md)
+- [🧹 Killed Practices (killed.md)](killed.md)
   Prácticas, enfoques y atajos que el proyecto evita de forma intencional.
-- [🧷 Support (SUPPORT.md)](C:/docker-labs/docker-labs/SUPPORT.md)
+- [🧷 Support (SUPPORT.md)](SUPPORT.md)
   Criterios de soporte, ayuda y continuidad documental u operativa.
-- [🛠️ Developing (DEVELOPING.md)](C:/docker-labs/docker-labs/DEVELOPING.md)
+- [🛠️ Developing (DEVELOPING.md)](DEVELOPING.md)
   Guía para extender, mantener o continuar la evolución del workspace.
-- [🔐 Security (SECURITY.md)](C:/docker-labs/docker-labs/SECURITY.md)
+- [🔐 Security (SECURITY.md)](SECURITY.md)
   Política de reporte responsable y alcance de seguridad del repositorio.
-- [🤝 Contributing (CONTRIBUTING.md)](C:/docker-labs/docker-labs/CONTRIBUTING.md)
+- [🤝 Contributing (CONTRIBUTING.md)](CONTRIBUTING.md)
   Flujo esperado para contribuciones, convenciones y buenas prácticas de colaboración.
-- [🧑‍⚖️ Code of Conduct (CODE_OF_CONDUCT.md)](C:/docker-labs/docker-labs/CODE_OF_CONDUCT.md)
+- [🧑‍⚖️ Code of Conduct (CODE_OF_CONDUCT.md)](CODE_OF_CONDUCT.md)
   Estándar de convivencia para mantener colaboración segura y profesional.
 
 ### 👀 Evaluación externa y mantenimiento
 
-- [👀 For Recruiters (FOR_RECRUITERS.md)](C:/docker-labs/docker-labs/FOR_RECRUITERS.md)
-  Valor de portafolio, evidencia técnica y recorrido rápido para evaluación.
-- [🧭 Recruiter Shortcut (RECRUITER.md)](C:/docker-labs/docker-labs/RECRUITER.md)
-  Ruta de lectura todavía más corta para evaluación externa o revisión ejecutiva.
+- [🧭 Recruiter Guide (RECRUITER.md)](RECRUITER.md)
+  Ruta principal de lectura para evaluación externa, revisión ejecutiva y contexto de portafolio.
 
 ---
 
@@ -262,4 +260,4 @@ Este repositorio gana valor cuando cada carpeta deja de ser "otro Docker" y pasa
 
 ## 📄 Licencia
 
-Proyecto bajo [Apache License 2.0](C:/docker-labs/docker-labs/LICENSE).
+Proyecto bajo [Apache License 2.0](LICENSE).
