@@ -1,34 +1,35 @@
-.PHONY: help up-dashboard up-simple down logs status
+.PHONY: help start stop status build-launcher build-installer
 
 help:
-	@echo "Docker Labs Manager"
-	@echo "==================="
+	@echo "Docker Labs — Workspace Commands"
+	@echo "================================="
 	@echo ""
-	@echo "Comandos disponibles:"
-	@echo "  make up-dashboard    Inicia el dashboard completo (todos los servicios)"
-	@echo "  make up-simple       Inicia el dashboard simple (sin algunos servicios pesados)"
-	@echo "  make down            Detiene y elimina todos los contenedores"
-	@echo "  make logs            Muestra los logs de todos los contenedores"
-	@echo "  make status          Muestra el estado de los contenedores"
+	@echo "  make start            Start the Control Center (port 9090)"
+	@echo "  make stop             Stop the Control Center"
+	@echo "  make status           Show running containers"
+	@echo ""
+	@echo "  make build-launcher   Build the Windows launcher (requires Go)"
+	@echo "  make build-installer  Build the Windows installer (requires Inno Setup)"
+	@echo ""
+	@echo "  Quickstart:  scripts/start-control-center.cmd  (Windows)"
+	@echo "               docker compose -f dashboard-control/docker-compose.yml up -d --build"
 	@echo ""
 
-up-dashboard:
-	@echo "Iniciando dashboard completo..."
-	docker-compose -f docker-compose-dashboard.yml up -d --build
+start:
+	@echo "Starting Docker Labs Control Center..."
+	docker compose -f dashboard-control/docker-compose.yml up -d --build
 
-up-simple:
-	@echo "Iniciando dashboard simple..."
-	docker-compose -f docker-compose-dashboard-simple.yml up -d --build
-
-down:
-	@echo "Deteniendo contenedores..."
-	docker-compose -f docker-compose-dashboard.yml down
-	docker-compose -f docker-compose-dashboard-simple.yml down
-
-logs:
-	docker-compose -f docker-compose-dashboard.yml logs -f
+stop:
+	@echo "Stopping Docker Labs Control Center..."
+	docker compose -f dashboard-control/docker-compose.yml down
 
 status:
-	docker-compose -f docker-compose-dashboard.yml ps
-	@echo "---"
-	docker-compose -f docker-compose-dashboard-simple.yml ps
+	docker compose -f dashboard-control/docker-compose.yml ps
+
+build-launcher:
+	@echo "Building Windows launcher..."
+	cd launcher && go build -o docker-labs-launcher.exe .
+
+build-installer:
+	@echo "Building Windows installer (requires Inno Setup)..."
+	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/build-installer.ps1

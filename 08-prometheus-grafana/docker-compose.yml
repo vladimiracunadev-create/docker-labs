@@ -3,7 +3,7 @@ services:
     image: prom/prometheus
     container_name: prometheus_monitoring
     ports:
-      - "9090:9090"
+      - "9091:9090"  # 9091 on host: avoids conflict with Docker Labs Control Center (9090)
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
@@ -11,6 +11,6 @@ services:
     image: grafana/grafana
     container_name: grafana_monitoring
     ports:
-      - "3002:3000" # Cambiado para evitar conflicto con el backend de 09-multi-service-app
+      - "3002:3000"  # 3002 on host: avoids conflict with 09-multi-service-app backend
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin

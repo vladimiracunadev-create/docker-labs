@@ -28,6 +28,19 @@
 | Entrada comun | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
 | Aprendizaje | `learning-center.html` | Entrega contexto formativo dentro del ambiente local |
 
+## 💻 Instalacion en Windows
+
+Descarga el instalador desde GitHub Releases y sigue el asistente:
+
+1. Descarga `docker-labs-setup-{version}.exe` desde **[GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)**
+2. Ejecuta el instalador (acepta el aviso de SmartScreen si aparece — ver nota)
+3. Usa el acceso directo **Docker Labs** del menu de inicio o el escritorio
+4. El launcher verifica Docker Desktop, levanta el Control Center y abre el browser
+
+> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decision explicita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Mas informacion" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase).
+
+---
+
 ## ⚡ Quickstart recomendado
 
 Si quieres ver el repo funcionando sin perderte, sigue este orden:
@@ -168,6 +181,14 @@ El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documen
 | Tooling | Tecnico | Herramientas principales de runtime y desarrollo | [Abrir](docs/TOOLING.md) |
 | Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](COMPATIBILITY.md) |
 | Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](GLOSSARY.md) |
+
+### 🪟 Distribucion Windows
+
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Windows Installer | Usuarios Windows, reclutadores | Como instalar, compilar, distribuir y justificar ausencia de firma digital | [Abrir](docs/windows-installer.md) |
+| GitHub Releases Distribution | Maintainers | Estrategia de distribucion via releases, sin binarios en el repo | [Abrir](docs/github-releases-distribution.md) |
+| Technical Audit | Tecnico | Estado diagnosticado del repo y correcciones aplicadas | [Abrir](docs/technical-audit.md) |
 
 ### 📈 Estado, release y gobernanza
 

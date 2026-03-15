@@ -38,6 +38,14 @@ Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para
 | Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](../COMPATIBILITY.md) |
 | Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](../GLOSSARY.md) |
 
+## 🪟 Distribucion Windows
+
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Windows Installer | Usuarios Windows, maintainers | Instalacion, build, componentes, firma digital y troubleshooting | [Abrir](windows-installer.md) |
+| GitHub Releases Distribution | Maintainers | Estrategia de distribucion sin binarios en el repo | [Abrir](github-releases-distribution.md) |
+| Technical Audit | Tecnico | Diagnostico del repo, hallazgos y correcciones aplicadas | [Abrir](technical-audit.md) |
+
 ## 📈 Estado, release y gobernanza
 
 | Documento | Audiencia | Que resuelve | Abrir |

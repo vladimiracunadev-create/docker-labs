@@ -79,3 +79,13 @@ Thumbs.db
 
 # Kubernetes
 kubeconfig
+
+# Windows packaging — release artifacts (published via GitHub Releases, not committed)
+docker-labs-*.zip
+docker-labs-setup-*.exe
+packaging/staging/
+launcher/go.sum
+
+# Go build output (launcher)
+launcher/docker-labs-launcher
+launcher/docker-labs-launcher.exe
