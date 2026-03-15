@@ -1,57 +1,48 @@
-# 🖥️ Dashboard Setup
+# Dashboard Setup
 
-Guia operativa del `Docker Labs Control Center`.
+> **Version**: 1.5  
+> **Estado**: Activo  
+> **Objetivo**: Explicar como arranca y opera el Control Center actual
 
-## 🎯 Objetivo
+---
 
-El panel en `9090` existe para resolver cuatro problemas:
+## Rol del componente
 
-- no levantar labs a ciegas
-- ver estado Docker real
-- abrir la entrada correcta de cada sistema
-- saber si Docker tiene capacidad para mas carga
+El Control Center en `9090` existe para:
 
-## 📊 Estado del componente
+- mostrar el estado real del workspace
+- ejecutar acciones sobre los labs desde Docker Compose
+- diagnosticar capacidad del runtime
+- guiar al usuario hacia la entrada correcta
 
-| Aspecto | Estado |
-|---|---|
-| Despliegue | 🟢 Dockerizado |
-| Puerto principal | `9090` |
-| Gateway integrado | 🟢 `/control/` en `8085` |
-| Diagnostico de capacidad | 🟢 Disponible |
-| Acciones globales | 🟢 Disponible |
+## Entrada soportada
 
-## 🧱 Arquitectura actual
-
-Componentes:
-
-1. [dashboard-control/docker-compose.yml](../dashboard-control/docker-compose.yml)
-2. [dashboard-control/Dockerfile](../dashboard-control/Dockerfile)
-3. [dashboard-control/server.js](../dashboard-control/server.js)
-4. [index.html](../index.html), [dashboard.js](../dashboard.js), [dashboard.css](../dashboard.css)
-
-## ⚙️ Como funciona
-
-El contenedor del panel:
-
-- expone `9090`
-- monta el repositorio para leer metadata y documentos
-- incluye `docker cli` y `docker compose`
-- usa el socket Docker para operar labs
-
-## 🚀 Inicio rapido
+### Windows
 
 ```powershell
 scripts\start-control-center.cmd
 ```
 
-O manualmente:
+### Linux/macOS
 
-```powershell
-docker compose -f dashboard-control\docker-compose.yml up -d --build
+```bash
+./scripts/start-control-center.sh
 ```
 
-## 🔗 URLs utiles
+## Por que ya no se recomienda el compose directo sin wrapper
+
+El contenedor del panel necesita conocer la ruta real del workspace en el host para poder operar otros `compose`. Por eso el flujo soportado ahora usa wrappers que resuelven el path correcto y evitan depender de `C:\docker-labs\docker-labs`.
+
+## Arquitectura
+
+- `dashboard-control/docker-compose.yml`
+- `dashboard-control/Dockerfile`
+- `dashboard-control/server.js`
+- `index.html`
+- `dashboard.js`
+- `dashboard.css`
+
+## URLs utiles
 
 - [http://localhost:9090](http://localhost:9090)
 - [http://localhost:9090/api/overview](http://localhost:9090/api/overview)
@@ -59,58 +50,14 @@ docker compose -f dashboard-control\docker-compose.yml up -d --build
 - [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 - [http://localhost:8085/control/](http://localhost:8085/control/)
 
-## 🧠 Que muestra el panel
+## Notas operativas
 
-### Overview
+- el panel no reemplaza Docker Desktop; lo usa como prerequisito
+- el launcher Windows usa el mismo `dashboard-control/docker-compose.yml`
+- los compose legacy de raiz ya no forman parte del flujo soportado
 
-- labs registrados
-- labs saludables
-- labs corriendo
-- labs que requieren atencion
+## Documentos relacionados
 
-### Sistemas principales
-
-- `05-postgres-api`
-- `06-nginx-proxy`
-- `09-multi-service-app`
-
-### Diagnostico
-
-Cruza dos fuentes:
-
-- navegador: estimacion del equipo anfitrion
-- Docker: CPU, RAM y consumo real del runtime
-
-### Acciones por lab
-
-- `start`
-- `stop`
-- `restart`
-- `rebuild`
-- `logs`
-
-### Acciones globales
-
-- `Levantar repositorio activo`
-- `Bajar todos los Docker`
-- `Eliminar entornos del repo`
-
-## 🔍 Verificacion tecnica
-
-```powershell
-curl http://localhost:9090/api/overview
-curl http://localhost:9090/api/diagnostics
-```
-
-## 📝 Notas importantes
-
-- `9090` ya no depende de un proceso Node suelto
-- el panel forma parte del ecosistema Docker del repo
-- el panel no reemplaza Docker Desktop: lo usa, lo explica y ayuda a decidir mejor
-
-## 📚 Documentos relacionados
-
-- [README](../README.md)
-- [Install Guide](INSTALL.md)
-- [User Manual](USER_MANUAL.md)
-- [FAQ](../FAQ.md)
+- [INSTALL.md](INSTALL.md)
+- [../RUNBOOK.md](../RUNBOOK.md)
+- [windows-installer.md](windows-installer.md)

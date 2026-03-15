@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "name": "Docker Labs",
+    "shortName": "docker-labs",
+    "publisher": "Vladimir Acuna Dev",
+    "appId": "com.vladimiracunadev.dockerlabs",
+    "launcherExeName": "DockerLabsLauncher.exe",
+    "defaultInstallDir": "{localappdata}\\Programs\\DockerLabs",
+    "releaseChannel": "GitHub Releases",
+    "officialReleasePage": "https://github.com/vladimiracunadev-create/docker-labs/releases",
+    "officialLatestInstallerUrl": "https://github.com/vladimiracunadev-create/docker-labs/releases/latest/download/docker-labs-windows-latest.exe",
+    "officialLatestPortableUrl": "https://github.com/vladimiracunadev-create/docker-labs/releases/latest/download/docker-labs-windows-portable-latest.zip",
+    "unsignedNotice": "This phase ships an unsigned Windows binary. Download it only from the official GitHub Releases channel and verify the published SHA256 checksums."
+  },
+  "workspace": {
+    "primaryWindowsEntryScript": "scripts\\start-control-center.cmd",
+    "primaryPosixEntryScript": "scripts/start-control-center.sh",
+    "mainComposeFiles": [
+      "dashboard-control/docker-compose.yml",
+      "05-postgres-api/docker-compose.yml",
+      "09-multi-service-app/docker-compose.yml",
+      "06-nginx-proxy/docker-compose.yml"
+    ],
+    "primaryUrls": {
+      "controlCenter": "http://localhost:9090",
+      "learningCenter": "http://localhost:9090/learning-center.html",
+      "inventoryCore": "http://localhost:8000",
+      "operationsPortal": "http://localhost:8083",
+      "platformGateway": "http://localhost:8085"
+    },
+    "legacyExcludedPaths": [
+      "docker-compose-dashboard.yml",
+      "docker-compose-dashboard-simple.yml",
+      "docker-labs-v1.0.0.zip"
+    ]
+  },
+  "packaging": {
+    "stagingWorkspaceDirName": "workspace",
+    "manifestOutputFile": "windows-distribution.manifest.json",
+    "includePaths": [
+      "01-node-api",
+      "02-php-lamp",
+      "03-python-api",
+      "04-redis-cache",
+      "05-postgres-api",
+      "06-nginx-proxy",
+      "07-rabbitmq-messaging",
+      "08-prometheus-grafana",
+      "09-multi-service-app",
+      "10-go-api",
+      "11-elasticsearch-search",
+      "12-jenkins-ci",
+      "dashboard-control",
+      "docs",
+      "scripts",
+      "README.md",
+      "RUNBOOK.md",
+      "RELEASE.md",
+      "DEVELOPING.md",
+      "FILE_ARCHITECTURE.md",
+      "CHANGELOG.md",
+      "PROJECT_STATUS.md",
+      "SYSTEM_SPECS.md",
+      "ENVIRONMENT_SETUP.md",
+      "OPERATING-MODES.md",
+      "COMPATIBILITY.md",
+      "FAQ.md",
+      "GLOSSARY.md",
+      "SUPPORT.md",
+      "SECURITY.md",
+      "RECRUITER.md",
+      "NOTICE",
+      "LICENSE",
+      "index.html",
+      "dashboard.js",
+      "dashboard.css",
+      "learning-center.html",
+      "learning-center.css",
+      "nginx-dashboard.conf",
+      "nginx-proxy-dashboard.conf",
+      "prometheus-dashboard.yml"
+    ],
+    "excludedFromInstaller": [
+      ".git/**",
+      ".github/**",
+      "dist/**",
+      "launcher/**",
+      "installer/**",
+      "packaging/**",
+      "docker-compose-dashboard*.yml",
+      "docker-labs-v*.zip"
+    ]
+  },
+  "runtime": {
+    "logRelativePath": "logs\\launcher.log",
+    "settingsRelativePath": "settings.json",
+    "docs": {
+      "windowsGuide": "docs\\windows-installer.md",
+      "distributionGuide": "docs\\github-releases-distribution.md",
+      "audit": "docs\\technical-audit.md",
+      "runbook": "RUNBOOK.md",
+      "releaseGuide": "RELEASE.md"
+    }
+  },
+  "labs": [
+    {
+      "id": "control-center",
+      "name": "Control Center",
+      "role": "workspace",
+      "composeRelativePath": "dashboard-control/docker-compose.yml",
+      "primaryUrl": "http://localhost:9090",
+      "featured": true
+    },
+    {
+      "id": "05-postgres-api",
+      "name": "Inventory Core",
+      "role": "platform",
+      "composeRelativePath": "05-postgres-api/docker-compose.yml",
+      "primaryUrl": "http://localhost:8000",
+      "featured": true
+    },
+    {
+      "id": "09-multi-service-app",
+      "name": "Operations Portal",
+      "role": "platform",
+      "composeRelativePath": "09-multi-service-app/docker-compose.yml",
+      "primaryUrl": "http://localhost:8083",
+      "featured": true
+    },
+    {
+      "id": "06-nginx-proxy",
+      "name": "Platform Gateway",
+      "role": "platform",
+      "composeRelativePath": "06-nginx-proxy/docker-compose.yml",
+      "primaryUrl": "http://localhost:8085",
+      "featured": true
+    },
+    {
+      "id": "08-prometheus-grafana",
+      "name": "Prometheus and Grafana",
+      "role": "infra",
+      "composeRelativePath": "08-prometheus-grafana/docker-compose.yml",
+      "primaryUrl": "http://localhost:9090",
+      "portConflicts": [
+        "control-center"
+      ]
+    },
+    {
+      "id": "11-elasticsearch-search",
+      "name": "Elasticsearch Search",
+      "role": "infra",
+      "composeRelativePath": "11-elasticsearch-search/docker-compose.yml",
+      "primaryUrl": "http://localhost:8000",
+      "portConflicts": [
+        "05-postgres-api"
+      ]
+    }
+  ]
+}

@@ -1,99 +1,83 @@
-# 🛠️ Troubleshooting
+# Troubleshooting
 
-Problemas comunes y cómo resolverlos dentro de `docker-labs`.
+Problemas comunes y como resolverlos dentro de `docker-labs`.
 
-## Problemas generales
-
-### Docker no responde
-
-Síntoma:
-
-- `docker info` falla
-
-Acción:
+## Docker no responde
 
 ```powershell
 docker info
+docker compose version
 ```
 
 Si falla, revisa Docker Desktop o el daemon de Docker.
 
-### Puerto ocupado
+## El Control Center no abre
 
-Síntoma:
-
-- un lab no levanta porque el puerto ya está en uso
-
-Acción:
+### Desde fuente en Windows
 
 ```powershell
-netstat -ano | findstr :9090
+scripts\start-control-center.cmd
 ```
 
-Luego cambia el puerto o detén el proceso en conflicto.
+### Desde fuente en Linux/macOS
 
-### Falta de espacio
+```bash
+./scripts/start-control-center.sh
+```
+
+Si sigue fallando, valida el compose:
 
 ```powershell
-docker system df
-docker system prune -f
+docker compose -f dashboard-control\docker-compose.yml config
 ```
 
-## Problemas del panel `9090`
+## El launcher Windows dice que falta Docker
 
-### El panel no abre
+- confirma `docker --version`
+- confirma `docker compose version`
+- reinicia Docker Desktop si el Engine no esta listo
+- vuelve a usar `Validate prerequisites`
 
-```powershell
-docker compose -f dashboard-control\docker-compose.yml up -d --build
-```
+## SmartScreen o editor no reconocido
 
-### El panel abre, pero no controla Docker
+- esta fase no usa firma digital
+- descarga solo desde el release oficial
+- verifica `SHA256SUMS.txt`
 
-Revisa:
+## El gateway abre pero no enruta
 
-- que el contenedor `docker_labs_control_center` esté arriba
-- que Docker Desktop esté operativo
+Valida que esten arriba:
 
-## Problemas de la plataforma principal
-
-### `8085` abre, pero no enruta
-
-Revisa que estén arriba:
-
+- `dashboard-control`
 - `05-postgres-api`
 - `09-multi-service-app`
-- `dashboard-control`
 
-### `8000` responde lento o no queda healthy
+## `08` o `11` fallan cuando la plataforma principal ya esta arriba
 
-Revisa logs:
+Es un conflicto de puertos esperado:
+
+- `08-prometheus-grafana` usa `9090`
+- `11-elasticsearch-search` usa `8000`
+
+Usalos en modo caso a caso o cambia puertos de forma consciente.
+
+## Problemas de build Windows
+
+### PyInstaller no esta instalado
 
 ```powershell
-docker compose -f 05-postgres-api\docker-compose.yml logs --tail 100
+scripts\windows\Build-Launcher.ps1 -InstallBuildDependencies
 ```
 
-### `8083` no muestra datos
+### Inno Setup no esta instalado
 
-Revisa:
+Usa:
 
-- backend `3003`
-- conectividad con `05`
-- estado de MongoDB
-
-## Labs pesados
-
-### El equipo se pone lento
-
-Evita mezclar:
-
-- `08-prometheus-grafana`
-- `11-elasticsearch-search`
-- `12-jenkins-ci`
-
-Si tu Docker tiene menos de `16 GB`, usa modo caso a caso.
+- `scripts\windows\Build-Installer.ps1` en una maquina con Inno Setup
+- o el workflow `.github/workflows/release-windows.yml`
 
 ## Documentos relacionados
 
-- [FAQ](../FAQ.md)
-- [Install Guide](INSTALL.md)
-- [User Manual](USER_MANUAL.md)
+- [windows-installer.md](windows-installer.md)
+- [github-releases-distribution.md](github-releases-distribution.md)
+- [../RUNBOOK.md](../RUNBOOK.md)

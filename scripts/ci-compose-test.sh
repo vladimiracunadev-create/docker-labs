@@ -34,6 +34,13 @@ RUN_ATTEMPT="${GITHUB_RUN_ATTEMPT:-0}"
 
 PROJECT="ci-${BASE}-${RUN_ID}-${RUN_ATTEMPT}"
 
+if [[ "${COMPOSE_PATH}" == "dashboard-control/docker-compose.yml" ]]; then
+  REPO_ROOT="$(pwd -P)"
+  export CONTROL_CENTER_WORKSPACE_SOURCE="${REPO_ROOT}"
+  export CONTROL_CENTER_DOCKER_SOURCE="${REPO_ROOT}"
+  export CONTROL_CENTER_DOCKER_TARGET="${REPO_ROOT}"
+fi
+
 compose() {
   docker compose -p "${PROJECT}" --project-directory "${DIR}" -f "${COMPOSE_PATH}" "$@"
 }

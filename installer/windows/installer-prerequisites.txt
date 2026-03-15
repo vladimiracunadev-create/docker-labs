@@ -1,0 +1,20 @@
+Docker Labs Windows Installer
+=============================
+
+Prerequisites
+-------------
+- Docker Desktop with docker compose available on the PATH.
+- Git is recommended if you also want to keep working from source.
+- A modern browser is required to use the Control Center and the main platform URLs.
+
+Important for this phase
+------------------------
+- This first installer build is intentionally not digitally signed.
+- Download it only from the official GitHub Releases page for docker-labs.
+- Verify the published SHA256SUMS.txt file before sharing or mirroring the asset.
+
+What the installer does not do
+------------------------------
+- It does not bundle Docker Desktop.
+- It does not replace docker compose with a simulation.
+- It does not publish release binaries back into the repository.

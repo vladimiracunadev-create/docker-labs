@@ -8,36 +8,29 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 
 ### Added
 
-- Panel principal con control centralizado de labs, lectura de estado y acciones globales de `bajar todo` y `eliminar entornos del repo`
-- `Inventory Core` en `05-postgres-api` como backend transaccional con clientes, productos, pedidos, seed, healthchecks y portada HTML
-- `Operations Portal` en `09-multi-service-app` como portal operativo conectado a `05`
-- `Platform Gateway` en `06-nginx-proxy` como punto de entrada unificado a panel, core y portal
-- `RECRUITER.md`, `PROJECT_STATUS.md`, `DEVELOPING.md`, `SUPPORT.md` y `FAQ.md`
-- `docs/LABS_RUNTIME_REFERENCE.md` como referencia de imagenes, versiones, tamanos y requisitos de los 12 labs
-- `learning-center.html` como centro HTML de aprendizaje dentro del ambiente local
+- launcher Windows con validacion de prerequisitos, acceso a logs, arranque del Control Center y arranque de la plataforma principal
+- manifest central `packaging/windows/distribution-manifest.json` para staging, launcher y release
+- scripts `scripts/windows/*.ps1` para build, staging, test, instalador y publicacion
+- instalador Inno Setup en `installer/windows/DockerLabs.iss`
+- workflow `.github/workflows/release-windows.yml` para generar assets Windows en GitHub Releases
+- `docs/technical-audit.md`, `docs/windows-installer.md` y `docs/github-releases-distribution.md`
 
 ### Changed
 
-- El repositorio deja de presentarse solo como una coleccion de demos y pasa a explicarse como plataforma modular de sistemas dockerizados
-- El dashboard ahora distingue entre estado Docker, control operativo y acceso al sistema real
-- `05`, `06` y `09` quedaron alineados como columna vertebral del workspace
-- La documentacion principal se reescribio para mantener coherencia entre narrativa, arquitectura y estado real de entrega
+- `dashboard-control/docker-compose.yml` deja de depender de una ruta fija a `C:\docker-labs\docker-labs` y ahora usa wrappers soportados para resolver el path real del workspace
+- `Makefile` y CI se alinean con el flujo soportado del Control Center actual en lugar de los dashboards legacy de raiz
+- el repo suma una capa profesional de distribucion Windows sin cambiar la esencia del workspace Docker modular
 
 ### Fixed
 
-- Correcciones de coherencia entre README, roadmap, catalogo y estado real de los labs
-- Ajustes de navegacion para volver al menu principal desde los sistemas activos
-- Limpieza de documentos con problemas de codificacion y textos heredados
+- remocion del artefacto versionado `docker-labs-v1.0.0.zip` del repo
+- alineacion de `08-prometheus-grafana` y `11-elasticsearch-search` con notas explicitas sobre conflictos de puertos respecto al flujo principal
+- arranque reproducible del Control Center para repositorios instalados fuera de la ruta original
 
 ### Documentation
 
-- Nueva guia para principiantes orientada a uso caso a caso y restricciones reales de hardware
-- Referencia operativa con requerimientos minimos y stack por lab
-- Centro de aprendizaje embebido en HTML dentro del panel principal
-- Reescritura de la documentacion troncal, tecnica y operativa con navegacion editorial mas clara
-- README fortalecido con estado del workspace, CI visible y rutas de lectura por perfil
-- Se incorporan documentos de estandar del ecosistema: `ENVIRONMENT_SETUP.md`, `FILE_ARCHITECTURE.md`, `GLOSSARY.md`, `SYSTEM_SPECS.md`, `COMPATIBILITY.md`, `OPERATING-MODES.md`, `RELEASE.md`, `RUNBOOK.md`, `RECRUITER.md`, `killed.md`, `docs/REQUIREMENTS.md` y `docs/TOOLING.md`
-- Barrido editorial amplio para unificar `RECRUITER.md`, `README.md`, `PROJECT_STATUS.md`, el indice documental y las rutas internas de la documentacion principal
+- documentacion explicita de por que esta fase no usa firma digital, que impacto tiene y cuales son las mitigaciones adoptadas
+- runbook, release guide, architecture y docs de distribucion alineadas al launcher y al instalador
 
 ## [1.0.0] - 2026-01-21
 

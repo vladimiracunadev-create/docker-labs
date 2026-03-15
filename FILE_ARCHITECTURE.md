@@ -1,32 +1,37 @@
 # File Architecture
 
-> **Version**: 1.4  
+> **Version**: 1.5  
 > **Estado**: Activo  
-> **Uso recomendado**: Abre este documento si quieres entender rapido donde vive cada responsabilidad en el repo
+> **Uso recomendado**: Mapa rapido del repo despues de sumar la capa Windows y corregir el flujo soportado
 
 ---
 
 ## Vista general
 
-| Ruta | Rol | Abrir |
-|---|---|---|
-| `README.md` | Portada principal del proyecto | [Abrir](README.md) |
-| `dashboard-control/` | Control Center dockerizado | [Abrir](dashboard-control/server.js) |
-| `05-postgres-api/` | Core transaccional principal | [Abrir](05-postgres-api/README.md) |
-| `09-multi-service-app/` | Portal operativo | [Abrir](09-multi-service-app/README.md) |
-| `06-nginx-proxy/` | Gateway de acceso | [Abrir](06-nginx-proxy/README.md) |
-| `docs/` | Documentacion estructural, tecnica y operativa | [Abrir](docs/DOCUMENTATION_INDEX.md) |
-| `scripts/` | Scripts locales de apoyo | [Abrir](scripts/start-control-center.cmd) |
+| Ruta | Rol |
+|---|---|
+| `README.md` | Portada principal del proyecto |
+| `dashboard-control/` | Control Center dockerizado que gobierna el workspace |
+| `05-postgres-api/` | Core transaccional principal |
+| `09-multi-service-app/` | Portal operativo principal |
+| `06-nginx-proxy/` | Gateway de acceso de la plataforma |
+| `docs/` | Documentacion tecnica, operativa y de distribucion |
+| `scripts/` | Scripts locales y wrappers soportados |
+| `scripts/windows/` | Build, staging, test y release de la capa Windows |
+| `launcher/` | Codigo fuente del launcher Windows |
+| `installer/windows/` | Script del instalador Inno Setup |
+| `packaging/windows/` | Manifest central de empaquetado y runtime |
 
 ## Distribucion por capas
 
-### Workspace
+### Workspace principal
 
 - `dashboard-control/`
 - `index.html`
 - `dashboard.js`
 - `dashboard.css`
 - `learning-center.html`
+- `learning-center.css`
 
 ### Plataforma principal
 
@@ -49,18 +54,26 @@
 - `03-python-api/`
 - `10-go-api/`
 
-## Donde entrar segun tu objetivo
+### Capa Windows
 
-| Si quieres... | Documento |
-|---|---|
-| Ver el sistema funcionando | [README.md](README.md) |
-| Operar el repo | [RUNBOOK.md](RUNBOOK.md) |
-| Entender la arquitectura | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Cambiar stacks o puertos | [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md) |
-| Ver el catalogo completo | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
+- `launcher/docker_labs_launcher.py`
+- `installer/windows/DockerLabs.iss`
+- `packaging/windows/distribution-manifest.json`
+- `scripts/windows/Build-Launcher.ps1`
+- `scripts/windows/Prepare-Staging.ps1`
+- `scripts/windows/Build-Installer.ps1`
+- `scripts/windows/Test-WindowsPackaging.ps1`
+- `scripts/windows/Publish-GitHubRelease.ps1`
+- `.github/workflows/release-windows.yml`
+
+## Notas de soporte
+
+- Los `docker-compose-dashboard*.yml` de raiz quedan como legado del repo, pero ya no forman parte del flujo soportado ni del instalador Windows.
+- El staging del instalador copia solo el workspace necesario, docs relevantes y el launcher compilado.
+- Los binarios finales quedan fuera del repo y se publican como assets en GitHub Releases.
 
 ## Documentos relacionados
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md)
-- [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)
+- [docs/technical-audit.md](docs/technical-audit.md)
+- [docs/windows-installer.md](docs/windows-installer.md)
+- [docs/github-releases-distribution.md](docs/github-releases-distribution.md)

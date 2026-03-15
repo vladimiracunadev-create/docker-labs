@@ -1,4 +1,5 @@
 @echo off
-cd /d %~dp0\..
-docker compose -f dashboard-control\docker-compose.yml up -d --build
-echo Docker Labs Control Center: http://localhost:9090
+setlocal
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0windows\Start-ControlCenter.ps1" -WorkspaceRoot "%~dp0\.."
+set EXIT_CODE=%ERRORLEVEL%
+endlocal & exit /b %EXIT_CODE%

@@ -1,12 +1,18 @@
 # 11-elasticsearch-search
 
-Búsqueda con Elasticsearch.
+Busqueda con Elasticsearch para catalogos y pruebas de indexacion.
 
-## 🚀 Inicio Rápido
+## Inicio rapido
 
 ```bash
-cd 11-elasticsearch-search
-docker-compose up
+docker compose up -d --build
 ```
 
-Accede a http://localhost:8000/docs
+## Accesos
+
+- API: http://localhost:8000/docs
+- Elasticsearch: http://localhost:9200
+
+## Nota importante
+
+Este lab usa `8000`, el mismo puerto del `05-postgres-api`. Usalo en modo caso a caso o cambia el puerto si necesitas correr ambos al mismo tiempo.

@@ -1,29 +1,43 @@
 # Runbook
 
-> **Version**: 1.4  
+> **Version**: 1.5  
 > **Estado**: Activo  
-> **Uso recomendado**: Guia de operacion rapida para el dia a dia del workspace
+> **Uso recomendado**: Operacion diaria del workspace y de la capa Windows sin perder el flujo Docker original
 
 ---
 
-## Acciones frecuentes
+## Entradas soportadas
 
-| Accion | Comando |
+| Escenario | Entrada recomendada |
 |---|---|
-| Levantar el panel principal | `scripts\start-control-center.cmd` |
-| Levantar la plataforma principal | `docker compose -f dashboard-control\docker-compose.yml up -d --build` + stacks principales |
-| Bajar la plataforma principal | `docker compose -f ... down` por cada stack |
+| Workspace fuente en Windows | `scripts\start-control-center.cmd` |
+| Workspace fuente en Linux/macOS | `./scripts/start-control-center.sh` |
+| Instalacion Windows desde Releases | `DockerLabsLauncher.exe` |
 
-### Levantar la plataforma principal
+## Arranque del flujo principal
+
+### Solo Control Center
 
 ```powershell
-docker compose -f dashboard-control\docker-compose.yml up -d --build
+scripts\start-control-center.cmd
+```
+
+```bash
+./scripts/start-control-center.sh
+```
+
+### Plataforma principal
+
+```powershell
+scripts\start-control-center.cmd
 docker compose -f 05-postgres-api\docker-compose.yml up -d --build
 docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
 docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 ```
 
-### Bajar todos los entornos del repo
+Desde el instalador Windows el launcher ofrece los botones `Start Control Center` y `Start main workspace`.
+
+## Apagado ordenado
 
 ```powershell
 docker compose -f 06-nginx-proxy\docker-compose.yml down
@@ -38,21 +52,31 @@ docker compose -f dashboard-control\docker-compose.yml down
 |---|---|
 | Estado general | [http://localhost:9090](http://localhost:9090) |
 | Diagnostico del runtime | [http://localhost:9090/api/diagnostics](http://localhost:9090/api/diagnostics) |
-| Core | [http://localhost:8000](http://localhost:8000) |
-| Portal | [http://localhost:8083](http://localhost:8083) |
+| Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| Portal operativo | [http://localhost:8083](http://localhost:8083) |
 | Gateway | [http://localhost:8085](http://localhost:8085) |
+| Logs del launcher Windows | `%LOCALAPPDATA%\DockerLabs\logs\launcher.log` |
+
+## Operacion Windows empaquetada
+
+- El instalador no incluye Docker Desktop. El launcher valida `docker` y `docker compose`.
+- El launcher usa el mismo workspace Docker real y no reemplaza `docker compose` por una simulacion.
+- El instalador instala en `%LOCALAPPDATA%\Programs\DockerLabs` y deja un acceso directo claro al launcher.
+- El launcher y el instalador advierten que en esta fase el binario no esta firmado digitalmente.
 
 ## Respuesta a incidencias comunes
 
 | Problema | Respuesta operativa |
 |---|---|
-| `9090` no responde | Revisa si el Control Center esta arriba |
-| `8000` responde, pero el portal falla | Revisa `09` y su backend |
+| `9090` no responde | Reejecuta `scripts\start-control-center.cmd` o usa `Start Control Center` en el launcher |
+| `8000` responde, pero el portal falla | Revisa `09` y valida `http://localhost:3003/api/health` |
 | Gateway sin rutas | Valida que `05`, `09` y `9090` esten levantados |
 | Docker saturado | Baja todo y vuelve a levantar en modo caso a caso |
+| SmartScreen o editor no reconocido | Confirma que el `.exe` viene del release oficial y verifica `SHA256SUMS.txt` |
 
 ## Documentos relacionados
 
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
-- [OPERATING-MODES.md](OPERATING-MODES.md)
+- [docs/windows-installer.md](docs/windows-installer.md)
+- [docs/github-releases-distribution.md](docs/github-releases-distribution.md)
 - [COMPATIBILITY.md](COMPATIBILITY.md)

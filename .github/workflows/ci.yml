@@ -21,27 +21,21 @@ jobs:
           sudo apt-get install -y jq
 
       - id: set-matrix
-        name: Build matrix (docker-compose.yml + dashboard)
+        name: Build matrix (supported compose entrypoints)
         shell: bash
         run: |
           set -euo pipefail
 
-          # docker-compose.yml dentro de labs (ej: 02-php-lamp/docker-compose.yml)
-          mapfile -t lab_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
+          # docker-compose.yml soportados dentro del workspace actual
+          mapfile -t compose_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
             | sed 's|^\./||' | sort -u)
 
-          # docker-compose-dashboard*.yml en raíz
-          mapfile -t root_dash < <(find . -maxdepth 1 -type f -name 'docker-compose-dashboard*.yml' -print \
-            | sed 's|^\./||' | sort -u)
-
-          all=("${lab_files[@]}" "${root_dash[@]}")
-
-          if [ "${#all[@]}" -eq 0 ]; then
-            echo "No se encontraron docker-compose.yml / docker-compose-dashboard*.yml"
+          if [ "${#compose_files[@]}" -eq 0 ]; then
+            echo "No se encontraron docker-compose.yml soportados"
             exit 1
           fi
 
-          targets_json="$(printf '%s\n' "${all[@]}" | jq -R -s -c '
+          targets_json="$(printf '%s\n' "${compose_files[@]}" | jq -R -s -c '
             split("\n")[:-1]
             | map({
                 path: .,

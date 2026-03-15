@@ -76,6 +76,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+docker-labs-v*.zip
+.launcher-data/
+tmp*/
 
 # Kubernetes
 kubeconfig
