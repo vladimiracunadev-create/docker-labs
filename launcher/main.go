@@ -22,13 +22,17 @@ import (
 	"time"
 )
 
+// launcherVersion puede ser sobreescrito en tiempo de build via:
+//   go build -ldflags "-X main.launcherVersion=1.2.0" .
+// Debe ser var (no const) para que -X funcione.
+var launcherVersion = "1.0.0"
+
 const (
-	launcherVersion = "1.0.0"
-	controlPort     = 9090
-	healthURL       = "http://localhost:9090/api/overview"
-	dashboardURL    = "http://localhost:9090"
-	startupTimeout  = 60 * time.Second
-	pollInterval    = 3 * time.Second
+	controlPort    = 9090
+	healthURL      = "http://localhost:9090/api/overview"
+	dashboardURL   = "http://localhost:9090"
+	startupTimeout = 60 * time.Second
+	pollInterval   = 3 * time.Second
 )
 
 func main() {

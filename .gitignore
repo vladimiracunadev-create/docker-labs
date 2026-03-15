@@ -84,8 +84,15 @@ kubeconfig
 docker-labs-*.zip
 docker-labs-setup-*.exe
 packaging/staging/
-launcher/go.sum
+# go.sum NO se ignora — se necesita en repo para cache de GitHub Actions
 
 # Go build output (launcher)
 launcher/docker-labs-launcher
 launcher/docker-labs-launcher.exe
+
+# Launcher — artefactos Python de fase anterior (reemplazados por Go)
+# Mantenidos localmente para referencia, excluidos del repositorio.
+launcher/*.py
+launcher/tests/
+launcher/requirements-build.txt
+launcher/__pycache__/
