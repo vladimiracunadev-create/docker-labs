@@ -1,83 +1,112 @@
 # Release Guide
 
-> **Version**: 1.5  
-> **Estado**: Activo  
-> **Uso recomendado**: Releases del workspace fuente y del instalador Windows para GitHub Releases
+> **Version**: 1.5
+> **Estado**: Activo
+> **Uso recomendado**: Para cierres de iteracion, entregas publicas y publicaciones donde el estado del repo debe quedar coherente
 
 ---
 
 ## Objetivo
 
-Este documento define el flujo de release soportado despues de agregar la capa Windows. La regla se mantiene: el repo sigue siendo un workspace Docker modular y los binarios finales se publican como assets de GitHub Releases, no dentro del repositorio.
+Este documento define que revisar antes de considerar una version del workspace como publicable.
+Incluye el flujo para releases del workspace (fuente) y para el instalador Windows.
 
-## Checklist base
+---
+
+## Checklist de release — workspace
 
 | Area | Que validar |
 |---|---|
 | Sistemas principales | `9090`, `05`, `06` y `09` operativos |
-| Launcher Windows | `python launcher/docker_labs_launcher.py --self-check` responde sin errores de codigo |
-| Instalador | `scripts/windows/Build-Installer.ps1` produce `.exe`, `.zip` y `SHA256SUMS.txt` |
-| Documentacion | README, audit, installer, distribution y changelog alineados |
-| GitHub Releases | Assets versionados + aliases `latest` preparados |
+| Puertos | Sin conflictos (ver docs/technical-audit.md para mapa de puertos) |
+| Documentacion | README, recruiter, indice, status y changelog actualizados |
+| Navegacion | Enlaces principales funcionando |
+| Docker | Compose, healthchecks y puertos coherentes |
+| Estado del repo | Cambios listos para commit y push |
+| Artefactos | `dist/`, `*.zip`, `*.exe` NO commiteados |
 
-## Flujo recomendado
+---
 
-1. Valida el workspace fuente.
+## Flujo recomendado — workspace
 
-```powershell
-scripts\start-control-center.cmd
-docker compose -f 05-postgres-api\docker-compose.yml up -d --build
-docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
-docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
+1. Levanta la plataforma principal
+2. Verifica endpoints y pantallas principales
+3. Revisa docs operativas y de estado
+4. Actualiza [CHANGELOG.md](CHANGELOG.md)
+5. Ajusta [PROJECT_STATUS.md](PROJECT_STATUS.md) si corresponde
+6. Crea el commit final
+7. Crea el tag `v{version}` (activa el build de Windows automaticamente)
+
+---
+
+## Checklist de release — instalador Windows
+
+| Paso | Accion |
+|------|--------|
+| 1 | Verificar que Go 1.21+ y Inno Setup 6.x estan instalados |
+| 2 | Ejecutar `.\scripts\windows\release.ps1 -Version 1.x.0` |
+| 3 | Verificar que `dist\docker-labs-setup-1.x.0.exe` se genero |
+| 4 | Probar el instalador en una maquina Windows limpia |
+| 5 | Generar SHA-256: `Get-FileHash dist\docker-labs-setup-1.x.0.exe` |
+| 6 | Crear release en GitHub con tag `v1.x.0` |
+| 7 | Adjuntar el `.exe` como asset |
+| 8 | Incluir checksum SHA-256 en la descripcion del release |
+| 9 | NO commitear el `.exe` al repositorio |
+
+---
+
+## Flujo automatizado (recomendado)
+
+```bash
+# 1. Etiquetar el release
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-2. Ejecuta la validacion de packaging.
+El workflow `.github/workflows/build-windows.yml` construye y publica el
+instalador automaticamente al detectar el tag.
+
+---
+
+## Flujo manual
 
 ```powershell
-scripts\windows\Test-WindowsPackaging.ps1
+# Build local completo
+.\scripts\windows\release.ps1 -Version 1.0.0
+
+# Build + upload directo a GitHub Releases (requiere gh CLI)
+.\scripts\windows\release.ps1 -Version 1.0.0 -Upload
 ```
 
-3. Genera los artefactos Windows.
+---
 
-```powershell
-scripts\windows\Build-Installer.ps1 -Version v1.5.0
-```
+## Por que no usar firma digital en v1.x
 
-4. Publica los assets en GitHub Releases con workflow o con `gh`.
+El instalador Windows no esta firmado digitalmente en la version actual.
+Esta es una decision explicita de producto, no una omision.
 
-```powershell
-scripts\windows\Publish-GitHubRelease.ps1 -Tag v1.5.0
-```
+Razon principal: el objetivo de esta version es validar la experiencia de
+instalacion y el launcher, no invertir en infraestructura de firma digital
+antes de que el modelo de distribucion este validado.
 
-5. Actualiza la web oficial o GitHub Pages para apuntar al asset estable:
+Ver la explicacion completa en [docs/windows-installer.md](docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase).
 
-`https://github.com/vladimiracunadev-create/docker-labs/releases/latest/download/docker-labs-windows-latest.exe`
-
-## Workflow automatizado
-
-El workflow soportado es `.github/workflows/release-windows.yml`.
-
-- `workflow_dispatch`: build manual con version
-- `release.published`: adjunta el instalador y el portable zip al release oficial
-
-## Decisiones de distribucion que esta guia protege
-
-- El instalador `.exe` final no se versiona dentro del repo.
-- GitHub Releases es el canal oficial de distribucion del binario.
-- GitHub Pages o la web oficial solo enlazan al asset publicado.
-- Docker Desktop se valida como prerequisito; no se empaqueta.
-- La falta de firma digital en esta fase es una decision consciente y documentada.
+---
 
 ## Que no hacer
 
-- No subas el instalador final a la rama principal o a GitHub Pages.
-- No publiques un release sin `SHA256SUMS.txt`.
-- No declares firma digital si el binario no fue firmado.
-- No vuelvas a activar los `docker-compose-dashboard*.yml` legacy como flujo soportado sin revalidarlos.
+- Publicar cambios con el README desalineado del estado real
+- Declarar capacidades que no fueron verificadas
+- Mezclar mejoras estructurales con docs sin registrar el cambio
+- Commitear artefactos de build (`.exe`, `.zip`, `dist/`)
+- Subir el instalador a `gh-pages` o al repositorio
+
+---
 
 ## Documentos relacionados
 
+- [CHANGELOG.md](CHANGELOG.md)
+- [PROJECT_STATUS.md](PROJECT_STATUS.md)
+- [RUNBOOK.md](RUNBOOK.md)
 - [docs/windows-installer.md](docs/windows-installer.md)
 - [docs/github-releases-distribution.md](docs/github-releases-distribution.md)
-- [docs/technical-audit.md](docs/technical-audit.md)
-- [CHANGELOG.md](CHANGELOG.md)

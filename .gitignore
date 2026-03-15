@@ -76,10 +76,16 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
-docker-labs-v*.zip
-.launcher-data/
-tmp*/
 
 # Kubernetes
 kubeconfig
-.claude/
+
+# Windows packaging — release artifacts (published via GitHub Releases, not committed)
+docker-labs-*.zip
+docker-labs-setup-*.exe
+packaging/staging/
+launcher/go.sum
+
+# Go build output (launcher)
+launcher/docker-labs-launcher
+launcher/docker-labs-launcher.exe

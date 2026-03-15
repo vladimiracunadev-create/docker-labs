@@ -1,0 +1,127 @@
+name: Build Windows Installer
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Triggers:
+#   push tag v*.*.*  → build + attach installer to GitHub Release
+#   workflow_dispatch → manual build (no upload, artifact only)
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string (e.g. 1.0.0)'
+        required: false
+        default: '1.0.0'
+
+env:
+  GO_VERSION: '1.21'
+  INNO_SETUP_VERSION: '6'
+
+jobs:
+  build-windows-installer:
+    name: Build Windows Installer
+    runs-on: windows-latest
+    permissions:
+      contents: write   # needed for gh release upload
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Determine version ─────────────────────────────────────────────────
+      - name: Determine version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $v = "${{ github.ref_name }}" -replace '^v', ''
+          } elseif ("${{ github.event.inputs.version }}" -ne "") {
+            $v = "${{ github.event.inputs.version }}"
+          } else {
+            $v = "1.0.0"
+          }
+          echo "VERSION=$v" >> $env:GITHUB_ENV
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+          Write-Host "Building version: $v"
+
+      # ── Set up Go ─────────────────────────────────────────────────────────
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: launcher/go.mod
+
+      # ── Build launcher ────────────────────────────────────────────────────
+      - name: Build Go launcher
+        shell: pwsh
+        run: |
+          .\scripts\windows\build-launcher.ps1 -Version $env:VERSION
+
+      - name: Verify launcher binary
+        shell: pwsh
+        run: |
+          $exe = "launcher\docker-labs-launcher.exe"
+          if (-not (Test-Path $exe)) {
+            Write-Error "Launcher binary not found: $exe"
+          }
+          $size = [math]::Round((Get-Item $exe).Length / 1KB, 1)
+          Write-Host "Launcher: $exe ($size KB)"
+
+      # ── Install Inno Setup ────────────────────────────────────────────────
+      - name: Install Inno Setup ${{ env.INNO_SETUP_VERSION }}
+        shell: pwsh
+        run: |
+          $installer = "$env:TEMP\innosetup.exe"
+          Invoke-WebRequest `
+            -Uri "https://jrsoftware.org/download.php/is.exe" `
+            -OutFile $installer
+          Start-Process $installer -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART" -Wait
+          Write-Host "Inno Setup installed."
+
+      # ── Build installer ───────────────────────────────────────────────────
+      - name: Build Inno Setup installer
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          .\scripts\windows\build-installer.ps1 -Version $env:VERSION -InnoSetupPath $iscc
+
+      - name: Verify installer binary
+        shell: pwsh
+        run: |
+          $exes = Get-ChildItem "dist" -Filter "docker-labs-setup-*.exe"
+          if ($exes.Count -eq 0) {
+            Write-Error "No installer found in dist\"
+          }
+          foreach ($f in $exes) {
+            $size = [math]::Round($f.Length / 1MB, 2)
+            Write-Host "Installer: $($f.Name) ($size MB)"
+          }
+
+      # ── Upload artifact (always, for inspection) ──────────────────────────
+      - name: Upload installer as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-labs-setup-${{ steps.version.outputs.version }}
+          path: dist/docker-labs-setup-*.exe
+          retention-days: 30
+
+      # ── Attach to GitHub Release (only on tag push) ───────────────────────
+      - name: Upload to GitHub Release
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $installer = Get-ChildItem "dist" -Filter "docker-labs-setup-*.exe" |
+                       Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $installer) {
+            Write-Error "Installer not found for upload."
+          }
+          Write-Host "Uploading $($installer.Name) to release ${{ github.ref_name }}..."
+          gh release upload ${{ github.ref_name }} $installer.FullName --clobber
+          Write-Host "Done. Asset available at:"
+          Write-Host "  https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"

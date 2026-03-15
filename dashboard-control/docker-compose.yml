@@ -8,16 +8,15 @@ services:
       - "9090:9090"
     environment:
       APP_REPO_ROOT: /workspace
-      DOCKER_REPO_ROOT: ${CONTROL_CENTER_DOCKER_TARGET:?Use scripts/start-control-center.cmd or scripts/start-control-center.sh}
+      # DOCKER_REPO_ROOT must be the host-absolute path that the Docker daemon
+      # can resolve when docker compose is called from inside this container.
+      # On Windows + Docker Desktop: /run/desktop/mnt/host/<drive>/<path>
+      # On Linux/macOS: the native host path (e.g. /home/user/docker-labs)
+      # The start-control-center scripts compute this automatically.
+      # Fallback /workspace works when host path == container path (Linux native Docker).
+      DOCKER_REPO_ROOT: ${DOCKER_REPO_ROOT:-/workspace}
       DASHBOARD_PORT: 9090
     volumes:
-      - type: bind
-        source: ${CONTROL_CENTER_WORKSPACE_SOURCE:?Use scripts/start-control-center.cmd or scripts/start-control-center.sh}
-        target: /workspace
-      - type: bind
-        source: ${CONTROL_CENTER_DOCKER_SOURCE:?Use scripts/start-control-center.cmd or scripts/start-control-center.sh}
-        target: ${CONTROL_CENTER_DOCKER_TARGET:?Use scripts/start-control-center.cmd or scripts/start-control-center.sh}
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
+      - ..:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped

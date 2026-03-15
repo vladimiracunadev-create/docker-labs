@@ -1,48 +1,35 @@
-.PHONY: help up-control-center up-platform up-dashboard up-simple down logs status
+.PHONY: help start stop status build-launcher build-installer
 
 help:
-	@echo "Docker Labs Manager"
-	@echo "==================="
+	@echo "Docker Labs — Workspace Commands"
+	@echo "================================="
 	@echo ""
-	@echo "Comandos disponibles:"
-	@echo "  make up-control-center  Inicia el Control Center soportado en :9090"
-	@echo "  make up-platform        Inicia Control Center + 05 + 09 + 06"
-	@echo "  make up-dashboard       Alias de up-platform"
-	@echo "  make up-simple          Alias de up-control-center"
-	@echo "  make down               Detiene los stacks principales soportados"
-	@echo "  make logs               Muestra logs del Control Center"
-	@echo "  make status             Muestra el estado de los stacks principales"
+	@echo "  make start            Start the Control Center (port 9090)"
+	@echo "  make stop             Stop the Control Center"
+	@echo "  make status           Show running containers"
+	@echo ""
+	@echo "  make build-launcher   Build the Windows launcher (requires Go)"
+	@echo "  make build-installer  Build the Windows installer (requires Inno Setup)"
+	@echo ""
+	@echo "  Quickstart:  scripts/start-control-center.cmd  (Windows)"
+	@echo "               docker compose -f dashboard-control/docker-compose.yml up -d --build"
 	@echo ""
 
-up-control-center:
-	@echo "Iniciando Control Center..."
-	./scripts/start-control-center.sh
+start:
+	@echo "Starting Docker Labs Control Center..."
+	docker compose -f dashboard-control/docker-compose.yml up -d --build
 
-up-platform: up-control-center
-	@echo "Iniciando plataforma principal..."
-	docker compose -f 05-postgres-api/docker-compose.yml up -d --build
-	docker compose -f 09-multi-service-app/docker-compose.yml up -d --build
-	docker compose -f 06-nginx-proxy/docker-compose.yml up -d --build
-
-up-dashboard: up-platform
-
-up-simple: up-control-center
-
-down:
-	@echo "Deteniendo stacks principales..."
-	docker compose -f 06-nginx-proxy/docker-compose.yml down
-	docker compose -f 09-multi-service-app/docker-compose.yml down
-	docker compose -f 05-postgres-api/docker-compose.yml down
+stop:
+	@echo "Stopping Docker Labs Control Center..."
 	docker compose -f dashboard-control/docker-compose.yml down
-
-logs:
-	docker compose -f dashboard-control/docker-compose.yml logs -f
 
 status:
 	docker compose -f dashboard-control/docker-compose.yml ps
-	@echo "---"
-	docker compose -f 05-postgres-api/docker-compose.yml ps
-	@echo "---"
-	docker compose -f 09-multi-service-app/docker-compose.yml ps
-	@echo "---"
-	docker compose -f 06-nginx-proxy/docker-compose.yml ps
+
+build-launcher:
+	@echo "Building Windows launcher..."
+	cd launcher && go build -o docker-labs-launcher.exe .
+
+build-installer:
+	@echo "Building Windows installer (requires Inno Setup)..."
+	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/windows/build-installer.ps1

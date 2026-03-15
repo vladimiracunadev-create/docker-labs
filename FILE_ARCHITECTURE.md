@@ -1,37 +1,38 @@
 # File Architecture
 
-> **Version**: 1.5  
-> **Estado**: Activo  
-> **Uso recomendado**: Mapa rapido del repo despues de sumar la capa Windows y corregir el flujo soportado
+> **Version**: 1.5
+> **Estado**: Activo
+> **Uso recomendado**: Abre este documento si quieres entender rapido donde vive cada responsabilidad en el repo
 
 ---
 
 ## Vista general
 
-| Ruta | Rol |
-|---|---|
-| `README.md` | Portada principal del proyecto |
-| `dashboard-control/` | Control Center dockerizado que gobierna el workspace |
-| `05-postgres-api/` | Core transaccional principal |
-| `09-multi-service-app/` | Portal operativo principal |
-| `06-nginx-proxy/` | Gateway de acceso de la plataforma |
-| `docs/` | Documentacion tecnica, operativa y de distribucion |
-| `scripts/` | Scripts locales y wrappers soportados |
-| `scripts/windows/` | Build, staging, test y release de la capa Windows |
-| `launcher/` | Codigo fuente del launcher Windows |
-| `installer/windows/` | Script del instalador Inno Setup |
-| `packaging/windows/` | Manifest central de empaquetado y runtime |
+| Ruta | Rol | Abrir |
+|---|---|---|
+| `README.md` | Portada principal del proyecto | [Abrir](README.md) |
+| `dashboard-control/` | Control Center dockerizado | [Abrir](dashboard-control/server.js) |
+| `05-postgres-api/` | Core transaccional principal | [Abrir](05-postgres-api/README.md) |
+| `09-multi-service-app/` | Portal operativo | [Abrir](09-multi-service-app/README.md) |
+| `06-nginx-proxy/` | Gateway de acceso | [Abrir](06-nginx-proxy/README.md) |
+| `launcher/` | Launcher Windows (Go) | [Abrir](launcher/main.go) |
+| `installer/` | Script Inno Setup | [Abrir](installer/docker-labs.iss) |
+| `scripts/` | Scripts de arranque y build | [Abrir](scripts/start-control-center.cmd) |
+| `scripts/windows/` | Scripts de build y release Windows | [Abrir](scripts/windows/release.ps1) |
+| `docs/` | Documentacion estructural, tecnica y operativa | [Abrir](docs/DOCUMENTATION_INDEX.md) |
+| `.github/workflows/` | CI/CD — compose y build Windows | [Abrir](.github/workflows/ci.yml) |
+
+---
 
 ## Distribucion por capas
 
-### Workspace principal
+### Workspace
 
 - `dashboard-control/`
 - `index.html`
 - `dashboard.js`
 - `dashboard.css`
 - `learning-center.html`
-- `learning-center.css`
 
 ### Plataforma principal
 
@@ -54,26 +55,58 @@
 - `03-python-api/`
 - `10-go-api/`
 
-### Capa Windows
+### Capa de distribucion Windows (nueva en v1.5)
 
-- `launcher/docker_labs_launcher.py`
-- `installer/windows/DockerLabs.iss`
-- `packaging/windows/distribution-manifest.json`
-- `scripts/windows/Build-Launcher.ps1`
-- `scripts/windows/Prepare-Staging.ps1`
-- `scripts/windows/Build-Installer.ps1`
-- `scripts/windows/Test-WindowsPackaging.ps1`
-- `scripts/windows/Publish-GitHubRelease.ps1`
-- `.github/workflows/release-windows.yml`
+| Ruta | Contenido | Notas |
+|------|-----------|-------|
+| `launcher/main.go` | Fuente del launcher Go | Se compila a `docker-labs-launcher.exe` |
+| `launcher/go.mod` | Modulo Go del launcher | stdlib puro, sin dependencias externas |
+| `installer/docker-labs.iss` | Script Inno Setup | Genera el instalador `.exe` |
+| `scripts/windows/build-launcher.ps1` | Compila el launcher | Requiere Go 1.21+ |
+| `scripts/windows/build-installer.ps1` | Genera el instalador | Requiere Inno Setup 6.x |
+| `scripts/windows/release.ps1` | Pipeline completo | Build launcher + installer + upload opcional |
+| `.github/workflows/build-windows.yml` | CI/CD automatizado | Genera y publica el instalador en GitHub Releases |
+| `dist/` | Artefactos de build locales | **No versionado** (en .gitignore) |
 
-## Notas de soporte
+---
 
-- Los `docker-compose-dashboard*.yml` de raiz quedan como legado del repo, pero ya no forman parte del flujo soportado ni del instalador Windows.
-- El staging del instalador copia solo el workspace necesario, docs relevantes y el launcher compilado.
-- Los binarios finales quedan fuera del repo y se publican como assets en GitHub Releases.
+## Donde entrar segun tu objetivo
+
+| Si quieres... | Documento |
+|---|---|
+| Ver el sistema funcionando | [README.md](README.md) |
+| Operar el repo | [RUNBOOK.md](RUNBOOK.md) |
+| Entender la arquitectura | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Instalar en Windows | [docs/windows-installer.md](docs/windows-installer.md) |
+| Publicar un release | [docs/github-releases-distribution.md](docs/github-releases-distribution.md) |
+| Revisar auditoria tecnica | [docs/technical-audit.md](docs/technical-audit.md) |
+| Cambiar stacks o puertos | [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md) |
+| Ver el catalogo completo | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
+
+---
+
+## Artefactos que NO se versionan
+
+Los siguientes archivos estan en `.gitignore` y nunca deben commitearse:
+
+| Patron | Motivo |
+|--------|--------|
+| `dist/` | Artefactos de build local |
+| `docker-labs-*.zip` | Archives de release |
+| `docker-labs-setup-*.exe` | Instaladores compilados |
+| `launcher/docker-labs-launcher.exe` | Binario compilado del launcher |
+| `launcher/go.sum` | Generado automaticamente por Go |
+| `node_modules/` | Dependencias npm |
+
+Los instaladores se distribuyen via **GitHub Releases**, no via el repositorio.
+
+---
 
 ## Documentos relacionados
 
-- [docs/technical-audit.md](docs/technical-audit.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md)
+- [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)
 - [docs/windows-installer.md](docs/windows-installer.md)
 - [docs/github-releases-distribution.md](docs/github-releases-distribution.md)
+- [docs/technical-audit.md](docs/technical-audit.md)

@@ -126,7 +126,7 @@ const defaults = [
     composeFile: dockerRepoPath("08-prometheus-grafana", "docker-compose.yml"),
     docsPath: localRepoPath("08-prometheus-grafana", "README.md"),
     urls: [
-      { label: "Prometheus", url: "http://localhost:9090" },
+      { label: "Prometheus", url: "http://localhost:9091" },
       { label: "Grafana", url: "http://localhost:3002" }
     ],
     tags: ["monitoring", "metrics", "ops"],
@@ -173,10 +173,10 @@ const defaults = [
     composeFile: dockerRepoPath("11-elasticsearch-search", "docker-compose.yml"),
     docsPath: localRepoPath("11-elasticsearch-search", "README.md"),
     urls: [
-      { label: "API", url: "http://localhost:8000" },
+      { label: "API", url: "http://localhost:8001" },
       { label: "Elasticsearch", url: "http://localhost:9200" }
     ],
-    healthUrl: "http://localhost:8000/health",
+    healthUrl: "http://localhost:8001/health",
     tags: ["search", "elasticsearch", "indexing"],
     category: "infra",
     recommendedRamGb: 6,

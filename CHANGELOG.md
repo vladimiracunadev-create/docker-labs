@@ -6,6 +6,35 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 
 ## [Unreleased]
 
+### Added — Windows Distribution Layer (v1.5)
+
+- `launcher/main.go` — launcher Go compilable a `.exe` sin dependencias externas: verifica Docker Desktop, computa `DOCKER_REPO_ROOT` dinamicamente, levanta el Control Center y abre el browser
+- `installer/docker-labs.iss` — script Inno Setup para generar el instalador profesional `docker-labs-setup-{version}.exe`
+- `scripts/windows/build-launcher.ps1` — script PowerShell para compilar el launcher con Go
+- `scripts/windows/build-installer.ps1` — script PowerShell para generar el instalador con Inno Setup
+- `scripts/windows/release.ps1` — pipeline completo de release (build launcher + build installer + upload opcional a GitHub Releases)
+- `.github/workflows/build-windows.yml` — workflow GitHub Actions que construye y publica el instalador automaticamente al pushear un tag `v*.*.*`
+- `docs/windows-installer.md` — documentacion completa del instalador: instalacion, build local, componentes, troubleshooting, justificacion de no usar firma digital
+- `docs/github-releases-distribution.md` — estrategia de distribucion via GitHub Releases, flujo de release, pattern de URL, como enlazar desde la web oficial
+- `docs/technical-audit.md` — diagnostico tecnico del repositorio con todos los hallazgos y correcciones aplicadas
+
+### Fixed — Auditoria tecnica (v1.5)
+
+- `dashboard-control/docker-compose.yml`: eliminada ruta hardcodeada del autor (`/run/desktop/mnt/host/c/docker-labs/docker-labs`); `DOCKER_REPO_ROOT` ahora se computa dinamicamente
+- `08-prometheus-grafana/docker-compose.yml`: Prometheus movido de puerto `9090` a `9091` para eliminar conflicto con el Control Center
+- `11-elasticsearch-search/docker-compose.yml`: API movida de puerto `8000` a `8001` para eliminar conflicto con `05-postgres-api`
+- `dashboard-control/labs.js`: URLs de Prometheus (`9091`) y Elasticsearch API (`8001`) actualizadas
+- `scripts/start-control-center.cmd`: reescrito para computar `DOCKER_REPO_ROOT` dinamicamente via PowerShell
+- `Makefile`: actualizado para usar la arquitectura actual (`dashboard-control/`), con targets `start`, `stop`, `status`, `build-launcher` y `build-installer`
+- `.gitignore`: agregados patrones para artefactos de packaging (`docker-labs-*.zip`, `docker-labs-setup-*.exe`, `dist/`, `launcher/`)
+
+### Documentation (v1.5)
+
+- `FILE_ARCHITECTURE.md`: actualizado con la capa de distribucion Windows (v1.5)
+- `RELEASE.md`: extendido con flujo de release para el instalador Windows y justificacion de no usar firma digital
+
+---
+
 ### Added
 
 - launcher Windows con validacion de prerequisitos, acceso a logs, arranque del Control Center y arranque de la plataforma principal

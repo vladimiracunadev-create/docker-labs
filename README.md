@@ -1,77 +1,58 @@
 # Docker Labs
 
-> Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y demos tecnicas con una capa profesional de distribucion Windows.
+> Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y evolucion de productos.
 
 [![CI](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Workspace Status](https://img.shields.io/badge/workspace-operational-2e8b57)](http://localhost:9090)
-[![Windows Distribution](https://img.shields.io/badge/windows-launcher%20%2B%20installer-ready-c96a2b)](docs/windows-installer.md)
+[![Platform Focus](https://img.shields.io/badge/focus-core%20%2B%20portal%20%2B%20gateway-c96a2b)](PROJECT_STATUS.md)
 
 ---
 
-## Executive Summary
+## 🚀 Implementacion Profesional del Workspace (v1.4)
 
-`docker-labs` ya no se presenta como una coleccion de demos aisladas. El repo funciona como un workspace Docker modular con una historia principal clara:
+> **Estado**: 🟢 Operativo  
+> **CI**: 🟢 Activo  
+> **Audiencia**: 👥 Principiantes, DevOps, backend, full stack, reclutadores  
+> **Entrada principal**: 🖥️ [http://localhost:9090](http://localhost:9090)
 
-- `dashboard-control` como Control Center y punto de entrada
-- `05-postgres-api` como core transaccional
-- `09-multi-service-app` como portal operativo
-- `06-nginx-proxy` como gateway comun
-- una capa Windows aditiva con launcher, staging e instalador `.exe`
+**Executive Summary**: `docker-labs` ya no se presenta como una coleccion de demos sueltas. Hoy funciona como un workspace modular con una historia principal clara: un panel dockerizado para operar el entorno, un core transaccional, un portal operativo y un gateway comun.
 
-## Que resuelve este repositorio
+## 🎯 Que resuelve este repositorio
 
 | Capa | Componente | Valor |
 |---|---|---|
-| Workspace | `dashboard-control` | Levantar, detener, diagnosticar y explicar el entorno Docker |
-| Core | `05-postgres-api` | Backend transaccional con clientes, productos, pedidos y stock |
-| Operacion | `09-multi-service-app` | Experiencia operativa visible sobre el core |
-| Entrada comun | `06-nginx-proxy` | Unifica panel, core y portal |
-| Distribucion | launcher + installer Windows | Hace el proyecto instalable y demostrable desde GitHub Releases |
+| Workspace | `dashboard-control` | Permite levantar, detener, diagnosticar y entender el estado del entorno Docker |
+| Core | `05-postgres-api` | Provee un backend transaccional con clientes, productos, pedidos y stock |
+| Operacion | `09-multi-service-app` | Agrega una experiencia operativa sobre el core |
+| Entrada comun | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
+| Aprendizaje | `learning-center.html` | Entrega contexto formativo dentro del ambiente local |
 
-## Quickstart recomendado desde fuente
+## 💻 Instalacion en Windows
 
-### Windows
+Descarga el instalador desde GitHub Releases y sigue el asistente:
 
-```powershell
-scripts\start-control-center.cmd
-```
+1. Descarga `docker-labs-setup-{version}.exe` desde **[GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)**
+2. Ejecuta el instalador (acepta el aviso de SmartScreen si aparece — ver nota)
+3. Usa el acceso directo **Docker Labs** del menu de inicio o el escritorio
+4. El launcher verifica Docker Desktop, levanta el Control Center y abre el browser
 
-### Linux/macOS
+> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decision explicita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Mas informacion" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase).
 
-```bash
-./scripts/start-control-center.sh
-```
+---
 
-Despues, si quieres ver la plataforma principal completa:
+## ⚡ Quickstart recomendado
 
-```powershell
-docker compose -f 05-postgres-api\docker-compose.yml up -d --build
-docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
-docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
-```
+Si quieres ver el repo funcionando sin perderte, sigue este orden:
 
-## Windows installer y launcher
+1. Ejecuta `scripts\start-control-center.cmd`
+2. Abre [http://localhost:9090](http://localhost:9090)
+3. Revisa el diagnostico del host y de Docker
+4. Abre `Inventory Core`
+5. Abre `Operations Portal`
+6. Abre `Platform Gateway`
 
-La distribucion Windows se publica como asset de GitHub Releases. Flujo esperado:
-
-1. Descargar el instalador oficial:
-
-   `https://github.com/vladimiracunadev-create/docker-labs/releases/latest/download/docker-labs-windows-latest.exe`
-
-2. Instalar `Docker Labs`.
-3. Abrir `DockerLabsLauncher.exe`.
-4. Validar `docker` y `docker compose`.
-5. Usar `Start Control Center` o `Start main workspace`.
-
-Importante:
-
-- esta fase **no usa firma digital**
-- Windows puede mostrar advertencias de SmartScreen o editor no reconocido
-- el canal oficial de distribucion es GitHub Releases
-- cada release incluye `SHA256SUMS.txt`
-
-## Entradas principales
+Entradas principales:
 
 - Control Center: [http://localhost:9090](http://localhost:9090)
 - Learning Center: [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
@@ -80,12 +61,46 @@ Importante:
 - Operations Portal: [http://localhost:8083](http://localhost:8083)
 - Platform Gateway: [http://localhost:8085](http://localhost:8085)
 
-## Arquitectura principal
+## 📊 Estado actual del workspace
+
+| Componente | Estado | Rol | Entrada |
+|---|---|---|---|
+| `dashboard-control` | 🟢 OPERATIVO | Control Center dockerizado | [http://localhost:9090](http://localhost:9090) |
+| `05-postgres-api` | 🟢 OPERATIVO | Core transaccional | [http://localhost:8000](http://localhost:8000) |
+| `09-multi-service-app` | 🟢 OPERATIVO | Portal operativo | [http://localhost:8083](http://localhost:8083) |
+| `06-nginx-proxy` | 🟢 OPERATIVO | Gateway | [http://localhost:8085](http://localhost:8085) |
+| Learning Center | 🟢 OPERATIVO | Centro de aprendizaje | [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html) |
+
+### ✅ Capacidades visibles
+
+| Capacidad | Estado | Detalle |
+|---|---|---|
+| Panel dockerizado | 🟢 Activo | El Control Center corre como contenedor propio |
+| Diagnostico de host y Docker | 🟢 Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
+| Control por lab | 🟢 Activo | `start`, `stop`, `restart`, `rebuild`, `logs` |
+| Control global | 🟢 Activo | `bajar todos` y `eliminar entornos del repo` |
+| Gateway integrado | 🟢 Activo | `06` enruta a panel, core y portal |
+| Core documentado | 🟢 Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
+| Portal conectado | 🟢 Activo | `09` consume el core y agrega capa operativa |
+| CI base | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
+| Estandar editorial completo en los 12 labs | 🟡 En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
+
+## 🧭 Ruta recomendada por perfil
+
+| Perfil | Documento o entrada | Objetivo |
+|---|---|---|
+| Principiante | [docs/BEGINNERS_GUIDE.md](docs/BEGINNERS_GUIDE.md) | Entender Docker, el flujo caso a caso y el orden recomendado |
+| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Ver estado, diagnostico y accesos del entorno |
+| Dev / DevOps | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) | Entender el panel, Compose, gateway y operacion |
+| Backend | [05-postgres-api/README.md](05-postgres-api/README.md) | Revisar el core transaccional, contratos y salud |
+| Full stack / producto | [09-multi-service-app/README.md](09-multi-service-app/README.md) | Revisar la experiencia operativa sobre el core |
+| Reclutador / manager | [RECRUITER.md](RECRUITER.md) | Recorrer el valor del repo en pocos minutos |
+
+## 🏗️ Arquitectura del workspace
 
 ```mermaid
 flowchart LR
-    user[Usuario]
-    launcher[Windows Launcher]
+    user[Usuario y operador]
     panel[Control Center 9090]
     gateway[Platform Gateway 8085]
     core[Inventory Core 8000]
@@ -93,11 +108,10 @@ flowchart LR
     postgres[(PostgreSQL)]
     mongo[(MongoDB)]
 
-    user --> launcher
     user --> panel
     user --> gateway
-    launcher --> panel
-    launcher --> gateway
+    panel --> core
+    panel --> portal
     gateway --> panel
     gateway --> core
     gateway --> portal
@@ -106,59 +120,109 @@ flowchart LR
     portal --> mongo
 ```
 
-## Documentacion clave
+## 🧩 Taxonomia del repositorio
 
-| Si quieres... | Documento |
+### 🧠 Sistemas principales
+
+| Carpeta | Tipo | Objetivo |
+|---|---|---|
+| [05-postgres-api](05-postgres-api/README.md) | Plataforma | Resolver clientes, productos, pedidos y stock |
+| [09-multi-service-app](09-multi-service-app/README.md) | Plataforma | Dar una experiencia operativa sobre el core |
+| [06-nginx-proxy](06-nginx-proxy/README.md) | Plataforma | Unificar accesos hacia panel, core y portal |
+| [dashboard-control](dashboard-control/server.js) | Workspace | Operar Docker y entender capacidad del entorno |
+
+### 🧰 Servicios de infraestructura
+
+| Carpeta | Capacidad | Estado narrativo |
+|---|---|---|
+| `04-redis-cache` | Cache y performance | Complementario |
+| `07-rabbitmq-messaging` | Mensajeria asincrona | Complementario |
+| `08-prometheus-grafana` | Observabilidad | Complementario |
+| `11-elasticsearch-search` | Busqueda | Complementario |
+| `12-jenkins-ci` | CI y automatizacion | Complementario |
+
+### 🧪 Starters y demos
+
+| Carpeta | Enfoque |
 |---|---|
-| Entender el estado encontrado y las correcciones aplicadas | [docs/technical-audit.md](docs/technical-audit.md) |
-| Instalar o construir la capa Windows | [docs/windows-installer.md](docs/windows-installer.md) |
-| Publicar assets en GitHub Releases | [docs/github-releases-distribution.md](docs/github-releases-distribution.md) |
-| Instalar y operar el workspace desde fuente | [docs/INSTALL.md](docs/INSTALL.md) |
-| Operar el dia a dia | [RUNBOOK.md](RUNBOOK.md) |
-| Entender arquitectura y puertos | [docs/TECHNICAL_SPECS.md](docs/TECHNICAL_SPECS.md) |
-| Revisar la estructura del repo | [FILE_ARCHITECTURE.md](FILE_ARCHITECTURE.md) |
-| Evaluarlo como proyecto de portafolio | [RECRUITER.md](RECRUITER.md) |
+| `01-node-api` | API REST inicial |
+| `02-php-lamp` | Entorno clasico administrativo |
+| `03-python-api` | API Python sencilla |
+| `10-go-api` | Servicio ligero y rapido |
 
-## Taxonomia del repo
+## 📚 Documentacion del Proyecto
 
-### Sistemas principales
+El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documento responde una necesidad concreta y se puede abrir directamente desde aqui.
 
-- `dashboard-control`
-- `05-postgres-api`
-- `09-multi-service-app`
-- `06-nginx-proxy`
+### 🚀 Inicio y operacion
 
-### Infraestructura complementaria
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Documentation Index | Todos | Mapa maestro de lectura | [Abrir](docs/DOCUMENTATION_INDEX.md) |
+| Beginner Guide | Principiantes | Primeros pasos con Docker y con el repo | [Abrir](docs/BEGINNERS_GUIDE.md) |
+| Install Guide | Todos | Instalacion y arranque correcto del workspace | [Abrir](docs/INSTALL.md) |
+| Requirements | Todos | Requisitos minimos y recomendados del host y de Docker | [Abrir](docs/REQUIREMENTS.md) |
+| Environment Setup | Operadores | Preparacion del equipo y orden sugerido de arranque | [Abrir](ENVIRONMENT_SETUP.md) |
+| User Manual | Usuarios del workspace | Uso diario del panel y de los sistemas activos | [Abrir](docs/USER_MANUAL.md) |
+| Dashboard Setup | Dev / DevOps | Como funciona el `9090` y como gobierna el entorno | [Abrir](docs/DASHBOARD_SETUP.md) |
+| Operating Modes | Todos | Cuando conviene usar modo panel primero, caso a caso o plataforma principal | [Abrir](OPERATING-MODES.md) |
+| Runbook | Operadores | Arranque, apagado y respuesta a incidencias comunes | [Abrir](RUNBOOK.md) |
 
-- `04-redis-cache`
-- `07-rabbitmq-messaging`
-- `08-prometheus-grafana`
-- `11-elasticsearch-search`
-- `12-jenkins-ci`
+### 🏗️ Arquitectura y referencia tecnica
 
-### Starters y demos
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Architecture | Tecnico | Relacion entre panel, core, portal y gateway | [Abrir](docs/ARCHITECTURE.md) |
+| Labs Catalog | Todos | Rol de los 12 labs dentro del ecosistema | [Abrir](docs/LABS_CATALOG.md) |
+| Labs Runtime Reference | Operadores | Imagenes oficiales, tamanos y requisitos por lab | [Abrir](docs/LABS_RUNTIME_REFERENCE.md) |
+| Technical Specs | Tecnico | Stacks, puertos, endpoints y contratos | [Abrir](docs/TECHNICAL_SPECS.md) |
+| System Specs | Ejecutivo / tecnico | Vista corta del sistema como plataforma | [Abrir](SYSTEM_SPECS.md) |
+| File Architecture | Tecnico | Mapa de carpetas y responsabilidades | [Abrir](FILE_ARCHITECTURE.md) |
+| Tooling | Tecnico | Herramientas principales de runtime y desarrollo | [Abrir](docs/TOOLING.md) |
+| Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](COMPATIBILITY.md) |
+| Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](GLOSSARY.md) |
 
-- `01-node-api`
-- `02-php-lamp`
-- `03-python-api`
-- `10-go-api`
+### 🪟 Distribucion Windows
 
-## Notas de coherencia
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Windows Installer | Usuarios Windows, reclutadores | Como instalar, compilar, distribuir y justificar ausencia de firma digital | [Abrir](docs/windows-installer.md) |
+| GitHub Releases Distribution | Maintainers | Estrategia de distribucion via releases, sin binarios en el repo | [Abrir](docs/github-releases-distribution.md) |
+| Technical Audit | Tecnico | Estado diagnosticado del repo y correcciones aplicadas | [Abrir](docs/technical-audit.md) |
 
-- El flujo soportado actual es el del `dashboard-control` en `9090`.
-- Los `docker-compose-dashboard*.yml` de raiz quedan como legado y no forman parte del instalador Windows.
-- `08` y `11` siguen siendo utiles, pero se documentan como labs de uso caso a caso por sus conflictos de puertos con la plataforma principal.
+### 📈 Estado, release y gobernanza
 
-## Por que esto suma valor profesional
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Project Status | Todos | Que esta consolidado hoy y que sigue en evolucion | [Abrir](PROJECT_STATUS.md) |
+| Platform Roadmap | Todos | Direccion futura y prioridades de madurez | [Abrir](docs/PLATFORM_ROADMAP.md) |
+| Changelog | Todos | Historial de cambios relevantes | [Abrir](CHANGELOG.md) |
+| Release Guide | Maintainers | Checklist de publicacion coherente | [Abrir](RELEASE.md) |
+| Killed Practices | Tecnico / liderazgo | Practicas y enfoques que el repo evita | [Abrir](killed.md) |
+| Support | Maintainers | Criterios de soporte y continuidad | [Abrir](SUPPORT.md) |
+| Developing | Devs | Como extender y mantener el workspace | [Abrir](DEVELOPING.md) |
+| Security | DevSecOps | Alcance y politica de seguridad | [Abrir](SECURITY.md) |
+| Contributing | Colaboradores | Flujo de contribucion y estandar de trabajo | [Abrir](CONTRIBUTING.md) |
+| Code of Conduct | Comunidad | Marco de convivencia del proyecto | [Abrir](CODE_OF_CONDUCT.md) |
 
-Esta version del repo ya no demuestra solo Docker Compose. Tambien demuestra:
+### 👀 Evaluacion externa
 
-- criterio de arquitectura para transformar labs en plataforma
-- empaquetado Windows aditivo y mantenible
-- staging de artefactos y release automation
-- documentacion defendible para reclutadores y revisores tecnicos
-- criterio de distribucion por GitHub Releases en lugar de inflar el repo o GitHub Pages con binarios
+| Documento | Audiencia | Que resuelve | Abrir |
+|---|---|---|---|
+| Recruiter Guide | Reclutadores / managers | Recorrido rapido del valor de portafolio y madurez tecnica | [Abrir](RECRUITER.md) |
 
-## Licencia
+## ✅ Lo que este repo es hoy
+
+- un workspace usable para aprender y operar stacks Docker
+- un activo de portafolio tecnico con una historia principal clara
+- una base seria para seguir integrando servicios y fortalecer practicas DevOps
+
+## 🚧 Lo que todavia no busca ser
+
+- un reemplazo completo de Docker Desktop
+- una plataforma productiva terminada en sus 12 labs
+- un ecosistema ya homogeneo en todas sus carpetas
+
+## 📄 Licencia
 
 Proyecto bajo [Apache License 2.0](LICENSE).
