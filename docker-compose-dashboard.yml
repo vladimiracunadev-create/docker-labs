@@ -1,3 +1,14 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ARCHIVO LEGACY — Solo para referencia y testing local.
+# NO es el flujo recomendado de este workspace.
+#
+# Flujo recomendado:
+#   1. docker compose -f dashboard-control/docker-compose.yml up -d --build
+#   2. Levantar labs individuales segun necesidad desde el Control Center
+#
+# Este compose arranca varios labs en un solo comando, util para CI o pruebas
+# rapidas pero no refleja la experiencia modular del workspace.
+# ─────────────────────────────────────────────────────────────────────────────
 
 services:
   dashboard:

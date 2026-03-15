@@ -3,10 +3,16 @@ services:
     image: jenkins/jenkins:lts
     container_name: jenkins_ci
     ports:
-      - "8080:8080"
-      - "50000:50000"
+      - "8080:8080"   # UI
+      - "50000:50000" # agentes JNLP — conflicto potencial: este puerto es estandar Jenkins
     volumes:
       - jenkins_home:/var/jenkins_home
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
 
 volumes:
   jenkins_home:

@@ -13,7 +13,7 @@ Guia para extender `docker-labs` sin romper el flujo Docker actual ni la nueva c
 
 - `scripts\start-control-center.cmd` en Windows
 - `./scripts/start-control-center.sh` en Linux/macOS
-- `DockerLabsLauncher.exe` para la distribucion empaquetada
+- `docker-labs-launcher.exe` para la distribucion empaquetada Windows
 - `dashboard-control/docker-compose.yml` + `05` + `09` + `06` como experiencia principal
 
 ## Estandar minimo para un lab
@@ -30,11 +30,14 @@ Guia para extender `docker-labs` sin romper el flujo Docker actual ni la nueva c
 
 La distribucion Windows vive en estas piezas:
 
-- `packaging/windows/distribution-manifest.json`: metadata central del launcher, staging y release
-- `launcher/docker_labs_launcher.py`: launcher GUI/CLI para validacion y arranque
-- `installer/windows/DockerLabs.iss`: instalador Inno Setup
-- `scripts/windows/*.ps1`: build, staging, validacion y publicacion
-- `.github/workflows/release-windows.yml`: pipeline de GitHub Releases
+- `version.txt`: fuente unica de la version actual del proyecto
+- `labs.config.json`: fuente unica de labs, puertos, URLs y metadata (cargado por `dashboard-control/labs.js`)
+- `launcher/main.go`: launcher Go — valida prerequisitos, levanta el Control Center y abre el browser
+- `installer/docker-labs.iss`: script Inno Setup 6.x para empaquetar el instalador
+- `scripts/windows/build-launcher.ps1`: compila el launcher con `go build`
+- `scripts/windows/build-installer.ps1`: empaqueta el instalador con ISCC.exe
+- `scripts/windows/release.ps1`: pipeline completo build + packaging en un solo comando
+- `.github/workflows/build-windows.yml`: CI/CD — genera el instalador al hacer push de un tag `vX.Y.Z`
 
 ## Reglas para tocar la capa Windows
 

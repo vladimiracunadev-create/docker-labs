@@ -462,6 +462,26 @@ async function handleApi(request, response, pathname) {
       return;
     }
 
+    if (action === "health" && request.method === "GET") {
+      const result = await inspectLab(lab);
+      sendJson(response, 200, {
+        labId,
+        status:     result.summary.status,
+        healthy:    result.summary.healthy,
+        unhealthy:  result.summary.unhealthy,
+        total:      result.summary.expectedServices,
+        discovered: result.summary.discoveredServices,
+        containers: result.containers.map((c) => ({
+          name:    c.name,
+          service: c.service,
+          state:   c.state,
+          health:  c.health
+        })),
+        checkedAt: new Date().toISOString()
+      });
+      return;
+    }
+
     if (request.method === "POST" && ["start", "stop", "restart", "logs"].includes(action)) {
       const body = await readRequestBody(request);
       const result = await handleLabAction(lab, action, body);

@@ -20,8 +20,20 @@
       - Run from the repository root
 #>
 param (
-    [string]$Version = "1.0.0"
+    [string]$Version = ""
 )
+
+# Si no se pasa Version, leerla desde version.txt en la raiz del repo
+if (-not $Version) {
+    $versionFile = Join-Path $PSScriptRoot "..\..\version.txt"
+    if (Test-Path $versionFile) {
+        $Version = (Get-Content $versionFile -Raw).Trim()
+        Write-Host "  Version leida de version.txt: $Version"
+    } else {
+        $Version = "1.0.0"
+        Write-Host "  version.txt no encontrado, usando default: $Version"
+    }
+}
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

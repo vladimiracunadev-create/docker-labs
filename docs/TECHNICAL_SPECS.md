@@ -11,7 +11,7 @@ Especificaciones tecnicas actuales del repositorio y de la capa Windows.
 | Gateway | `06-nginx-proxy` en `8085` |
 | Core principal | `05-postgres-api` en `8000` |
 | Portal principal | `09-multi-service-app` en `8083` |
-| Launcher Windows | `DockerLabsLauncher.exe` compilado con PyInstaller |
+| Launcher Windows | `docker-labs-launcher.exe` compilado con Go 1.21 (stdlib puro, cero dependencias externas) |
 | Instalador Windows | Inno Setup `.exe` distribuido por GitHub Releases |
 
 ## Puertos principales
@@ -36,19 +36,21 @@ Estos labs siguen siendo validos, pero se consideran de uso caso a caso, no part
 
 | Pieza | Tecnologia |
 |---|---|
-| Launcher | Python + Tkinter + PyInstaller |
-| Instalador | Inno Setup |
-| Manifest central | JSON |
+| Launcher | Go 1.21 (stdlib puro, sin dependencias externas) |
+| Build del launcher | `go build -ldflags "-X main.launcherVersion=X.Y.Z"` |
+| Instalador | Inno Setup 6.x |
+| Script de build | `scripts/windows/build-launcher.ps1` + `build-installer.ps1` |
+| Manifest central | `labs.config.json` (fuente unica de labs, puertos y URLs) |
 | Checksums | SHA256 |
-| Release automation | GitHub Actions + GitHub Releases |
+| Release automation | GitHub Actions — `.github/workflows/build-windows.yml` |
 
 ## Artefactos esperados del release Windows
 
-- `docker-labs-setup-vX.Y.Z-win-x64.exe`
-- `docker-labs-windows-latest.exe`
-- `docker-labs-portable-vX.Y.Z-win-x64.zip`
-- `docker-labs-windows-portable-latest.zip`
-- `SHA256SUMS.txt`
+- `docker-labs-setup-{version}.exe` — instalador Inno Setup para Windows 10+
+- `SHA256SUMS.txt` — checksums para verificacion de integridad
+
+> El instalador no se versiona dentro del repo. Se publica como asset de GitHub Releases.
+> Ver [github-releases-distribution.md](github-releases-distribution.md).
 
 ## Notas de implementacion
 

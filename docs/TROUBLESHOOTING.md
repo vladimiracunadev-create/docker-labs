@@ -63,18 +63,33 @@ Usalos en modo caso a caso o cambia puertos de forma consciente.
 
 ## Problemas de build Windows
 
-### PyInstaller no esta instalado
+### Go no encontrado al compilar el launcher
+
+Instala Go 1.21+ desde https://go.dev/dl/ y asegurate de que `go` este en el PATH.
 
 ```powershell
-scripts\windows\Build-Launcher.ps1 -InstallBuildDependencies
+go version
+# Resultado esperado: go version go1.21.x windows/amd64
 ```
 
-### Inno Setup no esta instalado
+### Inno Setup no instalado (build local)
 
-Usa:
+Instala Inno Setup 6.x desde https://jrsoftware.org/isinfo.php o usa Chocolatey:
 
-- `scripts\windows\Build-Installer.ps1` en una maquina con Inno Setup
-- o el workflow `.github/workflows/release-windows.yml`
+```powershell
+choco install innosetup -y
+```
+
+Tambien puedes usar el workflow de GitHub Actions:
+
+- `.github/workflows/build-windows.yml` → `Run workflow`
+
+### El build del launcher falla
+
+```powershell
+.\scripts\windows\build-launcher.ps1 -Version 1.0.0
+# Verifica que Go 1.21+ este instalado y en el PATH
+```
 
 ## Documentos relacionados
 

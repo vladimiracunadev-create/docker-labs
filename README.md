@@ -43,14 +43,34 @@ Descarga el instalador desde GitHub Releases y sigue el asistente:
 
 ## ⚡ Quickstart recomendado
 
-Si quieres ver el repo funcionando sin perderte, sigue este orden:
+Si quieres ver el repo funcionando sin perderte, sigue este orden exacto:
 
-1. Ejecuta `scripts\start-control-center.cmd`
-2. Abre [http://localhost:9090](http://localhost:9090)
-3. Revisa el diagnostico del host y de Docker
-4. Abre `Inventory Core`
-5. Abre `Operations Portal`
-6. Abre `Platform Gateway`
+**Paso 1 — Levantar el Control Center**
+
+```bash
+# Windows
+scripts\start-control-center.cmd
+
+# Linux / macOS
+./scripts/start-control-center.sh
+```
+
+**Paso 2 — Levantar los labs de la experiencia principal**
+
+```bash
+docker compose -f 05-postgres-api/docker-compose.yml up -d --build
+docker compose -f 09-multi-service-app/docker-compose.yml up -d --build
+docker compose -f 06-nginx-proxy/docker-compose.yml up -d --build
+```
+
+> Los labs toman ~30-60 segundos en quedar listos. Puedes monitorear su estado desde el Control Center.
+
+**Paso 3 — Explorar**
+
+1. Abre [http://localhost:9090](http://localhost:9090) → Control Center
+2. Revisa el diagnóstico del host y de Docker
+3. Accede a `Inventory Core`, `Operations Portal` y `Platform Gateway` desde el panel
+4. Explora el Learning Center en [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 
 Entradas principales:
 
