@@ -128,13 +128,33 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          $ErrorActionPreference = "Stop"
+
           $installer = Get-ChildItem "dist" -Filter "docker-labs-setup-*.exe" |
                        Sort-Object LastWriteTime -Descending |
                        Select-Object -First 1
           if (-not $installer) {
-            Write-Error "Installer not found for upload."
+            Write-Error "Installer not found in dist\. Build step may have failed."
           }
+          Write-Host "Installer: $($installer.Name)"
+
+          # Crear el GitHub Release si no existe todavia.
+          # 'git tag push' crea el tag pero NO el Release — hay que crearlo explicitamente.
+          $releaseCheck = gh release view "${{ github.ref_name }}" 2>&1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Release ${{ github.ref_name }} no existe. Creandolo..."
+            gh release create "${{ github.ref_name }}" `
+              --title "Docker Labs ${{ github.ref_name }}" `
+              --notes "## Docker Labs ${{ github.ref_name }}`n`nInstaller built automatically by GitHub Actions.`n`n### Install`nDownload \`\`docker-labs-setup-$env:VERSION.exe\`\` and run it.`n`n> **Note**: This installer is not digitally signed in v1.x.`n> Select *More info* → *Run anyway* if SmartScreen appears.`n> See [docs/windows-installer.md](https://github.com/${{ github.repository }}/blob/main/docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase) for details.`n`nSee [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for changes." `
+              --draft=false `
+              --prerelease=false
+            Write-Host "Release creado."
+          } else {
+            Write-Host "Release ${{ github.ref_name }} ya existe."
+          }
+
           Write-Host "Uploading $($installer.Name) to release ${{ github.ref_name }}..."
           gh release upload "${{ github.ref_name }}" "$($installer.FullName)" --clobber
-          Write-Host "Done. Asset disponible en:"
+          Write-Host ""
+          Write-Host "OK. Asset disponible en:"
           Write-Host "  https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"

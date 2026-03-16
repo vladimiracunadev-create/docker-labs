@@ -50,8 +50,8 @@ La distribucion Windows vive en estas piezas:
 ## Flujo sugerido de cambios
 
 1. ajusta el workspace Docker
-2. actualiza `packaging/windows/distribution-manifest.json` si cambian rutas o artefactos
-3. valida `scripts/windows/Test-WindowsPackaging.ps1`
+2. si cambian rutas, labs o artefactos, actualiza `installer/docker-labs.iss` y `dashboard-control/labs.js`
+3. verifica que el build local funciona: `.\scripts\windows\build-launcher.ps1` y `.\scripts\windows\build-installer.ps1`
 4. actualiza `README.md`, `RUNBOOK.md`, `RELEASE.md` y docs afectadas
 5. documenta inconsistencias reales y correcciones en `docs/technical-audit.md` si cambian supuestos del repo
 

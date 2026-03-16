@@ -20,7 +20,12 @@
 ; ─────────────────────────────────────────────────────────────────────────────
 
 #define AppName     "Docker Labs"
-#define AppVersion  "1.0.0"
+; AppVersion puede sobreescribirse desde CLI: ISCC /DAppVersion=1.2.0
+; El guard #ifndef asegura que el CLI tenga prioridad sobre este valor.
+; Sin el guard, el #define del script sobreescribe el /D del CLI (bug ISPP).
+#ifndef AppVersion
+  #define AppVersion "1.0.0"
+#endif
 #define AppPublisher "Vladimir Acuna Dev"
 #define AppURL      "https://github.com/vladimiracunadev-create/docker-labs"
 #define AppExeName  "docker-labs-launcher.exe"
