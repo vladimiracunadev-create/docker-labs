@@ -7,8 +7,10 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      # /gateway-health es el endpoint dedicado (retorna 200 "ok" sin dependencias).
+      # Usar este endpoint en lugar de "/" evita depender de try_files/index.html.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/gateway-health"]
       interval: 10s
       timeout: 5s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 20s

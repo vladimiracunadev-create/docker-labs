@@ -26,9 +26,16 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Labs excluidos del CI automatico — razon documentada:
+          #   11-elasticsearch-search : requiere >=6 GB RAM, fuera del limite del runner
+          #   12-jenkins-ci           : arranque Jenkins >3 min, supera timeout de CI
+          # Estos labs son validos en entornos locales con recursos suficientes.
+          CI_EXCLUDE="^(11-elasticsearch-search|12-jenkins-ci)/"
+
           # docker-compose.yml soportados dentro del workspace actual
           mapfile -t compose_files < <(find . -maxdepth 2 -type f -name 'docker-compose.yml' -print \
-            | sed 's|^\./||' | sort -u)
+            | sed 's|^\./||' | sort -u \
+            | grep -Ev "$CI_EXCLUDE")
 
           if [ "${#compose_files[@]}" -eq 0 ]; then
             echo "No se encontraron docker-compose.yml soportados"
