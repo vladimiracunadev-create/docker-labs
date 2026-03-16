@@ -51,14 +51,19 @@ docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 
 ## Opcion B: instalar desde GitHub Releases en Windows
 
-1. Descarga el instalador oficial:
+1. Descarga el instalador oficial desde la pagina de releases:
 
-   `https://github.com/vladimiracunadev-create/docker-labs/releases/latest/download/docker-labs-windows-latest.exe`
+   **[https://github.com/vladimiracunadev-create/docker-labs/releases/latest](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)**
+
+   El archivo se llama `docker-labs-setup-{version}.exe`
 
 2. Ejecuta el instalador.
-3. Abre `DockerLabsLauncher.exe`.
-4. Usa `Validate prerequisites`.
-5. Usa `Start Control Center` o `Start main workspace`.
+   Si Windows SmartScreen muestra advertencia → "Mas informacion" → "Ejecutar de todas formas".
+
+3. Usa el acceso directo **Docker Labs** del menu de inicio o el escritorio.
+   El launcher verifica Docker Desktop, levanta los 4 servicios de la plataforma en paralelo y abre el browser automaticamente en `http://localhost:9090`.
+
+> Ver [docs/windows-installer.md](windows-installer.md) para instrucciones completas, troubleshooting y justificacion de la falta de firma digital.
 
 ## Verificacion inicial
 

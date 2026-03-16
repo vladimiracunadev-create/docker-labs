@@ -37,7 +37,7 @@ Descarga el instalador desde GitHub Releases y sigue el asistente:
 3. Usa el acceso directo **Docker Labs** del menu de inicio o el escritorio
 4. El launcher verifica Docker Desktop, levanta el Control Center y abre el browser
 
-> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decision explicita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Mas informacion" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase).
+> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decision explicita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Mas informacion" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#por-que-no-se-usa-firma-digital-en-esta-fase).
 
 ---
 

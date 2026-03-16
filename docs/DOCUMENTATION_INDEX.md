@@ -46,6 +46,17 @@ Cada bloque agrupa documentos por necesidad real. La columna `Abrir` existe para
 | GitHub Releases Distribution | Maintainers | Estrategia de distribucion sin binarios en el repo | [Abrir](github-releases-distribution.md) |
 | Technical Audit | Tecnico | Diagnostico del repo, hallazgos y correcciones aplicadas | [Abrir](technical-audit.md) |
 
+## 🤖 Automatizacion con Claude Code
+
+Los siguientes skills de Claude Code estan disponibles para automatizar tareas frecuentes del proyecto. Se activan automaticamente al describir la tarea en lenguaje natural dentro de Claude Code.
+
+| Skill | Que hace | Frases que lo activan |
+|---|---|---|
+| `docker-labs-release` | Flujo completo de release: bump de version, commit, tag, push a GitHub y reporte de la URL de CI | "haz un release", "bump version", "nueva version", "publicar v1.x" |
+| `docker-labs-status` | Estado completo: contenedores, health HTTP, ultimo build de CI, version y commits recientes | "estado de docker-labs", "que esta corriendo", "como va el proyecto", "health check" |
+
+> Ver seccion **Skills de automatizacion** en [DEVELOPING.md](../DEVELOPING.md) para mas detalle.
+
 ## 📈 Estado, release y gobernanza
 
 | Documento | Audiencia | Que resuelve | Abrir |
