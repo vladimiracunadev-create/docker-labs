@@ -1,14 +1,20 @@
 // Docker Labs Launcher — Windows entry point
 //
-// Checks prerequisites, starts the Control Center via docker compose,
-// waits for the server to be ready, and opens the browser automatically.
+// Flujo:
+//   1. Localiza el workspace instalado
+//   2. Verifica Docker CLI y Docker daemon
+//   3. Levanta la plataforma core en paralelo:
+//        dashboard-control    (9090) Control Center
+//        05-postgres-api      (8000) Inventory Core
+//        09-multi-service-app (8083) Operations Portal
+//        06-nginx-proxy       (8085) Platform Gateway
+//   4. Espera que el Control Center este listo
+//   5. Abre el browser en http://localhost:9090
+//      Desde ahi el usuario puede levantar cualquier lab adicional
+//      con un clic desde la interfaz del Control Center.
 //
 // Build:
-//   go build -o docker-labs-launcher.exe .
-//
-// Distribution note:
-//   This binary is NOT digitally signed in v1.x. Windows SmartScreen may
-//   show a warning on first run. See docs/windows-installer.md for details.
+//   go build -ldflags "-X main.launcherVersion=1.2.0" -o docker-labs-launcher.exe .
 package main
 
 import (
@@ -19,121 +25,175 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
-// launcherVersion puede ser sobreescrito en tiempo de build via:
-//   go build -ldflags "-X main.launcherVersion=1.2.0" .
-// Debe ser var (no const) para que -X funcione.
 var launcherVersion = "1.0.0"
 
 const (
 	controlPort    = 9090
 	healthURL      = "http://localhost:9090/api/overview"
 	dashboardURL   = "http://localhost:9090"
-	startupTimeout = 60 * time.Second
+	startupTimeout = 90 * time.Second
 	pollInterval   = 3 * time.Second
 )
+
+// corePlatform: servicios que forman la experiencia principal.
+// Se levantan en paralelo. Si alguno falla, el usuario puede
+// iniciarlo desde el Control Center con un clic.
+var corePlatform = []platformService{
+	{name: "Inventory Core",    composeDir: "05-postgres-api",      port: 8000},
+	{name: "Operations Portal", composeDir: "09-multi-service-app", port: 8083},
+	{name: "Platform Gateway",  composeDir: "06-nginx-proxy",       port: 8085},
+}
+
+type platformService struct {
+	name       string
+	composeDir string
+	port       int
+	err        error
+}
 
 func main() {
 	printBanner()
 
-	// 1 — Locate workspace root
+	// 1 — Localizar workspace
 	workspace, err := findWorkspace()
 	if err != nil {
 		failWith("No se pudo localizar el workspace de Docker Labs.", []string{
-			"Asegurate de que el launcher este dentro de la carpeta de instalacion.",
+			"Asegurate de ejecutar el launcher desde la carpeta de instalacion.",
 			"Ruta esperada: <install_dir>\\docker-labs-launcher.exe",
 		})
 	}
 	info("Workspace: " + workspace)
 	fmt.Println()
 
-	// 2 — Check Docker CLI
-	step("1/3", "Verificando prerequisitos...")
+	// 2 — Verificar Docker
+	step("1/3", "Verificando Docker Desktop...")
 	if err := checkDockerCLI(); err != nil {
 		failWith("Docker Desktop no encontrado en el PATH.", []string{
 			"Instala Docker Desktop desde https://www.docker.com/products/docker-desktop/",
-			"Luego reinicia y vuelve a ejecutar este launcher.",
+			"Reinicia y vuelve a ejecutar este launcher.",
 		})
 	}
-	ok("Docker CLI: encontrado")
-
-	// 3 — Check Docker daemon
+	ok("Docker CLI disponible")
 	if err := checkDockerRunning(); err != nil {
-		failWith("Docker Desktop esta instalado pero no esta corriendo.", []string{
-			"Inicia Docker Desktop desde el menu de inicio o la barra del sistema.",
-			"Espera a que Docker Desktop termine de iniciar (icono en barra del sistema).",
-			"Luego vuelve a ejecutar este launcher.",
+		failWith("Docker Desktop no esta corriendo.", []string{
+			"Inicia Docker Desktop desde el menu de inicio.",
+			"Espera el icono en la barra del sistema y vuelve a ejecutar.",
 		})
 	}
-	ok("Docker daemon: activo")
+	ok("Docker daemon activo")
 	fmt.Println()
 
-	// 4 — Start Control Center
-	step("2/3", "Iniciando Control Center...")
-	composeFile := filepath.Join(workspace, "dashboard-control", "docker-compose.yml")
+	// 3 — Levantar plataforma en paralelo
+	step("2/3", "Levantando la plataforma Docker Labs...")
+	fmt.Println()
+
 	dockerRepoRoot := computeDockerRepoRoot(workspace)
-	if err := startControlCenter(workspace, composeFile, dockerRepoRoot); err != nil {
+	ccErrCh := make(chan error, 1)
+
+	// Control Center primero (su health determina cuando abrir el browser)
+	go func() {
+		fmt.Printf("    [inicio] Control Center      (:%d)\n", controlPort)
+		cf := filepath.Join(workspace, "dashboard-control", "docker-compose.yml")
+		ccErrCh <- startCompose(workspace, cf, dockerRepoRoot)
+	}()
+
+	// Servicios core en paralelo
+	services := make([]platformService, len(corePlatform))
+	copy(services, corePlatform)
+	var wg sync.WaitGroup
+	for i := range services {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			svc := &services[i]
+			fmt.Printf("    [inicio] %-22s (:%d)\n", svc.name, svc.port)
+			cf := filepath.Join(workspace, svc.composeDir, "docker-compose.yml")
+			svc.err = startCompose(workspace, cf, "")
+		}(i)
+	}
+
+	ccErr := <-ccErrCh
+	wg.Wait()
+	fmt.Println()
+
+	if ccErr != nil {
 		failWith("No se pudo iniciar el Control Center.", []string{
-			"Verifica que Docker Desktop este corriendo.",
-			"Intenta ejecutar manualmente:",
+			"Verifica que Docker Desktop este corriendo y tenga recursos.",
+			"Comando equivalente:",
 			"  docker compose -f dashboard-control\\docker-compose.yml up -d --build",
 		})
 	}
-	ok("Control Center: iniciado")
-	fmt.Println()
 
-	// 5 — Wait for ready
-	step("3/3", "Esperando que el Control Center este listo...")
-	ready := waitForReady(healthURL, startupTimeout)
-	if ready {
-		ok("Control Center: listo en " + dashboardURL)
-	} else {
-		warn("El servidor aun no responde, pero puede estar iniciando.")
-		info("Abriendo browser de todas formas. Recarga la pagina si no carga de inmediato.")
+	// Reportar estado de cada servicio
+	anyFailed := false
+	for _, svc := range services {
+		if svc.err != nil {
+			warn(svc.name + ": no inicio automaticamente")
+			anyFailed = true
+		} else {
+			ok(svc.name + ": iniciando en segundo plano")
+		}
+	}
+	if anyFailed {
+		fmt.Println()
+		info("Servicios que fallaron pueden iniciarse desde el Control Center.")
+		info("Abre http://localhost:9090 y usa el boton Start de cada lab.")
 	}
 	fmt.Println()
 
-	// 6 — Open browser
-	info("Abriendo: " + dashboardURL)
+	// 4 — Esperar Control Center
+	step("3/3", "Esperando que el Control Center este listo...")
+	fmt.Print("    ")
+	ready := waitForReady(healthURL, startupTimeout)
+	fmt.Println()
+	if ready {
+		ok("Control Center listo")
+	} else {
+		warn("El Control Center aun no responde. Recarga el browser si no carga.")
+	}
+	fmt.Println()
+
+	// 5 — Abrir browser
+	info("Abriendo " + dashboardURL)
 	openBrowser(dashboardURL)
-
 	fmt.Println()
+
+	// Resumen final
 	printLine()
-	fmt.Println("  Docker Labs esta corriendo.")
+	fmt.Println("  Docker Labs esta levantando la plataforma.")
+	fmt.Println()
+	fmt.Println("  El browser se abrio en el Control Center.")
+	fmt.Println("  Desde ahi puedes:")
+	fmt.Println("    - Ver el estado de cada servicio en tiempo real")
+	fmt.Println("    - Iniciar servicios que no levantaron con un clic (Start)")
+	fmt.Println("    - Ver logs, reiniciar o detener cualquier lab")
+	fmt.Println()
+	fmt.Println("  URLs principales cuando todos los servicios esten listos:")
+	fmt.Printf("    %-24s http://localhost:%d\n", "Control Center", controlPort)
+	for _, svc := range services {
+		fmt.Printf("    %-24s http://localhost:%d\n", svc.name, svc.port)
+	}
+	fmt.Println()
 	fmt.Println("  Puedes cerrar esta ventana.")
-	fmt.Println()
-	fmt.Println("  Entradas principales:")
-	fmt.Println("    Control Center : " + dashboardURL)
-	fmt.Println("    Learning Center: http://localhost:9090/learning-center.html")
-	fmt.Println("    Inventory Core : http://localhost:8000  (si esta activo)")
-	fmt.Println("    Ops Portal     : http://localhost:8083  (si esta activo)")
-	fmt.Println("    Platform Gw    : http://localhost:8085  (si esta activo)")
 	printLine()
 	fmt.Println()
 
-	// Keep window open if launched by double-click (no parent console)
 	if isDoubleClicked() {
-		fmt.Println("Presiona ENTER para cerrar...")
+		fmt.Println("  Presiona ENTER para cerrar...")
 		fmt.Scanln()
 	}
 }
 
-// ─── Workspace ───────────────────────────────────────────────────────────────
-
 func findWorkspace() (string, error) {
-	// When installed, the launcher lives at the workspace root
-	exe, err := os.Executable()
-	if err != nil {
-		return "", err
-	}
+	exe, _ := os.Executable()
 	dir := filepath.Dir(exe)
-	// Verify it looks like the workspace (must contain dashboard-control/)
 	if _, err := os.Stat(filepath.Join(dir, "dashboard-control")); err == nil {
 		return dir, nil
 	}
-	// Fallback: current working directory
 	cwd, err := os.Getwd()
 	if err != nil {
 		return "", err
@@ -141,62 +201,46 @@ func findWorkspace() (string, error) {
 	if _, err := os.Stat(filepath.Join(cwd, "dashboard-control")); err == nil {
 		return cwd, nil
 	}
-	return "", fmt.Errorf("dashboard-control/ not found near %s", dir)
+	return "", fmt.Errorf("dashboard-control/ no encontrado cerca de %s", dir)
 }
 
-// computeDockerRepoRoot converts the workspace path to the format expected
-// by the Docker daemon when running docker compose from inside a container.
-//
-// On Windows + Docker Desktop:
-//   C:\docker-labs → /run/desktop/mnt/host/c/docker-labs
-//
-// On Linux/macOS (native Docker):
-//   /home/user/docker-labs → /home/user/docker-labs  (unchanged)
 func computeDockerRepoRoot(workspaceDir string) string {
 	abs, err := filepath.Abs(workspaceDir)
 	if err != nil {
 		abs = workspaceDir
 	}
 	if runtime.GOOS == "windows" {
-		// Convert C:\path\to\workspace → /run/desktop/mnt/host/c/path/to/workspace
 		drive := strings.ToLower(string(abs[0]))
-		rest := filepath.ToSlash(abs[2:]) // drop "C:" and convert backslashes
+		rest := filepath.ToSlash(abs[2:])
 		return "/run/desktop/mnt/host/" + drive + rest
 	}
 	return abs
 }
 
-// ─── Docker checks ───────────────────────────────────────────────────────────
-
-func checkDockerCLI() error {
-	cmd := exec.Command("docker", "--version")
-	return cmd.Run()
-}
+func checkDockerCLI() error { return exec.Command("docker", "--version").Run() }
 
 func checkDockerRunning() error {
 	cmd := exec.Command("docker", "info")
-	cmd.Stdout = nil
-	cmd.Stderr = nil
+	cmd.Stdout, cmd.Stderr = nil, nil
 	return cmd.Run()
 }
 
-// ─── Start ───────────────────────────────────────────────────────────────────
-
-func startControlCenter(workspace, composeFile, dockerRepoRoot string) error {
+func startCompose(workspace, composeFile, dockerRepoRoot string) error {
 	cmd := exec.Command("docker", "compose", "-f", composeFile, "up", "-d", "--build")
 	cmd.Dir = workspace
-	cmd.Env = append(os.Environ(), "DOCKER_REPO_ROOT="+dockerRepoRoot)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	env := os.Environ()
+	if dockerRepoRoot != "" {
+		env = append(env, "DOCKER_REPO_ROOT="+dockerRepoRoot)
+	}
+	cmd.Env = env
+	cmd.Stdout, cmd.Stderr = nil, nil
 	return cmd.Run()
 }
-
-// ─── Health check ────────────────────────────────────────────────────────────
 
 func waitForReady(url string, timeout time.Duration) bool {
 	deadline := time.Now().Add(timeout)
 	for time.Now().Before(deadline) {
-		resp, err := http.Get(url) //nolint:gosec // internal health check URL
+		resp, err := http.Get(url) //nolint:gosec
 		if err == nil && resp.StatusCode == 200 {
 			resp.Body.Close()
 			return true
@@ -207,11 +251,8 @@ func waitForReady(url string, timeout time.Duration) bool {
 		fmt.Print(".")
 		time.Sleep(pollInterval)
 	}
-	fmt.Println()
 	return false
 }
-
-// ─── Browser ─────────────────────────────────────────────────────────────────
 
 func openBrowser(url string) {
 	var cmd *exec.Cmd
@@ -226,44 +267,25 @@ func openBrowser(url string) {
 	_ = cmd.Start()
 }
 
-// ─── UI helpers ──────────────────────────────────────────────────────────────
-
-const lineChar = "─"
-
 func printBanner() {
 	fmt.Println()
 	printLine()
 	fmt.Println("  Docker Labs  v" + launcherVersion)
-	fmt.Println("  Workspace modular para aprendizaje y demos Docker")
+	fmt.Println("  Plataforma modular Docker para demos y aprendizaje")
 	printLine()
 	fmt.Println()
 	fmt.Println("  AVISO: Este launcher no esta firmado digitalmente (v1.x).")
-	fmt.Println("  Si Windows SmartScreen muestra una advertencia, selecciona")
-	fmt.Println("  'Mas informacion' → 'Ejecutar de todas formas'.")
-	fmt.Println("  El binario se distribuye via GitHub Releases (fuente oficial).")
+	fmt.Println("  Si Windows muestra advertencia, selecciona")
+	fmt.Println("  'Mas informacion' > 'Ejecutar de todas formas'.")
 	printLine()
 	fmt.Println()
 }
 
-func printLine() {
-	fmt.Println("  " + strings.Repeat(lineChar, 58))
-}
-
-func step(num, msg string) {
-	fmt.Printf("  [%s] %s\n", num, msg)
-}
-
-func ok(msg string) {
-	fmt.Printf("    ✓ %s\n", msg)
-}
-
-func warn(msg string) {
-	fmt.Printf("    ! %s\n", msg)
-}
-
-func info(msg string) {
-	fmt.Printf("    > %s\n", msg)
-}
+func printLine()       { fmt.Println("  " + strings.Repeat("-", 58)) }
+func step(n, m string) { fmt.Printf("  [%s] %s\n", n, m) }
+func ok(m string)      { fmt.Printf("    [OK] %s\n", m) }
+func warn(m string)    { fmt.Printf("    [!]  %s\n", m) }
+func info(m string)    { fmt.Printf("    [>]  %s\n", m) }
 
 func failWith(reason string, hints []string) {
 	fmt.Println()
@@ -283,14 +305,10 @@ func failWith(reason string, hints []string) {
 	os.Exit(1)
 }
 
-// isDoubleClicked returns true when the process was launched by Explorer
-// (no inherited console), indicating the user double-clicked the .exe.
-// In that case we keep the window open so they can read the output.
 func isDoubleClicked() bool {
 	if runtime.GOOS != "windows" {
 		return false
 	}
-	// If stdout is a pipe or redirect, we're inside a terminal/script.
 	fi, err := os.Stdout.Stat()
 	if err != nil {
 		return false
