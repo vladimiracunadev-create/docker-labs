@@ -103,7 +103,11 @@ Entradas principales:
 | Core documentado | 🟢 Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
 | Portal conectado | 🟢 Activo | `09` consume el core y agrega capa operativa |
 | CI base | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| Estandar editorial completo en los 12 labs | 🟡 En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
+| **Instalador Windows** | 🟢 Activo | `docker-labs-setup-{v}.exe` generado y publicado automaticamente en [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest) |
+| **Launcher Go** | 🟢 Activo | Levanta los 4 servicios core en paralelo, calcula rutas dinamicamente y abre el browser |
+| **CI Windows** | 🟢 Activo | `build-windows.yml` compila y publica el installer al pushear un tag `v*.*.*` |
+| **Skills Claude Code** | 🟢 Activos | `docker-labs-release` y `docker-labs-status` — automatizan el flujo de release y el diagnostico del sistema |
+| Estandar editorial en los 12 labs | 🟡 En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
 
 ## 🧭 Ruta recomendada por perfil
 
@@ -209,6 +213,15 @@ El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documen
 | Windows Installer | Usuarios Windows, reclutadores | Como instalar, compilar, distribuir y justificar ausencia de firma digital | [Abrir](docs/windows-installer.md) |
 | GitHub Releases Distribution | Maintainers | Estrategia de distribucion via releases, sin binarios en el repo | [Abrir](docs/github-releases-distribution.md) |
 | Technical Audit | Tecnico | Estado diagnosticado del repo y correcciones aplicadas | [Abrir](docs/technical-audit.md) |
+
+### 🤖 Automatizacion con Claude Code
+
+| Skill | Que hace | Como activarlo |
+|---|---|---|
+| `docker-labs-release` | Bump de version, commit, tag, push → dispara el CI que publica el `.exe` | _"haz un release"_, _"nueva version"_, _"bump version"_ |
+| `docker-labs-status` | Estado de contenedores, health HTTP, ultimo build CI, version y commits | _"estado de docker-labs"_, _"que esta corriendo"_, _"health check"_ |
+
+> Ver [DEVELOPING.md](DEVELOPING.md#skills-de-automatizacion-claude-code) para instrucciones de uso.
 
 ### 📈 Estado, release y gobernanza
 
