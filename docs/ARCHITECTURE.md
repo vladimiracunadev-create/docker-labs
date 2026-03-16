@@ -1,6 +1,11 @@
-# 🏗️ Architecture
+# 🏗️ Arquitectura — Docker Labs
 
-Visión técnica del workspace `docker-labs`.
+> **Versión**: 1.4.0
+> **Estado**: 🟢 Activo
+> **Audiencia**: 👥 Técnico, DevOps, full stack
+> **Objetivo**: Visión técnica del workspace y relación entre sus componentes
+
+---
 
 ## 📌 Objetivo de arquitectura
 
@@ -35,57 +40,65 @@ flowchart LR
     Portal --> Mongo[("MongoDB")]
 ```
 
-## 🧠 Lectura por piezas
+## 🧠 Componentes principales
 
 ### 1. Control Center
 
-Componente:
+| Atributo | Detalle |
+|---|---|
+| Componente | [dashboard-control/server.js](../dashboard-control/server.js) |
+| Puerto | `9090` |
+| Tecnología | Node.js + Express |
 
-- [dashboard-control/server.js](../dashboard-control/server.js)
+**Responsabilidades:**
+- Listar y diagnosticar labs
+- Ejecutar `docker compose` (start / stop / restart / rebuild / logs)
+- Exponer `overview` y `diagnostics`
+- Centralizar accesos y operaciones del workspace
 
-Responsabilidades:
-
-- listar y diagnosticar labs
-- ejecutar `docker compose`
-- exponer `overview` y `diagnostics`
-- centralizar accesos y operaciones del workspace
+---
 
 ### 2. Inventory Core
 
-Componente:
+| Atributo | Detalle |
+|---|---|
+| Componente | [05-postgres-api/README.md](../05-postgres-api/README.md) |
+| Puerto | `8000` |
+| Tecnología | FastAPI + PostgreSQL 15 |
 
-- [05-postgres-api/README.md](../05-postgres-api/README.md)
+**Responsabilidades:**
+- Clientes, productos, pedidos y stock
+- Resumen operativo para dashboards
+- Contratos REST documentados en Swagger
 
-Responsabilidades:
-
-- clientes
-- productos
-- pedidos
-- stock
-- resumen operativo
+---
 
 ### 3. Operations Portal
 
-Componente:
+| Atributo | Detalle |
+|---|---|
+| Componente | [09-multi-service-app/README.md](../09-multi-service-app/README.md) |
+| Puerto | `8083` |
+| Tecnología | Express.js + MongoDB + Nginx |
 
-- [09-multi-service-app/README.md](../09-multi-service-app/README.md)
+**Responsabilidades:**
+- Mostrar datos operativos del core
+- Ofrecer una cara más cercana al usuario operativo
+- Persistir watchlist y contexto auxiliar
 
-Responsabilidades:
-
-- mostrar datos operativos del core
-- ofrecer una cara más cercana al usuario
-- persistir watchlist y contexto auxiliar
+---
 
 ### 4. Platform Gateway
 
-Componente:
+| Atributo | Detalle |
+|---|---|
+| Componente | [06-nginx-proxy/README.md](../06-nginx-proxy/README.md) |
+| Puerto | `8085` |
+| Tecnología | Nginx |
 
-- [06-nginx-proxy/README.md](../06-nginx-proxy/README.md)
-
-Responsabilidades:
-
-- unificar entrada al panel, core y portal
-- evitar experiencia fragmentada por puertos
+**Responsabilidades:**
+- Unificar entrada al panel, core y portal
+- Evitar experiencia fragmentada por puertos
 
 ## 🗂️ Taxonomía del repositorio
 
@@ -109,10 +122,12 @@ flowchart TD
 
 ## 🧩 Principios de diseño
 
-1. Un lab debe resolver un problema concreto.
-2. La documentación debe coincidir con lo que realmente entrega el sistema.
-3. El panel debe explicar el entorno, no solo controlarlo.
-4. La plataforma principal debe sentirse integrada, no como puertos aislados.
+| Principio | Descripción |
+|---|---|
+| Problema concreto | Cada lab debe resolver un caso real, no ser un hello world |
+| Documentación honesta | Los docs deben coincidir con lo que realmente entrega el sistema |
+| Panel explicativo | El Control Center explica el entorno, no solo lo controla |
+| Plataforma integrada | Los servicios principales deben sentirse como una plataforma, no como puertos aislados |
 
 ## 📚 Documentos relacionados
 

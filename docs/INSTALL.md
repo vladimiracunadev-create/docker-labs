@@ -1,12 +1,13 @@
-# Guía de Instalación — Docker Labs
+# 📦 Guía de Instalación — Docker Labs
 
 > **Versión**: 1.4.0
-> **Estado**: Activo  
+> **Estado**: 🟢 Activo
+> **Audiencia**: 👥 Todos
 > **Objetivo**: Instalar y operar `docker-labs` tanto desde fuente como desde el instalador Windows
 
 ---
 
-## Requisitos
+## ✅ Requisitos
 
 ### Software
 
@@ -24,7 +25,9 @@
 
 > **Nota**: los escenarios de la tabla son simultáneos — reflejan la carga total cuando todos los servicios del escenario se ejecutan al mismo tiempo.
 
-## Opción A: instalar desde fuente
+---
+
+## Opción A — Instalar desde fuente
 
 ```bash
 git clone https://github.com/vladimiracunadev-create/docker-labs.git
@@ -37,13 +40,13 @@ cd docker-labs
 scripts\start-control-center.cmd
 ```
 
-### Linux/macOS
+### Linux / macOS
 
 ```bash
 ./scripts/start-control-center.sh
 ```
 
-### Plataforma principal
+### Levantar la plataforma principal
 
 ```powershell
 docker compose -f 05-postgres-api\docker-compose.yml up -d --build
@@ -51,7 +54,9 @@ docker compose -f 09-multi-service-app\docker-compose.yml up -d --build
 docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 ```
 
-## Opción B: instalar desde GitHub Releases en Windows
+---
+
+## Opción B — Instalar desde GitHub Releases (Windows)
 
 1. Descarga el instalador oficial desde la página de releases:
 
@@ -67,27 +72,41 @@ docker compose -f 06-nginx-proxy\docker-compose.yml up -d --build
 
 > Ver [docs/windows-installer.md](windows-installer.md) para instrucciones completas, troubleshooting y justificación de la falta de firma digital.
 
-## Verificación inicial
+---
 
-- Control Center: [http://localhost:9090](http://localhost:9090)
-- Inventory Core: [http://localhost:8000](http://localhost:8000)
-- Operations Portal: [http://localhost:8083](http://localhost:8083)
-- Gateway: [http://localhost:8085](http://localhost:8085)
+## 🔍 Verificación inicial
 
-## Equipos con recursos limitados
+| Servicio | URL |
+|---|---|
+| Control Center | [http://localhost:9090](http://localhost:9090) |
+| Inventory Core | [http://localhost:8000](http://localhost:8000) |
+| Operations Portal | [http://localhost:8083](http://localhost:8083) |
+| Gateway | [http://localhost:8085](http://localhost:8085) |
 
-- deja solo `9090` arriba
-- levanta un lab a la vez
-- evita mezclar `08`, `11` y `12` con la plataforma principal si tu Docker no tiene memoria suficiente
+---
 
-## Notas de distribución
+## ⚡ Equipos con recursos limitados
 
-- el instalador no empaqueta Docker Desktop
-- el instalador final no se versiona dentro del repo
-- GitHub Releases es el canal oficial del binario
-- esta fase no usa firma digital de código
+> Si tu equipo tiene poca RAM o CPU disponible para Docker:
 
-## Documentos relacionados
+- Deja solo el Control Center (`9090`) activo
+- Levanta un lab a la vez
+- Evita mezclar `08`, `11` y `12` con la plataforma principal
+
+Consulta [docs/LABS_RUNTIME_REFERENCE.md](LABS_RUNTIME_REFERENCE.md) para ver el costo de recursos por lab.
+
+---
+
+## 📝 Notas de distribución
+
+| Punto | Detalle |
+|---|---|
+| Docker Desktop | El instalador no lo empaqueta — debe estar instalado previamente |
+| Binario en el repo | El instalador final no se versiona dentro del repositorio |
+| Canal oficial | GitHub Releases es la única fuente de descarga del binario |
+| Firma digital | No se usa en v1.x — decisión explícita documentada en [windows-installer.md](windows-installer.md) |
+
+## 📚 Documentos relacionados
 
 - [windows-installer.md](windows-installer.md)
 - [github-releases-distribution.md](github-releases-distribution.md)

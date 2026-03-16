@@ -1,8 +1,13 @@
-# Technical Specs
+# ⚙️ Especificaciones Técnicas — Docker Labs
 
-Especificaciones tecnicas actuales del repositorio y de la capa Windows.
+> **Versión**: 1.4.0
+> **Estado**: 🟢 Activo
+> **Audiencia**: 👥 Técnico, DevOps, reclutadores
+> **Objetivo**: Stacks, puertos, endpoints y capa de distribución Windows
 
-## Base de ejecucion
+---
+
+## 🖥️ Base de ejecución
 
 | Componente | Estado actual |
 |---|---|
@@ -14,7 +19,7 @@ Especificaciones tecnicas actuales del repositorio y de la capa Windows.
 | Launcher Windows | `docker-labs-launcher.exe` compilado con Go 1.21 (stdlib puro, cero dependencias externas) |
 | Instalador Windows | Inno Setup `.exe` distribuido por GitHub Releases |
 
-## Puertos principales
+## 🔌 Puertos principales
 
 | Puerto | Servicio |
 |---:|---|
@@ -23,42 +28,44 @@ Especificaciones tecnicas actuales del repositorio y de la capa Windows.
 | `8085` | Platform Gateway |
 | `9090` | Control Center |
 
-## Conflictos de puertos a tener en cuenta
+## ⚠️ Conflictos de puertos a considerar
 
 | Lab | Puerto | Conflicto |
 |---|---:|---|
-| `08-prometheus-grafana` | `9090` | choca con `dashboard-control` |
-| `11-elasticsearch-search` | `8000` | choca con `05-postgres-api` |
+| `08-prometheus-grafana` | `9090` | Choca con `dashboard-control` |
+| `11-elasticsearch-search` | `8000` | Choca con `05-postgres-api` |
 
-Estos labs siguen siendo validos, pero se consideran de uso caso a caso, no parte del arranque simultaneo de la plataforma principal.
+Estos labs siguen siendo válidos, pero se consideran de uso caso a caso, no parte del arranque simultáneo de la plataforma principal.
 
-## Capa Windows
+## 🪟 Capa Windows
 
-| Pieza | Tecnologia |
+| Pieza | Tecnología |
 |---|---|
 | Launcher | Go 1.21 (stdlib puro, sin dependencias externas) |
 | Build del launcher | `go build -ldflags "-X main.launcherVersion=X.Y.Z"` |
 | Instalador | Inno Setup 6.x |
 | Script de build | `scripts/windows/build-launcher.ps1` + `build-installer.ps1` |
-| Manifest central | `labs.config.json` (fuente unica de labs, puertos y URLs) |
+| Manifest central | `labs.config.json` (fuente única de labs, puertos y URLs) |
 | Checksums | SHA256 |
 | Release automation | GitHub Actions — `.github/workflows/build-windows.yml` |
 
-## Artefactos esperados del release Windows
+## 📦 Artefactos esperados del release Windows
 
-- `docker-labs-setup-{version}.exe` — instalador Inno Setup para Windows 10+
-- `SHA256SUMS.txt` — checksums para verificacion de integridad
+| Artefacto | Descripción |
+|---|---|
+| `docker-labs-setup-{version}.exe` | Instalador Inno Setup para Windows 10+ |
+| `SHA256SUMS.txt` | Checksums para verificación de integridad |
 
 > El instalador no se versiona dentro del repo. Se publica como asset de GitHub Releases.
 > Ver [github-releases-distribution.md](github-releases-distribution.md).
 
-## Notas de implementacion
+## 📝 Notas de implementación
 
-- el launcher valida prerequisitos pero no empaqueta Docker Desktop
-- el instalador final no se almacena dentro del repo
-- la ausencia de firma digital esta documentada y se compensa con canal oficial + checksums
+- El launcher valida prerrequisitos pero no empaqueta Docker Desktop
+- El instalador final no se almacena dentro del repo
+- La ausencia de firma digital está documentada y se compensa con canal oficial + checksums
 
-## Documentos relacionados
+## 📚 Documentos relacionados
 
 - [windows-installer.md](windows-installer.md)
 - [github-releases-distribution.md](github-releases-distribution.md)
