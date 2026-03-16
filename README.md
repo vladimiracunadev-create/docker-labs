@@ -1,43 +1,44 @@
 # Docker Labs
 
-> Plataforma modular de sistemas Docker para aprendizaje practico, prototipado y evolucion de productos.
+> Plataforma modular de sistemas Docker para aprendizaje práctico, prototipado y evolución de productos.
 
 [![CI](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/vladimiracunadev-create/docker-labs)](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Workspace Status](https://img.shields.io/badge/workspace-operational-2e8b57)](http://localhost:9090)
 [![Platform Focus](https://img.shields.io/badge/focus-core%20%2B%20portal%20%2B%20gateway-c96a2b)](PROJECT_STATUS.md)
 
 ---
 
-## 🚀 Implementacion Profesional del Workspace (v1.4)
+## 🚀 Implementación Profesional del Workspace (v1.4)
 
 > **Estado**: 🟢 Operativo  
 > **CI**: 🟢 Activo  
 > **Audiencia**: 👥 Principiantes, DevOps, backend, full stack, reclutadores  
 > **Entrada principal**: 🖥️ [http://localhost:9090](http://localhost:9090)
 
-**Executive Summary**: `docker-labs` ya no se presenta como una coleccion de demos sueltas. Hoy funciona como un workspace modular con una historia principal clara: un panel dockerizado para operar el entorno, un core transaccional, un portal operativo y un gateway comun.
+**Executive Summary**: `docker-labs` ya no se presenta como una colección de demos sueltas. Hoy funciona como un workspace modular con una historia principal clara: un panel dockerizado para operar el entorno, un core transaccional, un portal operativo y un gateway común.
 
-## 🎯 Que resuelve este repositorio
+## 🎯 Qué resuelve este repositorio
 
 | Capa | Componente | Valor |
 |---|---|---|
 | Workspace | `dashboard-control` | Permite levantar, detener, diagnosticar y entender el estado del entorno Docker |
 | Core | `05-postgres-api` | Provee un backend transaccional con clientes, productos, pedidos y stock |
-| Operacion | `09-multi-service-app` | Agrega una experiencia operativa sobre el core |
-| Entrada comun | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
+| Operación | `09-multi-service-app` | Agrega una experiencia operativa sobre el core |
+| Entrada común | `06-nginx-proxy` | Unifica acceso al panel, al core y al portal |
 | Aprendizaje | `learning-center.html` | Entrega contexto formativo dentro del ambiente local |
 
-## 💻 Instalacion en Windows
+## 💻 Instalación en Windows
 
 Descarga el instalador desde GitHub Releases y sigue el asistente:
 
 1. Descarga `docker-labs-setup-{version}.exe` desde **[GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)**
 2. Ejecuta el instalador (acepta el aviso de SmartScreen si aparece — ver nota)
-3. Usa el acceso directo **Docker Labs** del menu de inicio o el escritorio
-4. El launcher verifica Docker Desktop, levanta el Control Center y abre el browser
+3. Usa el acceso directo **Docker Labs** del menú de inicio o el escritorio
+4. El launcher verifica Docker Desktop, levanta la plataforma completa (4 servicios) y abre el browser
 
-> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decision explicita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Mas informacion" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#por-que-no-se-usa-firma-digital-en-esta-fase).
+> **Nota sobre firma digital**: el instalador no tiene firma digital en v1.x. Esta es una decisión explícita de producto. Si Windows SmartScreen muestra una advertencia, selecciona "Más información" → "Ejecutar de todas formas". Ver [docs/windows-installer.md](docs/windows-installer.md#por-que-no-se-usa-firma-digital-en-esta-fase).
 
 ---
 
@@ -96,26 +97,27 @@ Entradas principales:
 | Capacidad | Estado | Detalle |
 |---|---|---|
 | Panel dockerizado | 🟢 Activo | El Control Center corre como contenedor propio |
-| Diagnostico de host y Docker | 🟢 Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
+| Diagnóstico de host y Docker | 🟢 Activo | `GET /api/diagnostics` combina navegador y runtime Docker |
 | Control por lab | 🟢 Activo | `start`, `stop`, `restart`, `rebuild`, `logs` |
 | Control global | 🟢 Activo | `bajar todos` y `eliminar entornos del repo` |
 | Gateway integrado | 🟢 Activo | `06` enruta a panel, core y portal |
 | Core documentado | 🟢 Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
 | Portal conectado | 🟢 Activo | `09` consume el core y agrega capa operativa |
 | CI base | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
-| **Instalador Windows** | 🟢 Activo | `docker-labs-setup-{v}.exe` generado y publicado automaticamente en [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest) |
+| **Instalador Windows** | 🟢 Activo | `docker-labs-setup-{v}.exe` generado y publicado automáticamente en [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest) |
 | **Launcher Go** | 🟢 Activo | Levanta los 4 servicios core en paralelo, calcula rutas dinamicamente y abre el browser |
 | **CI Windows** | 🟢 Activo | `build-windows.yml` compila y publica el installer al pushear un tag `v*.*.*` |
 | **Skills Claude Code** | 🟢 Activos | `docker-labs-release` y `docker-labs-status` — automatizan el flujo de release y el diagnostico del sistema |
-| Estandar editorial en los 12 labs | 🟡 En evolucion | La columna vertebral ya esta elevada; aun faltan mejoras en algunos labs secundarios |
+| Estándar editorial en los 12 labs | 🟡 En evolución | La columna vertebral ya está elevada; aún faltan mejoras en algunos labs secundarios |
 
 ## 🧭 Ruta recomendada por perfil
 
 | Perfil | Documento o entrada | Objetivo |
 |---|---|---|
 | Principiante | [docs/BEGINNERS_GUIDE.md](docs/BEGINNERS_GUIDE.md) | Entender Docker, el flujo caso a caso y el orden recomendado |
-| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Ver estado, diagnostico y accesos del entorno |
-| Dev / DevOps | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) | Entender el panel, Compose, gateway y operacion |
+| Usuario del workspace | [http://localhost:9090](http://localhost:9090) | Ver estado, diagnóstico y accesos del entorno |
+| Usuario Windows | [docs/windows-installer.md](docs/windows-installer.md) | Instalar y ejecutar la plataforma desde el instalador `.exe` |
+| Dev / DevOps | [docs/DASHBOARD_SETUP.md](docs/DASHBOARD_SETUP.md) | Entender el panel, Compose, gateway y operación |
 | Backend | [05-postgres-api/README.md](05-postgres-api/README.md) | Revisar el core transaccional, contratos y salud |
 | Full stack / producto | [09-multi-service-app/README.md](09-multi-service-app/README.md) | Revisar la experiencia operativa sobre el core |
 | Reclutador / manager | [RECRUITER.md](RECRUITER.md) | Recorrer el valor del repo en pocos minutos |
@@ -144,7 +146,7 @@ flowchart LR
     portal --> mongo
 ```
 
-## 🧩 Taxonomia del repositorio
+## 🧩 Taxonomía del repositorio
 
 ### 🧠 Sistemas principales
 
@@ -159,102 +161,102 @@ flowchart LR
 
 | Carpeta | Capacidad | Estado narrativo |
 |---|---|---|
-| `04-redis-cache` | Cache y performance | Complementario |
-| `07-rabbitmq-messaging` | Mensajeria asincrona | Complementario |
+| `04-redis-cache` | Caché y performance | Complementario |
+| `07-rabbitmq-messaging` | Mensajería asíncrona | Complementario |
 | `08-prometheus-grafana` | Observabilidad | Complementario |
-| `11-elasticsearch-search` | Busqueda | Complementario |
-| `12-jenkins-ci` | CI y automatizacion | Complementario |
+| `11-elasticsearch-search` | Búsqueda | Complementario |
+| `12-jenkins-ci` | CI y automatización | Complementario |
 
 ### 🧪 Starters y demos
 
 | Carpeta | Enfoque |
 |---|---|
 | `01-node-api` | API REST inicial |
-| `02-php-lamp` | Entorno clasico administrativo |
+| `02-php-lamp` | Entorno clásico administrativo |
 | `03-python-api` | API Python sencilla |
-| `10-go-api` | Servicio ligero y rapido |
+| `10-go-api` | Servicio ligero y rápido |
 
-## 📚 Documentacion del Proyecto
+## 📚 Documentación del Proyecto
 
-El objetivo de esta seccion es que no tengas que adivinar que leer. Cada documento responde una necesidad concreta y se puede abrir directamente desde aqui.
+El objetivo de esta sección es que no tengas que adivinar qué leer. Cada documento responde una necesidad concreta y se puede abrir directamente desde aquí.
 
-### 🚀 Inicio y operacion
+### 🚀 Inicio y operación
 
-| Documento | Audiencia | Que resuelve | Abrir |
+| Documento | Audiencia | Qué resuelve | Abrir |
 |---|---|---|---|
 | Documentation Index | Todos | Mapa maestro de lectura | [Abrir](docs/DOCUMENTATION_INDEX.md) |
 | Beginner Guide | Principiantes | Primeros pasos con Docker y con el repo | [Abrir](docs/BEGINNERS_GUIDE.md) |
-| Install Guide | Todos | Instalacion y arranque correcto del workspace | [Abrir](docs/INSTALL.md) |
-| Requirements | Todos | Requisitos minimos y recomendados del host y de Docker | [Abrir](docs/REQUIREMENTS.md) |
-| Environment Setup | Operadores | Preparacion del equipo y orden sugerido de arranque | [Abrir](ENVIRONMENT_SETUP.md) |
+| Install Guide | Todos | Instalación y arranque correcto del workspace | [Abrir](docs/INSTALL.md) |
+| Requirements | Todos | Requisitos mínimos y recomendados del host y de Docker | [Abrir](docs/REQUIREMENTS.md) |
+| Environment Setup | Operadores | Preparación del equipo y orden sugerido de arranque | [Abrir](ENVIRONMENT_SETUP.md) |
 | User Manual | Usuarios del workspace | Uso diario del panel y de los sistemas activos | [Abrir](docs/USER_MANUAL.md) |
-| Dashboard Setup | Dev / DevOps | Como funciona el `9090` y como gobierna el entorno | [Abrir](docs/DASHBOARD_SETUP.md) |
-| Operating Modes | Todos | Cuando conviene usar modo panel primero, caso a caso o plataforma principal | [Abrir](OPERATING-MODES.md) |
+| Dashboard Setup | Dev / DevOps | Cómo funciona el `9090` y cómo gobierna el entorno | [Abrir](docs/DASHBOARD_SETUP.md) |
+| Operating Modes | Todos | Cuándo conviene usar modo panel primero, caso a caso o plataforma principal | [Abrir](OPERATING-MODES.md) |
 | Runbook | Operadores | Arranque, apagado y respuesta a incidencias comunes | [Abrir](RUNBOOK.md) |
 
-### 🏗️ Arquitectura y referencia tecnica
+### 🏗️ Arquitectura y referencia técnica
 
-| Documento | Audiencia | Que resuelve | Abrir |
+| Documento | Audiencia | Qué resuelve | Abrir |
 |---|---|---|---|
-| Architecture | Tecnico | Relacion entre panel, core, portal y gateway | [Abrir](docs/ARCHITECTURE.md) |
+| Architecture | Técnico | Relación entre panel, core, portal y gateway | [Abrir](docs/ARCHITECTURE.md) |
 | Labs Catalog | Todos | Rol de los 12 labs dentro del ecosistema | [Abrir](docs/LABS_CATALOG.md) |
-| Labs Runtime Reference | Operadores | Imagenes oficiales, tamanos y requisitos por lab | [Abrir](docs/LABS_RUNTIME_REFERENCE.md) |
-| Technical Specs | Tecnico | Stacks, puertos, endpoints y contratos | [Abrir](docs/TECHNICAL_SPECS.md) |
-| System Specs | Ejecutivo / tecnico | Vista corta del sistema como plataforma | [Abrir](SYSTEM_SPECS.md) |
-| File Architecture | Tecnico | Mapa de carpetas y responsabilidades | [Abrir](FILE_ARCHITECTURE.md) |
-| Tooling | Tecnico | Herramientas principales de runtime y desarrollo | [Abrir](docs/TOOLING.md) |
+| Labs Runtime Reference | Operadores | Imágenes oficiales, tamaños y requisitos por lab | [Abrir](docs/LABS_RUNTIME_REFERENCE.md) |
+| Technical Specs | Técnico | Stacks, puertos, endpoints y contratos | [Abrir](docs/TECHNICAL_SPECS.md) |
+| System Specs | Ejecutivo / técnico | Vista corta del sistema como plataforma | [Abrir](SYSTEM_SPECS.md) |
+| File Architecture | Técnico | Mapa de carpetas y responsabilidades | [Abrir](FILE_ARCHITECTURE.md) |
+| Tooling | Técnico | Herramientas principales de runtime y desarrollo | [Abrir](docs/TOOLING.md) |
 | Compatibility | Operadores | Compatibilidad por sistema operativo, puertos y modos | [Abrir](COMPATIBILITY.md) |
-| Glossary | Principiantes | Terminos base del workspace y Docker | [Abrir](GLOSSARY.md) |
+| Glossary | Principiantes | Términos base del workspace y Docker | [Abrir](GLOSSARY.md) |
 
-### 🪟 Distribucion Windows
+### 🪟 Distribución Windows
 
-| Documento | Audiencia | Que resuelve | Abrir |
+| Documento | Audiencia | Qué resuelve | Abrir |
 |---|---|---|---|
-| Windows Installer | Usuarios Windows, reclutadores | Como instalar, compilar, distribuir y justificar ausencia de firma digital | [Abrir](docs/windows-installer.md) |
-| GitHub Releases Distribution | Maintainers | Estrategia de distribucion via releases, sin binarios en el repo | [Abrir](docs/github-releases-distribution.md) |
-| Technical Audit | Tecnico | Estado diagnosticado del repo y correcciones aplicadas | [Abrir](docs/technical-audit.md) |
+| Windows Installer | Usuarios Windows, reclutadores | Cómo instalar, compilar, distribuir y justificar ausencia de firma digital | [Abrir](docs/windows-installer.md) |
+| GitHub Releases Distribution | Maintainers | Estrategia de distribución vía releases, sin binarios en el repo | [Abrir](docs/github-releases-distribution.md) |
+| Technical Audit | Técnico | Estado diagnosticado del repo y correcciones aplicadas | [Abrir](docs/technical-audit.md) |
 
-### 🤖 Automatizacion con Claude Code
+### 🤖 Automatización con Claude Code
 
-| Skill | Que hace | Como activarlo |
+| Skill | Qué hace | Cómo activarlo |
 |---|---|---|
-| `docker-labs-release` | Bump de version, commit, tag, push → dispara el CI que publica el `.exe` | _"haz un release"_, _"nueva version"_, _"bump version"_ |
-| `docker-labs-status` | Estado de contenedores, health HTTP, ultimo build CI, version y commits | _"estado de docker-labs"_, _"que esta corriendo"_, _"health check"_ |
+| `docker-labs-release` | Bump de versión, commit, tag, push → dispara el CI que publica el `.exe` | _"haz un release"_, _"nueva versión"_, _"bump version"_ |
+| `docker-labs-status` | Estado de contenedores, health HTTP, último build CI, versión y commits | _"estado de docker-labs"_, _"qué está corriendo"_, _"health check"_ |
 
 > Ver [DEVELOPING.md](DEVELOPING.md#skills-de-automatizacion-claude-code) para instrucciones de uso.
 
 ### 📈 Estado, release y gobernanza
 
-| Documento | Audiencia | Que resuelve | Abrir |
+| Documento | Audiencia | Qué resuelve | Abrir |
 |---|---|---|---|
-| Project Status | Todos | Que esta consolidado hoy y que sigue en evolucion | [Abrir](PROJECT_STATUS.md) |
-| Platform Roadmap | Todos | Direccion futura y prioridades de madurez | [Abrir](docs/PLATFORM_ROADMAP.md) |
+| Project Status | Todos | Qué está consolidado hoy y qué sigue en evolución | [Abrir](PROJECT_STATUS.md) |
+| Platform Roadmap | Todos | Dirección futura y prioridades de madurez | [Abrir](docs/PLATFORM_ROADMAP.md) |
 | Changelog | Todos | Historial de cambios relevantes | [Abrir](CHANGELOG.md) |
-| Release Guide | Maintainers | Checklist de publicacion coherente | [Abrir](RELEASE.md) |
-| Killed Practices | Tecnico / liderazgo | Practicas y enfoques que el repo evita | [Abrir](killed.md) |
+| Release Guide | Maintainers | Checklist de publicación coherente | [Abrir](RELEASE.md) |
+| Killed Practices | Técnico / liderazgo | Prácticas y enfoques que el repo evita | [Abrir](killed.md) |
 | Support | Maintainers | Criterios de soporte y continuidad | [Abrir](SUPPORT.md) |
-| Developing | Devs | Como extender y mantener el workspace | [Abrir](DEVELOPING.md) |
-| Security | DevSecOps | Alcance y politica de seguridad | [Abrir](SECURITY.md) |
-| Contributing | Colaboradores | Flujo de contribucion y estandar de trabajo | [Abrir](CONTRIBUTING.md) |
+| Developing | Devs | Cómo extender y mantener el workspace | [Abrir](DEVELOPING.md) |
+| Security | DevSecOps | Alcance y política de seguridad | [Abrir](SECURITY.md) |
+| Contributing | Colaboradores | Flujo de contribución y estándar de trabajo | [Abrir](CONTRIBUTING.md) |
 | Code of Conduct | Comunidad | Marco de convivencia del proyecto | [Abrir](CODE_OF_CONDUCT.md) |
 
-### 👀 Evaluacion externa
+### 👀 Evaluación externa
 
-| Documento | Audiencia | Que resuelve | Abrir |
+| Documento | Audiencia | Qué resuelve | Abrir |
 |---|---|---|---|
-| Recruiter Guide | Reclutadores / managers | Recorrido rapido del valor de portafolio y madurez tecnica | [Abrir](RECRUITER.md) |
+| Recruiter Guide | Reclutadores / managers | Recorrido rápido del valor de portafolio y madurez técnica | [Abrir](RECRUITER.md) |
 
 ## ✅ Lo que este repo es hoy
 
 - un workspace usable para aprender y operar stacks Docker
-- un activo de portafolio tecnico con una historia principal clara
-- una base seria para seguir integrando servicios y fortalecer practicas DevOps
+- un activo de portafolio técnico con una historia principal clara
+- una base seria para seguir integrando servicios y fortalecer prácticas DevOps
 
-## 🚧 Lo que todavia no busca ser
+## 🚧 Lo que todavía no busca ser
 
 - un reemplazo completo de Docker Desktop
 - una plataforma productiva terminada en sus 12 labs
-- un ecosistema ya homogeneo en todas sus carpetas
+- un ecosistema ya homogéneo en todas sus carpetas
 
 ## 📄 Licencia
 

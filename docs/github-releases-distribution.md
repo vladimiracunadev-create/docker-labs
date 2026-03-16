@@ -1,6 +1,7 @@
-# Estrategia de distribución via GitHub Releases
+# Estrategia de distribución vía GitHub Releases
 
-> **Version**: 1.4.0
+> **Versión**: 1.4.0
+> **Última actualización**: 2026-03-15
 > **Audiencia**: mantenedores, contribuidores, revisores técnicos
 
 ---
@@ -55,7 +56,7 @@ https://github.com/vladimiracunadev-create/docker-labs/releases/tag/v1.4.0
 # 1. Compilar todo localmente
 .\scripts\windows\release.ps1 -Version 1.4.0
 
-# 2. Crear GitHub Release via gh CLI + subir asset
+# 2. Crear GitHub Release vía gh CLI + subir asset
 .\scripts\windows\release.ps1 -Version 1.4.0 -Upload
 ```
 
@@ -178,7 +179,7 @@ Si se usa GitHub Pages para el sitio web del proyecto:
 
 **P: ¿Por qué no usar GitHub Pages para las descargas?**
 
-> GitHub Pages está diseñado para contenido web estático servido via CDN. Tiene un
+> GitHub Pages está diseñado para contenido web estático servido vía CDN. Tiene un
 > límite suave de 1 GB por sitio, sin optimización para archivos grandes, y adjuntar
 > binarios a una rama web mezcla responsabilidades. GitHub Releases tiene soporte nativo
 > para assets binarios con almacenamiento content-addressed. Usar la herramienta correcta

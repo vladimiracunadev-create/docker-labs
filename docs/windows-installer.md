@@ -1,6 +1,7 @@
 # Instalador Windows — Docker Labs
 
-> **Version**: 1.4.0
+> **Versión**: 1.4.0
+> **Última actualización**: 2026-03-15
 > **Audiencia**: desarrolladores, mantenedores, usuarios finales, revisores técnicos
 > **Distribución**: GitHub Releases (no se incluye en el repositorio)
 
@@ -52,7 +53,7 @@ presencia y guía al usuario si no está instalado.
 | Crea entrada en el menú Inicio | "Docker Labs — Control Center" |
 | Crea acceso directo opcional en el escritorio | Desmarcado por defecto |
 | Registra el desinstalador | Eliminación limpia desde Configuración → Aplicaciones |
-| Ofrece iniciar al finalizar la instalación | Opcional, via paso Run |
+| Ofrece iniciar al finalizar la instalación | Opcional, vía paso Run |
 
 ---
 
@@ -231,7 +232,7 @@ compilándolo localmente con `scripts/windows/release.ps1`.
 
 En ausencia de firma de código, se aplican las siguientes medidas:
 
-1. **Distribución exclusiva via GitHub Releases** — sin mirrors de terceros
+1. **Distribución exclusiva vía GitHub Releases** — sin mirrors de terceros
 2. **Checksum SHA-256** incluido en la descripción de cada release
 3. **Aviso de binario sin firma** mostrado en el asistente del instalador y en el banner del launcher
 4. **Build reproducible** — el instalador puede ser reconstruido desde el código fuente por cualquier persona
@@ -273,12 +274,12 @@ Esta capa de distribución Windows demuestra:
 - **Pensamiento de producto**: diseñar para la experiencia del usuario final más allá del repositorio
 - **Dominio de Go**: binario multiplataforma sin dependencias en tiempo de ejecución
 - **Packaging Windows**: Inno Setup para una experiencia de instalación profesional
-- **CI/CD**: pipeline de build automatizado via GitHub Actions
+- **CI/CD**: pipeline de build automatizado vía GitHub Actions
 - **Diseño de distribución**: GitHub Releases como canal correcto para artefactos
 - **Conciencia de seguridad**: política explícita de binario sin firma con medidas compensatorias
 
 Para una entrevista técnica o demo, destacar:
-1. El launcher valida los prerequisitos antes de iniciar cualquier cosa
+1. El launcher valida los prerrequisitos antes de iniciar cualquier cosa
 2. El cálculo de `DOCKER_REPO_ROOT` resuelve un problema real de rutas Docker-in-Docker
 3. El instalador se construye de forma reproducible desde el código fuente — sin cajas negras
 4. La decisión de NO firmar en v1.x es intencional, documentada y justificable
