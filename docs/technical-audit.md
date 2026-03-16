@@ -1,224 +1,224 @@
-# Technical Audit — Docker Labs
+# Auditoría técnica — Docker Labs
 
-> **Date**: 2026-03-15
-> **Auditor**: Senior software architect review (pre-Windows layer implementation)
-> **Status**: Issues resolved — see correction log below
-
----
-
-## Objective
-
-Before adding the Windows distribution layer, this audit inspected the full
-repository state to detect inconsistencies, port conflicts, hardcoded values,
-and structural problems. All critical findings were corrected before implementing
-the new functionality.
+> **Fecha**: 2026-03-15
+> **Auditor**: Revisión de arquitectura senior (previa a la implementación de la capa Windows)
+> **Estado**: Problemas resueltos — ver registro de correcciones más abajo
 
 ---
 
-## Findings and Corrections
+## Objetivo
 
-### CRITICAL-01 — Hardcoded author path in `dashboard-control/docker-compose.yml`
+Antes de agregar la capa de distribución Windows, esta auditoría inspeccionó el estado
+completo del repositorio para detectar inconsistencias, conflictos de puertos, valores
+hardcodeados y problemas estructurales. Todos los hallazgos críticos fueron corregidos
+antes de implementar la nueva funcionalidad.
 
-**Finding**
-`DOCKER_REPO_ROOT` was hardcoded to `/run/desktop/mnt/host/c/docker-labs/docker-labs`,
-a path specific to the repository author's machine. Volume was also hardcoded as
-`..:/run/desktop/mnt/host/c/docker-labs/docker-labs`.
+---
 
-**Impact**
-Any user cloning the repo to a different path, or on Linux/macOS, would get
-incorrect docker compose paths. The control center would start but fail to
-manage individual labs.
+## Hallazgos y correcciones
 
-**Correction applied**
-- Changed `DOCKER_REPO_ROOT` to `${DOCKER_REPO_ROOT:-/workspace}` in compose
-- Removed the second hardcoded volume mount
-- Updated `scripts/start-control-center.cmd` to compute `DOCKER_REPO_ROOT`
-  dynamically using PowerShell path conversion
-- The new Go launcher also computes this value automatically
+### CRÍTICO-01 — Ruta del autor hardcodeada en `dashboard-control/docker-compose.yml`
 
-**Files changed**
+**Hallazgo**
+`DOCKER_REPO_ROOT` estaba hardcodeado a `/run/desktop/mnt/host/c/docker-labs/docker-labs`,
+una ruta específica de la máquina del autor del repositorio. El volumen también estaba
+hardcodeado como `..:/run/desktop/mnt/host/c/docker-labs/docker-labs`.
+
+**Impacto**
+Cualquier usuario que clonara el repo en una ruta diferente, o en Linux/macOS, obtendría
+rutas incorrectas en docker compose. El Control Center iniciaba pero fallaba al administrar
+los labs individuales.
+
+**Corrección aplicada**
+- Cambiado `DOCKER_REPO_ROOT` a `${DOCKER_REPO_ROOT:-/workspace}` en el compose
+- Eliminado el segundo montaje de volumen hardcodeado
+- Actualizado `scripts/start-control-center.cmd` para calcular `DOCKER_REPO_ROOT`
+  dinámicamente usando conversión de rutas con PowerShell
+- El nuevo launcher Go también calcula este valor automáticamente
+
+**Archivos modificados**
 - `dashboard-control/docker-compose.yml`
 - `scripts/start-control-center.cmd`
 
 ---
 
-### CRITICAL-02 — Port conflict: `08-prometheus-grafana` vs Control Center (port 9090)
+### CRÍTICO-02 — Conflicto de puerto: `08-prometheus-grafana` vs Control Center (puerto 9090)
 
-**Finding**
-`08-prometheus-grafana/docker-compose.yml` mapped Prometheus to host port `9090:9090`.
-The Control Center also uses port 9090. Running both simultaneously caused a bind conflict.
+**Hallazgo**
+`08-prometheus-grafana/docker-compose.yml` mapeaba Prometheus al puerto del host `9090:9090`.
+El Control Center también usa el puerto 9090. Ejecutar ambos simultáneamente causaba un
+conflicto de bind.
 
-Additionally, `dashboard-control/labs.js` showed the Prometheus URL as
-`http://localhost:9090`, which pointed to the Control Center itself — not Prometheus.
+Además, `dashboard-control/labs.js` mostraba la URL de Prometheus como
+`http://localhost:9090`, que apuntaba al propio Control Center — no a Prometheus.
 
-**Impact**
-Starting lab 08 while the Control Center was running would fail with "port in use".
-The dashboard link for Prometheus was incorrect and would open the Control Center.
+**Impacto**
+Iniciar el lab 08 mientras el Control Center estaba corriendo fallaba con "puerto en uso".
+El enlace del dashboard para Prometheus era incorrecto y abría el Control Center.
 
-**Correction applied**
-- Changed Prometheus host port from `9090:9090` to `9091:9090` in `08-prometheus-grafana/docker-compose.yml`
-- Updated `dashboard-control/labs.js` Prometheus URL to `http://localhost:9091`
+**Corrección aplicada**
+- Cambiado el puerto del host de Prometheus de `9090:9090` a `9091:9090` en `08-prometheus-grafana/docker-compose.yml`
+- Actualizada la URL de Prometheus en `dashboard-control/labs.js` a `http://localhost:9091`
 
-**Files changed**
+**Archivos modificados**
 - `08-prometheus-grafana/docker-compose.yml`
 - `dashboard-control/labs.js`
 
 ---
 
-### CRITICAL-03 — Port conflict: `11-elasticsearch-search` vs `05-postgres-api` (port 8000)
+### CRÍTICO-03 — Conflicto de puerto: `11-elasticsearch-search` vs `05-postgres-api` (puerto 8000)
 
-**Finding**
-`11-elasticsearch-search/docker-compose.yml` mapped its API to host port `8000:8000`.
-`05-postgres-api` (Inventory Core) also uses port 8000, and is the platform's
-primary entry point.
+**Hallazgo**
+`11-elasticsearch-search/docker-compose.yml` mapeaba su API al puerto del host `8000:8000`.
+`05-postgres-api` (Inventory Core) también usa el puerto 8000 y es el punto de entrada
+principal de la plataforma.
 
-`dashboard-control/labs.js` listed `11-elasticsearch-search` API URL as
-`http://localhost:8000`, creating a false link that pointed to the Inventory Core.
+`dashboard-control/labs.js` listaba la URL de la API de `11-elasticsearch-search` como
+`http://localhost:8000`, creando un enlace incorrecto que apuntaba al Inventory Core.
 
-**Impact**
-Starting lab 11 while the Inventory Core was running would fail with "port in use".
-The dashboard link for Elasticsearch API was incorrect.
+**Impacto**
+Iniciar el lab 11 mientras el Inventory Core estaba corriendo fallaba con "puerto en uso".
+El enlace del dashboard para la API de Elasticsearch era incorrecto.
 
-**Correction applied**
-- Changed Elasticsearch API host port from `8000:8000` to `8001:8000` in `11-elasticsearch-search/docker-compose.yml`
-- Updated `dashboard-control/labs.js` Elasticsearch API URL to `http://localhost:8001`
-- Updated health URL to `http://localhost:8001/health`
+**Corrección aplicada**
+- Cambiado el puerto del host de la API de Elasticsearch de `8000:8000` a `8001:8000` en `11-elasticsearch-search/docker-compose.yml`
+- Actualizada la URL de la API de Elasticsearch en `dashboard-control/labs.js` a `http://localhost:8001`
+- Actualizada la URL de health a `http://localhost:8001/health`
 
-**Files changed**
+**Archivos modificados**
 - `11-elasticsearch-search/docker-compose.yml`
 - `dashboard-control/labs.js`
 
 ---
 
-### MEDIUM-01 — `docker-labs-v1.0.0.zip` committed to repository root
+### MEDIO-01 — `docker-labs-v1.0.0.zip` incluido en la raíz del repositorio
 
-**Finding**
-A release ZIP archive (`docker-labs-v1.0.0.zip`) was present in the repository
-root — a release artifact that should never be versioned.
+**Hallazgo**
+Un archivo ZIP de release (`docker-labs-v1.0.0.zip`) estaba presente en la raíz del
+repositorio — un artefacto de release que nunca debe ser versionado.
 
-**Impact**
-Increases repository size unnecessarily. Violates the distribution strategy
-where release artifacts are published via GitHub Releases, not committed.
+**Impacto**
+Aumenta innecesariamente el tamaño del repositorio. Viola la estrategia de distribución
+donde los artefactos de release se publican via GitHub Releases, no se incluyen en el repo.
 
-**Correction applied**
-- Added `docker-labs-*.zip` to `.gitignore`
+**Corrección aplicada**
+- Agregado `docker-labs-*.zip` a `.gitignore`
 
-**Manual action required**
-Remove `docker-labs-v1.0.0.zip` from version history if desired:
+**Acción manual requerida**
+Eliminar `docker-labs-v1.0.0.zip` del historial de versiones si se desea:
 ```bash
 git rm --cached docker-labs-v1.0.0.zip
 git commit -m "Remove release artifact from repo (use GitHub Releases)"
 ```
 
-**Files changed**
+**Archivos modificados**
 - `.gitignore`
 
 ---
 
-### MEDIUM-02 — `Makefile` referenced legacy dashboard architecture
+### MEDIO-02 — `Makefile` referenciaba la arquitectura legacy del dashboard
 
-**Finding**
-The Makefile referenced `docker-compose-dashboard.yml` and
-`docker-compose-dashboard-simple.yml` — the older monolithic dashboard approach
-that has been superseded by `dashboard-control/`. Commands like `make up-dashboard`
-no longer represented the actual workspace entry point.
+**Hallazgo**
+El Makefile referenciaba `docker-compose-dashboard.yml` y
+`docker-compose-dashboard-simple.yml` — el enfoque de dashboard monolítico más antiguo
+que ha sido reemplazado por `dashboard-control/`. Comandos como `make up-dashboard`
+ya no representaban el punto de entrada real del workspace.
 
-**Impact**
-Developers using `make` would start the wrong stack. The current quickstart
-is `scripts/start-control-center.cmd` or `docker compose -f dashboard-control/docker-compose.yml up`.
+**Impacto**
+Los desarrolladores que usaran `make` levantarían el stack incorrecto. El quickstart
+actual es `scripts/start-control-center.cmd` o `docker compose -f dashboard-control/docker-compose.yml up`.
 
-**Correction applied**
-- Rewrote `Makefile` to use `dashboard-control/docker-compose.yml` as the current entry
-- Added `start`, `stop`, `status` targets
-- Added `build-launcher` and `build-installer` targets for the Windows packaging layer
-- Preserved CI compatibility (old compose files are still tested by `ci.yml`)
+**Corrección aplicada**
+- Reescrito el `Makefile` para usar `dashboard-control/docker-compose.yml` como punto de entrada actual
+- Agregados targets `start`, `stop`, `status`
+- Agregados targets `build-launcher` y `build-installer` para la capa de packaging Windows
+- Compatibilidad CI preservada (los archivos compose anteriores siguen siendo probados por `ci.yml`)
 
-**Files changed**
+**Archivos modificados**
 - `Makefile`
 
 ---
 
-### MEDIUM-03 — `.gitignore` missing packaging and launcher artifacts
+### MEDIO-03 — `.gitignore` sin patrones para artefactos de packaging y launcher
 
-**Finding**
-`.gitignore` did not cover:
-- `docker-labs-*.zip` (release archives)
-- `docker-labs-setup-*.exe` (installer binaries)
+**Hallazgo**
+`.gitignore` no cubría:
+- `docker-labs-*.zip` (archivos de release)
+- `docker-labs-setup-*.exe` (binarios del instalador)
 - `packaging/staging/`
-- `launcher/go.sum` and `launcher/docker-labs-launcher.exe`
+- `launcher/go.sum` y `launcher/docker-labs-launcher.exe`
 
-**Correction applied**
-Added all missing entries to `.gitignore`.
+**Corrección aplicada**
+Se agregaron todas las entradas faltantes a `.gitignore`.
 
-**Files changed**
+**Archivos modificados**
 - `.gitignore`
 
 ---
 
-## Port Map — Post-Audit (Verified, No Conflicts)
+## Mapa de puertos — Post-auditoría (Verificado, sin conflictos)
 
-| Port  | Lab / Service              | Status   |
-|-------|----------------------------|----------|
-| 9090  | Control Center             | Primary  |
-| 8000  | 05-postgres-api (Core)     | Platform |
-| 8083  | 09-multi-service-app       | Platform |
-| 8085  | 06-nginx-proxy (Gateway)   | Platform |
-| 3000  | 01-node-api                | Starter  |
-| 5000  | 03-python-api              | Starter  |
-| 3001  | 04-redis-cache             | Infra    |
-| 8081  | 02-php-lamp (web)          | Starter  |
-| 8082  | 02-php-lamp (phpmyadmin)   | Starter  |
-| 9091  | 08-prometheus-grafana      | Infra    |
-| 3002  | 08-grafana                 | Infra    |
-| 3003  | 09-backend API             | Platform |
-| 8084  | 10-go-api                  | Starter  |
-| 8001  | 11-elasticsearch-search    | Infra    |
-| 9200  | 11-elasticsearch           | Infra    |
-| 8080  | 12-jenkins-ci              | Infra    |
-| 15672 | 07-rabbitmq management     | Infra    |
-| 5432  | 05-postgres-api DB         | Platform |
-
----
-
-## Architecture Notes
-
-### DOCKER_REPO_ROOT — dual-path design
-
-The Control Center runs inside Docker but needs to invoke `docker compose`
-commands for other labs. This creates a path resolution challenge:
-
-1. Inside the container, files are at `/workspace` (via volume mount)
-2. The host Docker daemon receives compose file paths as arguments
-3. On Windows + Docker Desktop, the host daemon lives in a LinuxKit VM
-   where Windows drives are at `/run/desktop/mnt/host/<drive>/...`
-
-**Solution**: `DOCKER_REPO_ROOT` is set to the host-side path before starting
-the container. The `start-control-center.cmd` script and the Go launcher both
-compute this dynamically.
-
-On Linux/macOS with native Docker, `DOCKER_REPO_ROOT` equals the actual
-host path (e.g. `/home/user/docker-labs`).
+| Puerto | Lab / Servicio | Rol |
+|--------|----------------|-----|
+| 9090 | Control Center | Principal |
+| 8000 | 05-postgres-api (Core) | Plataforma |
+| 8083 | 09-multi-service-app | Plataforma |
+| 8085 | 06-nginx-proxy (Gateway) | Plataforma |
+| 3000 | 01-node-api | Starter |
+| 5000 | 03-python-api | Starter |
+| 3001 | 04-redis-cache | Infra |
+| 8081 | 02-php-lamp (web) | Starter |
+| 8082 | 02-php-lamp (phpmyadmin) | Starter |
+| 9091 | 08-prometheus-grafana | Infra |
+| 3002 | 08-grafana | Infra |
+| 3003 | 09-backend API | Plataforma |
+| 8084 | 10-go-api | Starter |
+| 8001 | 11-elasticsearch-search | Infra |
+| 9200 | 11-elasticsearch | Infra |
+| 8080 | 12-jenkins-ci | Infra |
+| 15672 | 07-rabbitmq management | Infra |
+| 5432 | 05-postgres-api DB | Plataforma |
 
 ---
 
-## Legacy Files
+## Notas de arquitectura
 
-The following files remain in the repository for backward compatibility and
-CI testing but represent an earlier architectural approach:
+### DOCKER_REPO_ROOT — diseño de doble ruta
 
-| File | Role | Notes |
-|------|------|-------|
-| `docker-compose-dashboard.yml` | Legacy monolithic dashboard | Still tested in CI |
-| `docker-compose-dashboard-simple.yml` | Simplified variant | Still tested in CI |
-| `nginx-dashboard.conf` | Nginx config for legacy dashboard | Required by legacy compose |
-| `nginx-proxy-dashboard.conf` | Nginx proxy config | Required by legacy compose |
-| `prometheus-dashboard.yml` | Prometheus config for legacy | Required by legacy compose |
+El Control Center corre dentro de Docker pero necesita invocar comandos `docker compose`
+para otros labs. Esto crea un desafío de resolución de rutas:
 
-These files do not affect the primary `dashboard-control/` architecture.
+1. Dentro del contenedor, los archivos están en `/workspace` (via montaje de volumen)
+2. El daemon de Docker del host recibe las rutas de los archivos compose como argumentos
+3. En Windows + Docker Desktop, el daemon del host vive en una VM LinuxKit
+   donde las unidades de Windows están en `/run/desktop/mnt/host/<unidad>/...`
+
+**Solución**: `DOCKER_REPO_ROOT` se establece a la ruta del lado del host antes de iniciar
+el contenedor. El script `start-control-center.cmd` y el launcher Go la calculan dinámicamente.
+
+En Linux/macOS con Docker nativo, `DOCKER_REPO_ROOT` equivale a la ruta real del host
+(por ejemplo, `/home/usuario/docker-labs`).
 
 ---
 
-## Documents Related to This Audit
+## Archivos legados
+
+Los siguientes archivos permanecen en el repositorio por compatibilidad retroactiva y
+pruebas de CI, pero representan un enfoque arquitectónico anterior:
+
+| Archivo | Rol | Notas |
+|---------|-----|-------|
+| `docker-compose-dashboard.yml` | Dashboard monolítico legado | Todavía probado en CI |
+| `docker-compose-dashboard-simple.yml` | Variante simplificada | Todavía probado en CI |
+| `nginx-dashboard.conf` | Configuración nginx para dashboard legado | Requerido por el compose legado |
+| `nginx-proxy-dashboard.conf` | Configuración nginx proxy | Requerido por el compose legado |
+| `prometheus-dashboard.yml` | Configuración Prometheus para el legado | Requerido por el compose legado |
+
+Estos archivos no afectan la arquitectura principal de `dashboard-control/`.
+
+---
+
+## Documentos relacionados con esta auditoría
 
 - [docs/windows-installer.md](windows-installer.md)
 - [docs/github-releases-distribution.md](github-releases-distribution.md)

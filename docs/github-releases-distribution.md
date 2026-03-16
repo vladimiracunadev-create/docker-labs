@@ -1,199 +1,198 @@
-# GitHub Releases Distribution Strategy
+# Estrategia de distribución via GitHub Releases
 
-> **Version**: 1.0.0
-> **Audience**: maintainers, contributors, technical reviewers
-
----
-
-## Overview
-
-Docker Labs uses **GitHub Releases** as the exclusive distribution channel for
-pre-built installer artifacts. The repository contains only source code and
-build scripts. No binaries are committed.
-
-This document explains the rationale, the full release workflow, and how to
-link the installer from the project website.
+> **Version**: 1.4.0
+> **Audiencia**: mantenedores, contribuidores, revisores técnicos
 
 ---
 
-## Why GitHub Releases and Not the Repository
+## Descripción general
 
-| Option | Why Not Used |
-|--------|-------------|
-| Commit binary to `main` | Pollutes history, increases repo size, mixes source and artifacts |
-| Store in `gh-pages` branch | GitHub Pages is for static HTML sites, not binary distribution; no CDN for large files |
-| Self-hosted file server | Operational overhead, uptime responsibility, no native CI integration |
-| **GitHub Releases** | Official artifact channel, integrated with CI, TLS-secured, permanent URLs, SHA verification, free |
+Docker Labs usa **GitHub Releases** como canal exclusivo de distribución para los
+instaladores pre-compilados. El repositorio contiene únicamente código fuente y
+scripts de build. No se incluyen binarios en el historial de git.
+
+Este documento explica el razonamiento, el flujo completo de release y cómo
+enlazar el instalador desde la web del proyecto.
 
 ---
 
-## Release Workflow
+## Por qué GitHub Releases y no el repositorio
 
-### Automated (recommended)
+| Opción | Por qué no se usa |
+|--------|------------------|
+| Incluir el binario en `main` | Contamina el historial, aumenta el tamaño del repo, mezcla fuentes con artefactos |
+| Guardar en la rama `gh-pages` | GitHub Pages es para sitios web estáticos, no para distribución de binarios; sin CDN optimizado para archivos grandes |
+| Servidor de archivos propio | Carga operativa, responsabilidad de uptime, sin integración nativa con CI |
+| **GitHub Releases** | Canal oficial de artefactos, integrado con CI, TLS-verificado, URLs permanentes, verificación SHA, gratuito |
 
-Push a version tag to trigger the GitHub Actions workflow:
+---
+
+## Flujo de release
+
+### Automatizado (recomendado)
+
+Pushear un tag de versión dispara el workflow de GitHub Actions:
 
 ```bash
-# Tag the release
-git tag v1.0.0
-git push origin v1.0.0
+# Etiquetar el release
+git tag v1.4.0
+git push origin v1.4.0
 ```
 
-The `build-windows.yml` workflow:
-1. Builds the Go launcher (`docker-labs-launcher.exe`)
-2. Builds the Inno Setup installer (`docker-labs-setup-1.0.0.exe`)
-3. Attaches the installer to the GitHub Release automatically
+El workflow `build-windows.yml`:
+1. Compila el launcher Go (`docker-labs-launcher.exe`)
+2. Compila el instalador Inno Setup (`docker-labs-setup-1.4.0.exe`)
+3. Adjunta el instalador al GitHub Release automáticamente
 
-The release is created at:
+El release queda disponible en:
 ```
-https://github.com/vladimiracunadev-create/docker-labs/releases/tag/v1.0.0
+https://github.com/vladimiracunadev-create/docker-labs/releases/tag/v1.4.0
 ```
 
 ### Manual
 
 ```powershell
-# 1. Build everything locally
-.\scripts\windows\release.ps1 -Version 1.0.0
+# 1. Compilar todo localmente
+.\scripts\windows\release.ps1 -Version 1.4.0
 
-# 2. Create GitHub Release via gh CLI + upload
-.\scripts\windows\release.ps1 -Version 1.0.0 -Upload
+# 2. Crear GitHub Release via gh CLI + subir asset
+.\scripts\windows\release.ps1 -Version 1.4.0 -Upload
 ```
 
-Or manually via the GitHub web UI:
-1. Go to **Releases** → **Draft a new release**
-2. Create tag `v1.0.0`
-3. Add release notes (title, changelog summary, SHA-256 checksum)
-4. Drag and drop `dist/docker-labs-setup-1.0.0.exe`
-5. Publish release
+O manualmente desde la interfaz web de GitHub:
+1. Ir a **Releases** → **Draft a new release**
+2. Crear el tag `v1.4.0`
+3. Agregar las notas del release (título, resumen del changelog, checksum SHA-256)
+4. Arrastrar y soltar `dist/docker-labs-setup-1.4.0.exe`
+5. Publicar el release
 
 ---
 
-## Release Checklist
+## Lista de verificación antes de publicar
 
-Before publishing a release:
+Antes de publicar un release:
 
 ```
-[ ] Version string updated in installer/docker-labs.iss
-[ ] Version string passed to build scripts (-Version 1.0.0)
-[ ] CHANGELOG.md updated with this release's changes
-[ ] PROJECT_STATUS.md reflects current state
-[ ] CI passes (both ci.yml and build-windows.yml)
-[ ] Installer tested on a clean Windows machine
-[ ] SHA-256 checksum generated for release notes
-[ ] dist/ directory NOT committed to repository
+[ ] version.txt actualizado con la nueva versión
+[ ] CHANGELOG.md actualizado con los cambios de este release
+[ ] PROJECT_STATUS.md refleja el estado actual
+[ ] CI pasando (tanto ci.yml como build-windows.yml)
+[ ] Instalador probado en una máquina Windows limpia
+[ ] Checksum SHA-256 generado para las notas del release
+[ ] El directorio dist/ NO está incluido en el repositorio
 ```
 
-Generate SHA-256 checksum:
+Generar checksum SHA-256:
 
 ```powershell
 # Windows
-Get-FileHash dist\docker-labs-setup-1.0.0.exe -Algorithm SHA256
+Get-FileHash dist\docker-labs-setup-1.4.0.exe -Algorithm SHA256
 
 # Linux/macOS
-sha256sum dist/docker-labs-setup-1.0.0.exe
+sha256sum dist/docker-labs-setup-1.4.0.exe
 ```
 
-Include the checksum in the release notes:
+Incluir el checksum en las notas del release:
 
 ```
 ## Checksums
-SHA-256 docker-labs-setup-1.0.0.exe: <hash>
+SHA-256 docker-labs-setup-1.4.0.exe: <hash>
 ```
 
 ---
 
-## Asset Download URL Pattern
+## Patrón de URL para descargar assets
 
-GitHub Releases uses a stable, versioned URL format:
+GitHub Releases usa un formato de URL estable y versionado:
 
 ```
-https://github.com/<owner>/<repo>/releases/download/<tag>/<asset-filename>
+https://github.com/<owner>/<repo>/releases/download/<tag>/<nombre-del-archivo>
 ```
 
-Example:
+Ejemplo:
 ```
-https://github.com/vladimiracunadev-create/docker-labs/releases/download/v1.0.0/docker-labs-setup-1.0.0.exe
+https://github.com/vladimiracunadev-create/docker-labs/releases/download/v1.4.0/docker-labs-setup-1.4.0.exe
 ```
 
-This URL is permanent once the release is published and does not change.
+Esta URL es permanente una vez publicado el release y no cambia.
 
 ---
 
-## Linking from the Website / GitHub Pages
+## Enlazar desde el sitio web / GitHub Pages
 
-The project website (or GitHub Pages) should link to GitHub Releases for downloads.
-**The binary is never stored in the `gh-pages` branch or in the repo.**
+El sitio web del proyecto (o GitHub Pages) debe enlazar a GitHub Releases para las descargas.
+**El binario nunca se almacena en la rama `gh-pages` ni en el repositorio.**
 
-### Recommended HTML pattern
+### Patrón HTML recomendado
 
 ```html
-<!-- Always-latest release page link -->
+<!-- Enlace a la página del release más reciente (siempre actualizado) -->
 <a href="https://github.com/vladimiracunadev-create/docker-labs/releases/latest"
    class="btn-download">
-  Download for Windows
+  Descargar para Windows
 </a>
 
-<!-- Direct asset link for a specific version (update on each release) -->
-<a href="https://github.com/vladimiracunadev-create/docker-labs/releases/download/v1.0.0/docker-labs-setup-1.0.0.exe"
+<!-- Enlace directo al asset de una versión específica (actualizar en cada release) -->
+<a href="https://github.com/vladimiracunadev-create/docker-labs/releases/download/v1.4.0/docker-labs-setup-1.4.0.exe"
    class="btn-download">
-  Download v1.0.0 — Windows Installer (.exe)
+  Descargar v1.4.0 — Instalador Windows (.exe)
 </a>
 ```
 
-**Use the `/releases/latest` URL pattern** when you want the button to always
-point to the most recent published release without updating the HTML on each release.
+**Usa el patrón `/releases/latest`** cuando quieras que el botón apunte siempre
+al release publicado más reciente sin actualizar el HTML en cada release.
 
 ```
 https://github.com/vladimiracunadev-create/docker-labs/releases/latest
 ```
 
-### GitHub Pages configuration note
+### Nota sobre la configuración de GitHub Pages
 
-If using GitHub Pages for the project website:
-- The `gh-pages` branch (or `docs/` folder) contains only the website source
-- It does **not** contain any installer binaries
-- The download button points to GitHub Releases via an external link
-- No `<base>` tag changes are needed — the releases URL is absolute
-
----
-
-## Release Naming Convention
-
-| Component | Convention | Example |
-|-----------|-----------|---------|
-| Git tag | `v{semver}` | `v1.0.0` |
-| Installer filename | `docker-labs-setup-{semver}.exe` | `docker-labs-setup-1.0.0.exe` |
-| Release title | `Docker Labs v{semver}` | `Docker Labs v1.0.0` |
+Si se usa GitHub Pages para el sitio web del proyecto:
+- La rama `gh-pages` (o la carpeta `docs/`) contiene solo el código fuente del sitio web
+- **No** contiene ningún binario del instalador
+- El botón de descarga apunta a GitHub Releases mediante un enlace externo
+- No se necesitan cambios en la etiqueta `<base>` — la URL de releases es absoluta
 
 ---
 
-## How to Justify This Strategy in an Interview
+## Convención de nombres del release
 
-**Q: Why not just commit the binary to the repository?**
-
-> Binaries in source control are an anti-pattern: they inflate history size,
-> can't be diffed, and conflate source with artifacts. GitHub Releases is the
-> correct artifact layer — it integrates with CI, provides versioned URLs,
-> supports checksums, and is free. This mirrors the distribution model used
-> by professional open-source projects like VS Code, Docker Desktop, and Go.
-
-**Q: Why not GitHub Pages for downloads?**
-
-> GitHub Pages is designed for static web content served via CDN. It has a
-> 1 GB soft limit per site, no large-file optimization, and attaching binaries
-> to a web branch mixes concerns. GitHub Releases has native support for binary
-> assets with content-addressed storage. Using the right tool for each job is
-> a design principle, not a workaround.
-
-**Q: What happens if GitHub goes down?**
-
-> The source code enables any user to rebuild the installer from scratch using
-> `scripts/windows/release.ps1`. The release is not a single point of failure
-> — it's a convenience layer over a fully open, reproducible build system.
+| Componente | Convención | Ejemplo |
+|------------|-----------|---------|
+| Tag Git | `v{semver}` | `v1.4.0` |
+| Nombre del instalador | `docker-labs-setup-{semver}.exe` | `docker-labs-setup-1.4.0.exe` |
+| Título del release | `Docker Labs v{semver}` | `Docker Labs v1.4.0` |
 
 ---
 
-## Related Documents
+## Cómo justificar esta estrategia en una entrevista
+
+**P: ¿Por qué no incluir el binario directamente en el repositorio?**
+
+> Los binarios en control de versiones son un anti-patrón: inflan el historial,
+> no se pueden comparar con diff y mezclan fuentes con artefactos. GitHub Releases
+> es la capa correcta para artefactos — se integra con CI, provee URLs versionadas,
+> soporta checksums y es gratuito. Esto refleja el modelo de distribución de proyectos
+> open-source profesionales como VS Code, Docker Desktop y Go.
+
+**P: ¿Por qué no usar GitHub Pages para las descargas?**
+
+> GitHub Pages está diseñado para contenido web estático servido via CDN. Tiene un
+> límite suave de 1 GB por sitio, sin optimización para archivos grandes, y adjuntar
+> binarios a una rama web mezcla responsabilidades. GitHub Releases tiene soporte nativo
+> para assets binarios con almacenamiento content-addressed. Usar la herramienta correcta
+> para cada trabajo es un principio de diseño, no un workaround.
+
+**P: ¿Qué pasa si GitHub tiene una caída?**
+
+> El código fuente permite a cualquier usuario reconstruir el instalador desde cero usando
+> `scripts/windows/release.ps1`. El release no es un único punto de falla — es una capa
+> de conveniencia sobre un sistema de build completamente abierto y reproducible.
+
+---
+
+## Documentos relacionados
 
 - [docs/windows-installer.md](windows-installer.md)
 - [RELEASE.md](../RELEASE.md)

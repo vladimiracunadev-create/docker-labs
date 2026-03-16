@@ -1,180 +1,184 @@
-# Windows Installer — Docker Labs
+# Instalador Windows — Docker Labs
 
-> **Version**: 1.0.0
-> **Audience**: developers, maintainers, end users, technical reviewers
-> **Distribution**: GitHub Releases (not committed to repository)
-
----
-
-## Overview
-
-Docker Labs ships a native Windows installer (`docker-labs-setup-{version}.exe`)
-for users who prefer a one-click setup experience over cloning the repository
-manually. The installer is built with Inno Setup, includes the Go-compiled
-launcher, and installs the workspace to `%LOCALAPPDATA%\DockerLabs`.
-
-The installer is a **release artifact** — it is never committed to the repository.
-It is published as an asset on GitHub Releases and downloaded from there.
+> **Version**: 1.4.0
+> **Audiencia**: desarrolladores, mantenedores, usuarios finales, revisores técnicos
+> **Distribución**: GitHub Releases (no se incluye en el repositorio)
 
 ---
 
-## Prerequisites (end user)
+## Descripción general
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Windows     | 10 or 11 (64-bit) | Required |
-| Docker Desktop | Latest stable | Required — not bundled in installer |
-| WSL 2 backend | (Docker Desktop default) | Strongly recommended |
+Docker Labs incluye un instalador nativo para Windows (`docker-labs-setup-{version}.exe`)
+para usuarios que prefieren una experiencia de instalación con un solo clic en lugar de
+clonar el repositorio manualmente. El instalador está construido con Inno Setup, incluye
+el launcher compilado con Go e instala el workspace en `%LOCALAPPDATA%\DockerLabs`.
 
-Docker Desktop is not packaged in the installer by design. The launcher validates
-its presence and guides the user if it is missing.
-
----
-
-## Installation
-
-1. Download `docker-labs-setup-{version}.exe` from [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases)
-2. Run the installer
-3. If Windows SmartScreen warns — see [Code Signing section](#why-code-signing-is-not-used-in-this-phase)
-4. Accept the installation directory (`%LOCALAPPDATA%\DockerLabs` by default)
-5. Optionally check "Create desktop shortcut"
-6. Click "Install" → "Launch Docker Labs"
+El instalador es un **artefacto de release** — nunca se incluye en el repositorio.
+Se publica como asset en GitHub Releases y se descarga desde allí.
 
 ---
 
-## What the Installer Does
+## Requisitos previos (usuario final)
 
-| Step | Action |
+| Requisito | Versión | Notas |
+|-----------|---------|-------|
+| Windows | 10 u 11 (64-bit) | Obligatorio |
+| Docker Desktop | Última estable | Obligatorio — no viene incluido en el instalador |
+| Backend WSL 2 | (por defecto en Docker Desktop) | Recomendado |
+
+Docker Desktop no se empaqueta en el instalador por diseño. El launcher valida su
+presencia y guía al usuario si no está instalado.
+
+---
+
+## Instalación
+
+1. Descarga `docker-labs-setup-{version}.exe` desde [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases)
+2. Ejecuta el instalador
+3. Si Windows SmartScreen muestra una advertencia — consulta la sección [¿Por qué no se usa firma digital?](#por-que-no-se-usa-firma-digital-en-esta-fase)
+4. Acepta el directorio de instalación (`%LOCALAPPDATA%\DockerLabs` por defecto)
+5. Opcionalmente marca "Crear acceso directo en el escritorio"
+6. Clic en "Instalar" → "Iniciar Docker Labs"
+
+---
+
+## Qué hace el instalador
+
+| Paso | Acción |
 |------|--------|
-| Shows unsigned binary notice | Transparent warning before proceeding |
-| Copies workspace source files | Labs 01–12, dashboard-control, docs |
-| Copies launcher executable | `docker-labs-launcher.exe` |
-| Creates Start Menu entry | "Docker Labs — Control Center" |
-| Creates optional desktop shortcut | Unchecked by default |
-| Registers uninstaller | Clean removal via Settings → Apps |
-| Offers to launch after install | Optional, via Run step |
+| Muestra aviso de binario sin firma | Advertencia transparente antes de continuar |
+| Copia los archivos fuente del workspace | Labs 01–12, dashboard-control, docs |
+| Copia el ejecutable del launcher | `docker-labs-launcher.exe` |
+| Crea entrada en el menú Inicio | "Docker Labs — Control Center" |
+| Crea acceso directo opcional en el escritorio | Desmarcado por defecto |
+| Registra el desinstalador | Eliminación limpia desde Configuración → Aplicaciones |
+| Ofrece iniciar al finalizar la instalación | Opcional, via paso Run |
 
 ---
 
-## What the Installer Does NOT Do
+## Qué NO hace el instalador
 
-- Does **not** install Docker Desktop
-- Does **not** pull Docker images (images are pulled at runtime by Docker)
-- Does **not** require administrator rights (installs to user space)
-- Does **not** modify system PATH or registry beyond standard Inno Setup entries
-- Does **not** contain a digital signature (see below)
+- **No** instala Docker Desktop
+- **No** descarga imágenes Docker (las imágenes se descargan en tiempo de ejecución por Docker)
+- **No** requiere permisos de administrador (instala en el espacio del usuario)
+- **No** modifica el PATH del sistema ni el registro más allá de las entradas estándar de Inno Setup
+- **No** contiene firma digital (ver más abajo)
 
 ---
 
-## The Launcher (`docker-labs-launcher.exe`)
+## El launcher (`docker-labs-launcher.exe`)
 
-The launcher is a compiled Go binary (`launcher/main.go`) that serves as the
-primary entry point for Windows users.
+El launcher es un binario Go compilado (`launcher/main.go`) que sirve como punto
+de entrada principal para usuarios de Windows.
 
-### What it does
+### Qué hace
 
-1. Prints a startup banner with the version and unsigned binary notice
-2. Locates the workspace root (relative to its own location)
-3. Checks Docker CLI availability (`docker --version`)
-4. Checks Docker daemon is running (`docker info`)
-5. Computes `DOCKER_REPO_ROOT` dynamically for the current machine
-6. Runs `docker compose -f dashboard-control\docker-compose.yml up -d --build`
-7. Polls `http://localhost:9090/api/overview` until ready (60s timeout)
-8. Opens `http://localhost:9090` in the default browser
-9. Displays the list of primary URLs
+1. Muestra el banner de inicio con la versión y aviso de binario sin firma
+2. Localiza la raíz del workspace (relativa a su propia ubicación)
+3. Verifica que Docker CLI esté disponible (`docker --version`)
+4. Verifica que el daemon de Docker esté corriendo (`docker info`)
+5. Calcula `DOCKER_REPO_ROOT` dinámicamente para la máquina actual
+6. Levanta los 4 servicios core en paralelo:
+   - `dashboard-control` (Control Center, puerto 9090)
+   - `05-postgres-api` (Inventory Core, puerto 8000)
+   - `09-multi-service-app` (Operations Portal, puerto 8083)
+   - `06-nginx-proxy` (Platform Gateway, puerto 8085)
+7. Consulta `http://localhost:9090/api/overview` hasta que responde (timeout 90 s)
+8. Abre `http://localhost:9090` en el browser por defecto
+9. Muestra la lista de URLs principales
 
-If any step fails, the launcher shows a clear error message with corrective
-instructions and keeps the console window open so the user can read the output.
+Si algún paso falla, el launcher muestra un mensaje de error claro con instrucciones
+para solucionarlo y mantiene la consola abierta para que el usuario pueda leer la salida.
 
-### Source code
+### Código fuente
 
 ```
 launcher/
-  main.go    # Go source — pure stdlib, no external dependencies
-  go.mod     # Go module definition
+  main.go    # Fuente Go — stdlib pura, sin dependencias externas
+  go.mod     # Definición del módulo Go
 ```
 
-### Build locally
+### Compilar localmente
 
 ```powershell
 cd launcher
 go build -o docker-labs-launcher.exe .
 ```
 
-Or via the convenience script:
+O usando el script de conveniencia:
 
 ```powershell
-.\scripts\windows\build-launcher.ps1 -Version 1.0.0
+.\scripts\windows\build-launcher.ps1 -Version 1.4.0
 ```
 
 ---
 
-## Building the Installer Locally
+## Compilar el instalador localmente
 
-### Requirements (build machine)
+### Requisitos (máquina de build)
 
-| Tool | Version | Download |
-|------|---------|----------|
+| Herramienta | Versión | Descarga |
+|-------------|---------|----------|
 | Go | 1.21+ | https://go.dev/dl/ |
 | Inno Setup | 6.x | https://jrsoftware.org/isinfo.php |
-| Git | any | For cloning |
+| Git | cualquiera | Para clonar el repositorio |
 
-### Steps
+### Pasos
 
 ```powershell
-# 1. Clone the repository
+# 1. Clonar el repositorio
 git clone https://github.com/vladimiracunadev-create/docker-labs.git
 cd docker-labs
 
-# 2. Build launcher
-.\scripts\windows\build-launcher.ps1 -Version 1.0.0
+# 2. Compilar el launcher
+.\scripts\windows\build-launcher.ps1 -Version 1.4.0
 
-# 3. Build installer
-.\scripts\windows\build-installer.ps1 -Version 1.0.0
+# 3. Compilar el instalador
+.\scripts\windows\build-installer.ps1 -Version 1.4.0
 
-# Output: dist\docker-labs-setup-1.0.0.exe
+# Resultado: dist\docker-labs-setup-1.4.0.exe
 ```
 
-Or run the full pipeline in one command:
+O ejecutar el pipeline completo en un solo comando:
 
 ```powershell
-.\scripts\windows\release.ps1 -Version 1.0.0
+.\scripts\windows\release.ps1 -Version 1.4.0
 ```
 
 ---
 
-## What Goes Into the Installer
+## Qué contiene el instalador
 
-The Inno Setup script (`installer/docker-labs.iss`) includes:
+El script de Inno Setup (`installer/docker-labs.iss`) incluye:
 
-| Item | Included | Notes |
-|------|----------|-------|
-| `docker-labs-launcher.exe` | Yes | Built from `launcher/main.go` |
-| Lab directories (01–12) | Yes | Source + Dockerfiles + compose files |
-| `dashboard-control/` | Yes | node_modules excluded |
-| Root HTML/CSS/JS assets | Yes | `index.html`, `dashboard.js`, etc. |
-| `docs/` | Yes | Full documentation |
-| `scripts/` | Partial | `start-control-center.cmd` only |
-| `.git/` | No | Not needed at runtime |
-| `node_modules/` | No | Pulled at Docker build time |
-| `dist/` | No | Build artifacts |
-| Installer scripts | No | `installer/`, `scripts/windows/` |
-| `.github/` | No | CI workflows not needed at runtime |
+| Elemento | Incluido | Notas |
+|----------|----------|-------|
+| `docker-labs-launcher.exe` | Sí | Compilado desde `launcher/main.go` |
+| Directorios de labs (01–12) | Sí | Fuentes + Dockerfiles + compose files |
+| `dashboard-control/` | Sí | node_modules excluido |
+| Assets HTML/CSS/JS raíz | Sí | `index.html`, `dashboard.js`, etc. |
+| `docs/` | Sí | Documentación completa |
+| `scripts/` | Parcial | Solo `start-control-center.cmd` |
+| `.git/` | No | No necesario en tiempo de ejecución |
+| `node_modules/` | No | Se descarga al hacer docker build |
+| `dist/` | No | Artefactos de build |
+| Scripts del instalador | No | `installer/`, `scripts/windows/` |
+| `.github/` | No | Los workflows de CI no son necesarios en ejecución |
 
 ---
 
-## Uninstallation
+## Desinstalación
 
-From Windows Settings → Apps → Docker Labs → Uninstall.
+Desde Configuración de Windows → Aplicaciones → Docker Labs → Desinstalar.
 
-The uninstaller:
-1. Stops the Control Center container (`docker compose down`)
-2. Removes all installed files
-3. Removes Start Menu and desktop shortcuts
-4. Removes the uninstall registry entry
+El desinstalador:
+1. Detiene el contenedor del Control Center (`docker compose down`)
+2. Elimina todos los archivos instalados
+3. Elimina los accesos directos del menú Inicio y el escritorio
+4. Elimina la entrada del registro del desinstalador
 
-Docker images and volumes created by Docker are **not** removed automatically.
-To clean those up, run from the workspace directory before uninstalling:
+Las imágenes Docker y volúmenes creados por Docker **no** se eliminan automáticamente.
+Para limpiarlos, ejecuta desde el directorio del workspace antes de desinstalar:
 
 ```cmd
 docker compose -f dashboard-control\docker-compose.yml down --volumes --remove-orphans
@@ -182,107 +186,106 @@ docker compose -f dashboard-control\docker-compose.yml down --volumes --remove-o
 
 ---
 
-## Why Code Signing Is Not Used in This Phase
+## Por qué no se usa firma digital en esta fase
 
-### The decision
+### La decisión
 
-Docker Labs v1.x does **not** use digital code signing for the installer or
-launcher binary. This is an **intentional, explicit product decision**, not an
-oversight.
+Docker Labs v1.x **no** usa firma digital de código para el instalador ni el launcher.
+Esta es una **decisión de producto intencional y explícita**, no un descuido.
 
-### Reasons
+### Razones
 
-| Reason | Detail |
-|--------|--------|
-| **Cost** | EV certificates (required for full SmartScreen reputation) cost $300–700/year. For an open-source portfolio project, this cost is not justified in the initial phase. |
-| **Validation phase** | The goal of v1.x is to validate the installation experience, launcher behavior, and distribution workflow. Signing adds complexity without adding functional value at this stage. |
-| **Maintenance overhead** | Code signing certificates require renewal, secure key storage, and CI pipeline configuration. This complexity is not warranted before the distribution model is validated. |
-| **Priority** | The technical value of the project lies in the Docker workspace, not the signing infrastructure. |
+| Razón | Detalle |
+|-------|---------|
+| **Costo** | Los certificados EV (necesarios para reputación completa en SmartScreen) cuestan $300–700/año. Para un proyecto de portfolio open-source, este costo no está justificado en la fase inicial. |
+| **Fase de validación** | El objetivo de v1.x es validar la experiencia de instalación, el comportamiento del launcher y el flujo de distribución. Firmar agrega complejidad sin aportar valor funcional en esta etapa. |
+| **Carga de mantenimiento** | Los certificados de firma de código requieren renovación, almacenamiento seguro de claves y configuración del pipeline de CI. Esta complejidad no está justificada antes de validar el modelo de distribución. |
+| **Prioridad** | El valor técnico del proyecto está en el workspace Docker, no en la infraestructura de firma. |
 
-### Impact for end users
+### Impacto para el usuario final
 
-When running the unsigned installer on Windows 10/11, Microsoft SmartScreen
-may display one of the following:
+Al ejecutar el instalador sin firma en Windows 10/11, Microsoft SmartScreen
+puede mostrar uno de los siguientes escenarios:
 
-| Scenario | Message | Action |
-|----------|---------|--------|
-| New/unknown publisher | "Windows protected your PC" | Click "More info" → "Run anyway" |
-| Low reputation score | Warning dialog | Same as above |
-| Antivirus scan | May flag as unknown | Add to exclusions if needed |
+| Escenario | Mensaje | Acción |
+|-----------|---------|--------|
+| Publicador nuevo/desconocido | "Windows protegió tu PC" | Clic en "Más información" → "Ejecutar de todas formas" |
+| Puntuación de reputación baja | Ventana de advertencia | Igual que el caso anterior |
+| Escaneo de antivirus | Puede marcarlo como desconocido | Agregar a exclusiones si es necesario |
 
-This behavior is normal for new or infrequently-downloaded software. It does
-**not** indicate that the software is malicious.
+Este comportamiento es normal para software nuevo o descargado con poca frecuencia.
+**No** indica que el software sea malicioso.
 
-### Why GitHub Releases mitigates this risk
+### Por qué GitHub Releases mitiga este riesgo
 
-The installer is distributed exclusively through GitHub Releases:
-- GitHub provides TLS-verified downloads
-- The release is tagged to a specific commit
-- The source code is publicly auditable
-- SHA-256 checksums are provided in the release notes
+El instalador se distribuye exclusivamente a través de GitHub Releases:
+- GitHub proporciona descargas verificadas con TLS
+- El release está etiquetado a un commit específico
+- El código fuente es públicamente auditable
+- Los checksums SHA-256 se incluyen en las notas del release
 
-Users can verify the installer matches the repository source by building it
-locally with `scripts/windows/release.ps1`.
+Los usuarios pueden verificar que el instalador coincide con el código fuente
+compilándolo localmente con `scripts/windows/release.ps1`.
 
-### Compensatory measures
+### Medidas compensatorias
 
-In the absence of code signing, the following measures are applied:
+En ausencia de firma de código, se aplican las siguientes medidas:
 
-1. **Source-only distribution via GitHub Releases** — no third-party mirrors
-2. **SHA-256 checksum** included in each release's description
-3. **Transparent unsigned binary notice** shown in the installer wizard and launcher banner
-4. **Reproducible build** — the installer can be rebuilt from source by anyone
+1. **Distribución exclusiva via GitHub Releases** — sin mirrors de terceros
+2. **Checksum SHA-256** incluido en la descripción de cada release
+3. **Aviso de binario sin firma** mostrado en el asistente del instalador y en el banner del launcher
+4. **Build reproducible** — el instalador puede ser reconstruido desde el código fuente por cualquier persona
 
-### Roadmap for code signing
+### Hoja de ruta para la firma de código
 
-Code signing will be considered when:
+La firma de código se considerará cuando:
 
-- The project reaches a broader user base (>1,000 downloads/month)
-- A Microsoft Azure Code Signing certificate becomes feasible ($99/year)
-- Or the project is adopted by an organization that can provide an EV cert
+- El proyecto alcance una base de usuarios más amplia (>1,000 descargas/mes)
+- Un certificado Azure Code Signing de Microsoft sea factible ($99/año)
+- O el proyecto sea adoptado por una organización que pueda proveer un certificado EV
 
-The Inno Setup script (`installer/docker-labs.iss`) already contains a
-commented-out `SignTool` directive ready to be activated:
+El script de Inno Setup (`installer/docker-labs.iss`) ya contiene una directiva
+`SignTool` comentada lista para activarse:
 
 ```iss
-; SignTool=...  (uncomment and configure when signing is available)
+; SignTool=...  (descomentar y configurar cuando la firma esté disponible)
 ```
 
 ---
 
-## Troubleshooting
+## Solución de problemas
 
-| Symptom | Cause | Solution |
-|---------|-------|----------|
-| SmartScreen warning | Unsigned binary | Click "More info" → "Run anyway" |
-| "Docker not found" | Docker Desktop not installed | Install from docker.com/desktop |
-| "Docker not running" | Docker Desktop not started | Start Docker Desktop, wait for tray icon |
-| Browser does not open | Port 9090 in use by another app | Check `netstat -ano \| findstr 9090` |
-| "dashboard-control not found" | Launcher outside install dir | Re-run installer or use install dir |
-| Control Center starts but labs don't | Wrong `DOCKER_REPO_ROOT` | The launcher computes this automatically; if using manually, see RUNBOOK.md |
-
----
-
-## Demo and Portfolio Presentation
-
-This Windows distribution layer demonstrates:
-
-- **Product thinking**: designing for end-user experience beyond the repository
-- **Go proficiency**: cross-platform binary with zero runtime dependencies
-- **Windows packaging**: Inno Setup for professional installation UX
-- **CI/CD**: automated build pipeline via GitHub Actions
-- **Distribution design**: GitHub Releases as the proper artifact channel
-- **Security awareness**: explicit unsigned binary policy with mitigations
-
-For a technical interview or demo, highlight:
-1. The launcher validates prerequisites before starting anything
-2. `DOCKER_REPO_ROOT` computation solves a real Docker-in-Docker path problem
-3. The installer is built reproducibly from source — no black boxes
-4. The decision NOT to sign in v1.x is intentional, documented, and defensible
+| Síntoma | Causa | Solución |
+|---------|-------|---------|
+| Advertencia de SmartScreen | Binario sin firma | Clic en "Más información" → "Ejecutar de todas formas" |
+| "Docker not found" | Docker Desktop no instalado | Instalar desde docker.com/desktop |
+| "Docker not running" | Docker Desktop no iniciado | Iniciar Docker Desktop, esperar el ícono en la bandeja del sistema |
+| El browser no abre | Puerto 9090 en uso por otra app | Verificar con `netstat -ano \| findstr 9090` |
+| "dashboard-control not found" | Launcher fuera del directorio de instalación | Re-ejecutar el instalador o usar el directorio de instalación |
+| El Control Center inicia pero los labs no | `DOCKER_REPO_ROOT` incorrecto | El launcher lo calcula automáticamente; si se usa manualmente, ver RUNBOOK.md |
 
 ---
 
-## Related Documents
+## Presentación en demos y portfolio
+
+Esta capa de distribución Windows demuestra:
+
+- **Pensamiento de producto**: diseñar para la experiencia del usuario final más allá del repositorio
+- **Dominio de Go**: binario multiplataforma sin dependencias en tiempo de ejecución
+- **Packaging Windows**: Inno Setup para una experiencia de instalación profesional
+- **CI/CD**: pipeline de build automatizado via GitHub Actions
+- **Diseño de distribución**: GitHub Releases como canal correcto para artefactos
+- **Conciencia de seguridad**: política explícita de binario sin firma con medidas compensatorias
+
+Para una entrevista técnica o demo, destacar:
+1. El launcher valida los prerequisitos antes de iniciar cualquier cosa
+2. El cálculo de `DOCKER_REPO_ROOT` resuelve un problema real de rutas Docker-in-Docker
+3. El instalador se construye de forma reproducible desde el código fuente — sin cajas negras
+4. La decisión de NO firmar en v1.x es intencional, documentada y justificable
+
+---
+
+## Documentos relacionados
 
 - [docs/github-releases-distribution.md](github-releases-distribution.md)
 - [docs/technical-audit.md](technical-audit.md)
