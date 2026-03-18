@@ -10,9 +10,9 @@ docker compose up -d --build
 
 ## Accesos
 
-- API: http://localhost:8000/docs
+- API: http://localhost:8001/docs
 - Elasticsearch: http://localhost:9200
 
 ## Nota importante
 
-Este lab usa `8000`, el mismo puerto del `05-postgres-api`. Usalo en modo caso a caso o cambia el puerto si necesitas correr ambos al mismo tiempo.
+Este lab usa `8001` para evitar conflicto con `05-postgres-api` en `8000`. Puedes levantar ambos entornos sin pisar el Inventory Core.

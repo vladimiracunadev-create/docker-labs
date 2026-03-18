@@ -47,6 +47,7 @@ class OrderItemCreate(BaseModel):
 
 class OrderCreate(BaseModel):
     customer_id: int
+    status: str = Field(default="confirmed", pattern="^(draft|confirmed)$")
     items: list[OrderItemCreate] = Field(min_length=1)
 
 
@@ -82,6 +83,60 @@ class InventorySummary(BaseModel):
     active_products: int
     low_stock_products: int
     revenue: Decimal
+
+
+class OrderStatusInsight(BaseModel):
+    status: str
+    orders: int
+    revenue: Decimal
+
+
+class TopProductInsight(BaseModel):
+    product_id: int
+    sku: str
+    name: str
+    units_sold: int
+    confirmed_revenue: Decimal
+
+
+class TopCustomerInsight(BaseModel):
+    customer_id: int
+    name: str
+    orders: int
+    confirmed_revenue: Decimal
+    last_order_at: datetime | None = None
+
+
+class RecentOrderInsight(BaseModel):
+    id: int
+    customer_id: int
+    customer_name: str
+    status: str
+    item_count: int
+    total_amount: Decimal
+    created_at: datetime
+
+
+class RestockRecommendation(BaseModel):
+    product_id: int
+    sku: str
+    name: str
+    stock: int
+    units_sold: int
+    recommended_restock_units: int
+    urgency: str
+
+
+class InventoryInsights(BaseModel):
+    generated_at: datetime
+    stock_value: Decimal
+    revenue_confirmed: Decimal
+    revenue_cancelled: Decimal
+    orders_by_status: list[OrderStatusInsight]
+    top_products: list[TopProductInsight]
+    top_customers: list[TopCustomerInsight]
+    recent_orders: list[RecentOrderInsight]
+    restock_recommendations: list[RestockRecommendation]
 
 
 class HealthResponse(BaseModel):

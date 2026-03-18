@@ -14,7 +14,14 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+def create_sqlalchemy_engine(database_url: str):
+    engine_kwargs = {"pool_pre_ping": not database_url.startswith("sqlite")}
+    if database_url.startswith("sqlite"):
+        engine_kwargs["connect_args"] = {"check_same_thread": False}
+    return create_engine(database_url, **engine_kwargs)
+
+
+engine = create_sqlalchemy_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

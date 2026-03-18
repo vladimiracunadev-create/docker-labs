@@ -42,6 +42,7 @@ La existencia de este laboratorio se justifica porque muestra un caso donde Dock
 | Base de datos | PostgreSQL 15 con volumen persistente |
 | Seed inicial | Clientes y productos precargados |
 | Salud | Endpoints `/health` y `/ready` |
+| Observabilidad | Endpoints `/summary`, `/insights` y `/metrics` |
 | Despliegue | Docker Compose local |
 | Infraestructura | Manifiestos base para Kubernetes |
 
@@ -88,6 +89,8 @@ DATABASE_URL=postgresql://postgres:postgres@postgres:5432/inventory
 | `GET` | `/health` | Liveness check |
 | `GET` | `/ready` | Readiness check |
 | `GET` | `/summary` | Resumen operativo |
+| `GET` | `/insights` | Analitica operativa, top clientes, top productos y reposicion sugerida |
+| `GET` | `/metrics` | Metricas Prometheus del core |
 
 ### Clientes
 
@@ -132,12 +135,15 @@ DATABASE_URL=postgresql://postgres:postgres@postgres:5432/inventory
 ```json
 {
   "customer_id": 1,
+  "status": "draft",
   "items": [
     { "product_id": 1, "quantity": 2 },
     { "product_id": 2, "quantity": 1 }
   ]
 }
 ```
+
+> `status` es opcional. Si no se envia, el pedido nace como `confirmed`. Tambien se puede crear como `draft` y confirmarlo despues con `PATCH`.
 
 ## ✅ Verificación
 
@@ -146,6 +152,8 @@ docker compose ps
 curl http://localhost:8000/health
 curl http://localhost:8000/ready
 curl http://localhost:8000/summary
+curl http://localhost:8000/insights
+curl http://localhost:8000/metrics
 ```
 
 Flujo mínimo:

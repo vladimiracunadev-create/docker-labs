@@ -5,6 +5,53 @@ on:
   pull_request:
 
 jobs:
+  quality-python:
+    name: Python quality (05-postgres-api)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python test dependencies
+        working-directory: 05-postgres-api
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run Inventory Core tests
+        working-directory: 05-postgres-api
+        run: |
+          pytest -q
+
+  quality-node:
+    name: Node quality (09-multi-service-app)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install backend dependencies
+        working-directory: 09-multi-service-app/backend
+        run: |
+          npm ci
+
+      - name: Run Operations Portal tests
+        working-directory: 09-multi-service-app/backend
+        run: |
+          npm test
+
   discover:
     name: Discover compose targets
     runs-on: ubuntu-latest
@@ -58,7 +105,10 @@ jobs:
 
   test:
     name: Compose test (${{ matrix.target.path }})
-    needs: discover
+    needs:
+      - discover
+      - quality-python
+      - quality-node
     runs-on: ubuntu-latest
 
     strategy:

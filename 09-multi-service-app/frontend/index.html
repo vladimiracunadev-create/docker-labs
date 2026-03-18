@@ -6,11 +6,16 @@
     <title>Operations Portal</title>
     <style>
         :root {
-            --card: rgba(255, 252, 246, 0.92);
+            --paper: rgba(255, 251, 244, 0.94);
             --text: #17212b;
             --muted: #5e6976;
             --accent: #c8632f;
+            --accent-soft: rgba(200, 99, 47, 0.12);
             --line: rgba(23, 33, 43, 0.12);
+            --shadow: 0 18px 38px rgba(40, 28, 15, 0.08);
+            --high: #8b2f2f;
+            --medium: #9a6815;
+            --low: #2f6f52;
         }
         * { box-sizing: border-box; }
         body {
@@ -19,63 +24,68 @@
             color: var(--text);
             background:
                 radial-gradient(circle at top left, rgba(200, 99, 47, 0.2), transparent 28%),
+                radial-gradient(circle at top right, rgba(47, 111, 82, 0.12), transparent 24%),
                 linear-gradient(180deg, #faf5ec 0%, #efe6d9 100%);
         }
         main {
-            max-width: 1280px;
+            max-width: 1360px;
             margin: 0 auto;
             padding: 28px 18px 36px;
         }
         .hero, .card {
-            background: var(--card);
+            background: var(--paper);
             border: 1px solid var(--line);
             border-radius: 24px;
-            box-shadow: 0 14px 32px rgba(40, 28, 15, 0.08);
+            box-shadow: var(--shadow);
         }
         .hero { padding: 28px; margin-bottom: 20px; }
-        .hero h1 { margin: 0 0 10px; font-size: clamp(2rem, 5vw, 3.6rem); line-height: .94; }
+        .hero h1 { margin: 10px 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 0.94; }
         .hero p, .muted { color: var(--muted); }
-        .metrics, .layout { display: grid; gap: 16px; }
-        .metrics { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-top: 20px; }
+        .metrics, .layout, .stack, .list {
+            display: grid;
+            gap: 16px;
+        }
+        .metrics {
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            margin-top: 20px;
+        }
+        .layout {
+            grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.85fr);
+        }
         .metric, .card { padding: 18px; }
         .metric-value { font-size: 1.8rem; font-weight: 700; margin-top: 8px; }
-        .layout { grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.8fr); }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
         .actions {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 18px;
         }
-        .stack, .list { display: grid; gap: 16px; }
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,.82);
+            font-size: 0.85rem;
+        }
+        .tag.high { color: var(--high); border-color: rgba(139, 47, 47, 0.22); }
+        .tag.medium { color: var(--medium); border-color: rgba(154, 104, 21, 0.22); }
+        .tag.low { color: var(--low); border-color: rgba(47, 111, 82, 0.22); }
         .item {
             padding: 14px;
             border-radius: 18px;
             border: 1px solid var(--line);
-            background: rgba(255,255,255,.72);
+            background: rgba(255,255,255,.78);
         }
-        .row {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.8);
-            border: 1px solid var(--line);
-            font-size: .85rem;
-            margin-right: 8px;
-        }
-        button, select, textarea {
-            width: 100%;
-            border-radius: 14px;
-            border: 1px solid var(--line);
-            padding: 12px 14px;
-            font: inherit;
-        }
-        button { background: var(--accent); color: white; cursor: pointer; }
         .link-button {
             display: inline-flex;
             align-items: center;
@@ -93,19 +103,59 @@
             color: var(--text);
             border-color: var(--line);
         }
-        button.secondary { background: transparent; color: var(--text); }
-        textarea { min-height: 100px; resize: vertical; }
-        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+        button, select, textarea {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            padding: 12px 14px;
+            font: inherit;
+            background: white;
+        }
+        button {
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+        }
+        button.secondary {
+            width: auto;
+            background: transparent;
+            color: var(--text);
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .summary-grid .item { padding: 12px; }
+        .eyebrow {
+            display: inline-flex;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <main>
         <section class="hero">
-            <span class="tag">Operations Portal</span>
-            <h1>Inventory Core visibility for operators.</h1>
+            <span class="eyebrow">Operations Portal</span>
+            <h1>Visibilidad operativa con contexto de negocio.</h1>
             <p>
-                Este portal toma a `05-postgres-api` como sistema transaccional y agrega una capa operacional:
-                resumen comercial, alertas de stock, pedidos recientes y watchlist persistida en MongoDB.
+                Este portal toma al Inventory Core como sistema transaccional y le suma una lectura operativa:
+                riesgos de stock, pedidos en seguimiento, clientes con traccion y una watchlist persistida para coordinar al equipo.
             </p>
             <div class="actions">
                 <a class="link-button" href="http://localhost:9090">Volver al menu principal</a>
@@ -113,10 +163,14 @@
                 <a class="link-button secondary" href="http://localhost:8000/docs">Abrir Swagger del core</a>
             </div>
             <div class="metrics">
-                <div class="card"><div class="muted">Clientes</div><div id="customers" class="metric-value">-</div></div>
-                <div class="card"><div class="muted">Productos</div><div id="products" class="metric-value">-</div></div>
-                <div class="card"><div class="muted">Pedidos</div><div id="orders" class="metric-value">-</div></div>
-                <div class="card"><div class="muted">Revenue confirmado</div><div id="revenue" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Clientes</div><div id="customers" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Productos</div><div id="products" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Pedidos</div><div id="orders" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Revenue confirmado</div><div id="revenue" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Stock bajo</div><div id="low-stock-count" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Pedidos draft</div><div id="draft-orders" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Pedidos cancelados</div><div id="cancelled-orders" class="metric-value">-</div></div>
+                <div class="card metric"><div class="muted">Valor del stock</div><div id="stock-value" class="metric-value">-</div></div>
             </div>
         </section>
 
@@ -124,10 +178,18 @@
             <div class="stack">
                 <section class="card">
                     <div class="row">
-                        <h2>Low stock</h2>
+                        <div>
+                            <h2>Attention board</h2>
+                            <div class="muted">Lo que hoy merece seguimiento operativo inmediato.</div>
+                        </div>
                         <button class="secondary" onclick="loadPortal()">Actualizar</button>
                     </div>
-                    <div id="low-stock" class="list"></div>
+                    <div id="attention-board" class="list" style="margin-top: 14px;"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Plan de reposicion</h2>
+                    <div id="restock-plan" class="list"></div>
                 </section>
 
                 <section class="card">
@@ -136,18 +198,25 @@
                 </section>
 
                 <section class="card">
-                    <h2>Catalogo visible</h2>
-                    <div id="products-list" class="list"></div>
+                    <h2>Stock bajo</h2>
+                    <div id="low-stock" class="list"></div>
                 </section>
             </div>
 
             <div class="stack">
                 <section class="card">
-                    <h2>Objetivo del entorno</h2>
-                    <div class="item">
-                        <strong>Para que existe este portal</strong>
-                        <div class="muted">Convierte el backend transaccional del laboratorio 05 en una experiencia operativa mas entendible para equipos comerciales y de operaciones.</div>
-                    </div>
+                    <h2>Resumen operativo</h2>
+                    <div id="watchlist-summary" class="summary-grid"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Clientes con mayor traccion</h2>
+                    <div id="top-customers" class="list"></div>
+                </section>
+
+                <section class="card">
+                    <h2>Productos con mejor salida</h2>
+                    <div id="top-products" class="list"></div>
                 </section>
 
                 <section class="card">
@@ -191,11 +260,51 @@
             target.innerHTML = items.map(renderItem).join("");
         }
 
+        function getStatusCount(ordersByStatus, status) {
+            const match = (ordersByStatus || []).find((item) => item.status === status);
+            return match ? match.orders : 0;
+        }
+
+        function severityClass(severity) {
+            if (severity === "high") return "high";
+            if (severity === "low") return "low";
+            return "medium";
+        }
+
         function populateProductOptions(products) {
             currentProducts = products;
             document.getElementById("product-select").innerHTML = products
-                .map((product) => `<option value="${product.id}">${product.sku} · ${product.name}</option>`)
+                .map((product) => `<option value="${product.id}">${product.sku} - ${product.name}</option>`)
                 .join("");
+        }
+
+        function renderWatchlist(items) {
+            renderList(
+                "watchlist",
+                items,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.sku}</strong>
+                            <span class="tag ${severityClass(item.priority)}">${item.priority}</span>
+                        </div>
+                        <div>${item.productName}</div>
+                        <div class="muted">${item.note}</div>
+                        <button class="secondary" onclick="deleteWatchlistItem('${item._id}')">Eliminar</button>
+                    </div>
+                `,
+                "Todavia no hay notas operativas."
+            );
+        }
+
+        function renderWatchlistSummary(data) {
+            const target = document.getElementById("watchlist-summary");
+            target.innerHTML = `
+                <div class="item"><strong>Notas activas</strong><div class="muted">${data.watchlistSummary.total}</div></div>
+                <div class="item"><strong>Alta prioridad</strong><div class="muted">${data.watchlistSummary.highPriority}</div></div>
+                <div class="item"><strong>Revenue cancelado</strong><div class="muted">${money(data.insights.revenue_cancelled)}</div></div>
+                <div class="item"><strong>Reponer ahora</strong><div class="muted">${data.insights.restock_recommendations.length}</div></div>
+            `;
         }
 
         async function loadPortal() {
@@ -206,40 +315,109 @@
             document.getElementById("products").textContent = data.summary.products;
             document.getElementById("orders").textContent = data.summary.orders;
             document.getElementById("revenue").textContent = money(data.summary.revenue);
+            document.getElementById("low-stock-count").textContent = data.summary.low_stock_products;
+            document.getElementById("draft-orders").textContent = getStatusCount(data.insights.orders_by_status, "draft");
+            document.getElementById("cancelled-orders").textContent = getStatusCount(data.insights.orders_by_status, "cancelled");
+            document.getElementById("stock-value").textContent = money(data.insights.stock_value);
 
             populateProductOptions(data.products);
+            renderWatchlistSummary(data);
 
             renderList(
-                "low-stock",
-                data.lowStockProducts,
-                (item) => `<div class="item"><strong>${item.sku}</strong><div>${item.name}</div><div class="muted">Stock actual: ${item.stock}</div></div>`,
-                "No hay productos con stock bajo."
+                "attention-board",
+                data.attentionBoard,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.title}</strong>
+                            <span class="tag ${severityClass(item.severity)}">${item.severity}</span>
+                        </div>
+                        <div class="muted">${item.detail}</div>
+                    </div>
+                `,
+                "No hay alertas inmediatas."
+            );
+
+            renderList(
+                "restock-plan",
+                data.insights.restock_recommendations,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.sku}</strong>
+                            <span class="tag ${severityClass(item.urgency)}">${item.urgency}</span>
+                        </div>
+                        <div>${item.name}</div>
+                        <div class="muted">Stock ${item.stock} - venta confirmada ${item.units_sold} - sugerido ${item.recommended_restock_units}</div>
+                    </div>
+                `,
+                "No hay productos con reposicion sugerida."
             );
 
             renderList(
                 "recent-orders",
-                data.orders,
-                (item) => `<div class="item"><div class="row"><strong>Pedido #${item.id}</strong><span class="tag">${item.status}</span></div><div class="muted">Cliente ${item.customer_id} · ${money(item.total_amount)}</div></div>`,
+                data.insights.recent_orders,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>Pedido #${item.id}</strong>
+                            <span class="tag ${severityClass(item.status === "cancelled" ? "high" : item.status === "draft" ? "medium" : "low")}">${item.status}</span>
+                        </div>
+                        <div>${item.customer_name}</div>
+                        <div class="muted">${item.item_count} items - ${money(item.total_amount)}</div>
+                    </div>
+                `,
                 "No hay pedidos recientes."
             );
 
             renderList(
-                "products-list",
-                data.products,
-                (item) => `<div class="item"><div class="row"><strong>${item.sku}</strong><span class="tag">Stock ${item.stock}</span></div><div>${item.name}</div><div class="muted">${money(item.price)}</div></div>`,
-                "No hay productos visibles."
+                "low-stock",
+                data.lowStockProducts,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.sku}</strong>
+                            <span class="tag medium">Stock ${item.stock}</span>
+                        </div>
+                        <div>${item.name}</div>
+                        <div class="muted">${money(item.price)}</div>
+                    </div>
+                `,
+                "No hay productos con stock bajo."
+            );
+
+            renderList(
+                "top-customers",
+                data.insights.top_customers,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.name}</strong>
+                            <span class="tag low">${item.orders} pedidos</span>
+                        </div>
+                        <div class="muted">Revenue confirmado ${money(item.confirmed_revenue)}</div>
+                    </div>
+                `,
+                "Todavia no hay clientes con traccion visible."
+            );
+
+            renderList(
+                "top-products",
+                data.insights.top_products,
+                (item) => `
+                    <div class="item">
+                        <div class="row">
+                            <strong>${item.sku}</strong>
+                            <span class="tag low">${item.units_sold} uds</span>
+                        </div>
+                        <div>${item.name}</div>
+                        <div class="muted">Revenue confirmado ${money(item.confirmed_revenue)}</div>
+                    </div>
+                `,
+                "Todavia no hay productos con ventas confirmadas."
             );
 
             renderWatchlist(data.watchlist);
-        }
-
-        function renderWatchlist(items) {
-            renderList(
-                "watchlist",
-                items,
-                (item) => `<div class="item"><div class="row"><strong>${item.sku}</strong><span class="tag">${item.priority}</span></div><div>${item.productName}</div><div class="muted">${item.note}</div><button class="secondary" onclick="deleteWatchlistItem('${item._id}')">Eliminar</button></div>`,
-                "Todavia no hay notas operativas."
-            );
         }
 
         async function createWatchlistItem() {
@@ -275,7 +453,10 @@
         }
 
         loadPortal().catch(() => {
-            document.body.insertAdjacentHTML("beforeend", "<div style='padding:18px;color:#8b2f2f;'>No fue posible cargar el portal. Verifica que 05-postgres-api y el backend de 09 esten arriba.</div>");
+            document.body.insertAdjacentHTML(
+                "beforeend",
+                "<div style='padding:18px;color:#8b2f2f;'>No fue posible cargar el portal. Verifica que 05-postgres-api y el backend de 09 esten arriba.</div>"
+            );
         });
     </script>
 </body>

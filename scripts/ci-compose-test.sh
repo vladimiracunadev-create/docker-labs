@@ -45,6 +45,76 @@ compose() {
   docker compose -p "${PROJECT}" --project-directory "${DIR}" -f "${COMPOSE_PATH}" "$@"
 }
 
+http_checks_for_compose() {
+  case "${COMPOSE_PATH}" in
+    "01-node-api/docker-compose.yml")
+      echo "http://localhost:3000/health"
+      ;;
+    "02-php-lamp/docker-compose.yml")
+      echo "http://localhost:8081"
+      ;;
+    "03-python-api/docker-compose.yml")
+      echo "http://localhost:5000/health"
+      ;;
+    "04-redis-cache/docker-compose.yml")
+      echo "http://localhost:3001/health"
+      ;;
+    "05-postgres-api/docker-compose.yml")
+      echo "http://localhost:8000/health http://localhost:8000/ready http://localhost:8000/summary http://localhost:8000/insights http://localhost:8000/metrics"
+      ;;
+    "06-nginx-proxy/docker-compose.yml")
+      echo "http://localhost:8085/gateway-health"
+      ;;
+    "07-rabbitmq-messaging/docker-compose.yml")
+      echo "http://localhost:15672"
+      ;;
+    "08-prometheus-grafana/docker-compose.yml")
+      echo "http://localhost:9091/-/ready"
+      ;;
+    "09-multi-service-app/docker-compose.yml")
+      echo "http://localhost:8083 http://localhost:3003/api/health"
+      ;;
+    "10-go-api/docker-compose.yml")
+      echo "http://localhost:8084/health"
+      ;;
+    "11-elasticsearch-search/docker-compose.yml")
+      echo "http://localhost:8001/health"
+      ;;
+    "dashboard-control/docker-compose.yml")
+      echo "http://localhost:9090/api/overview http://localhost:9090/api/diagnostics"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+run_http_checks() {
+  local urls="$1"
+  [[ -z "${urls}" ]] && return 0
+
+  echo "::group::HTTP checks ${COMPOSE_PATH}"
+  for url in ${urls}; do
+    local ok=0
+    for attempt in $(seq 1 20); do
+      if curl --fail --silent --show-error --max-time 5 "${url}" >/dev/null; then
+        echo "OK ${url}"
+        ok=1
+        break
+      fi
+      echo "Esperando ${url} (intento ${attempt}/20)..."
+      sleep 3
+    done
+
+    if [[ "${ok}" -ne 1 ]]; then
+      echo "Fallo check HTTP para ${url}"
+      echo "::endgroup::"
+      return 1
+    fi
+  done
+  echo "::endgroup::"
+}
+
 cleanup() {
   echo "::group::Cleanup ${PROJECT}"
   compose down -v --remove-orphans || true
@@ -134,3 +204,6 @@ while true; do
 
   sleep 5
 done
+
+HTTP_CHECKS="$(http_checks_for_compose)"
+run_http_checks "${HTTP_CHECKS}"

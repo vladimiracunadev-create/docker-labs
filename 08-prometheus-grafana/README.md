@@ -10,9 +10,9 @@ docker compose up -d
 
 ## Accesos
 
-- Prometheus: http://localhost:9090
+- Prometheus: http://localhost:9091
 - Grafana: http://localhost:3002
 
 ## Nota importante
 
-Este lab usa `9090`, el mismo puerto del `dashboard-control`. Usalo en modo caso a caso o cambia el puerto si necesitas correr ambos al mismo tiempo.
+Este lab usa `9091` para evitar conflicto con `dashboard-control` en `9090`. Puedes correr ambos al mismo tiempo sin pisar el Control Center.

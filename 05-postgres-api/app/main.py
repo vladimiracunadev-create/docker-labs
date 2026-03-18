@@ -1,18 +1,25 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+import time
 
-from fastapi import Depends, FastAPI, HTTPException, Query, status
-from fastapi.responses import HTMLResponse
-from sqlalchemy import func, text
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
+from fastapi.responses import HTMLResponse, PlainTextResponse
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
+from app.analytics import (
+    build_inventory_insights,
+    build_inventory_summary,
+    render_prometheus_metrics,
+)
 from app.database import Base, engine, get_db
 from app.models import Customer, Order, OrderLine, Product
 from app.schemas import (
     CustomerCreate,
     CustomerRead,
     HealthResponse,
+    InventoryInsights,
     InventorySummary,
     OrderCreate,
     OrderRead,
@@ -36,6 +43,14 @@ app = FastAPI(
         "como pieza central de un sistema comercial modular."
     ),
 )
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    started_at = time.perf_counter()
+    response = await call_next(request)
+    response.headers["X-Process-Time-Ms"] = f"{(time.perf_counter() - started_at) * 1000:.2f}"
+    return response
 
 
 @app.on_event("startup")
@@ -258,6 +273,31 @@ def root() -> HTMLResponse:
     return HTMLResponse(content=html)
 
 
+def reserve_stock_for_order(order: Order, db: Session) -> None:
+    product_ids = [line.product_id for line in order.lines]
+    products = (
+        db.query(Product)
+        .filter(Product.id.in_(product_ids))
+        .with_for_update()
+        .all()
+    )
+    products_by_id = {product.id: product for product in products}
+
+    for line in order.lines:
+        product = products_by_id.get(line.product_id)
+        if product is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Product {line.product_id} not found.",
+            )
+        if product.stock < line.quantity:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Insufficient stock for product {product.sku}.",
+            )
+        product.stock -= line.quantity
+
+
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
     return HealthResponse(
@@ -279,19 +319,19 @@ def readiness(db: Session = Depends(get_db)) -> ReadinessResponse:
 
 @app.get("/summary", response_model=InventorySummary, tags=["dashboard"])
 def summary(db: Session = Depends(get_db)) -> InventorySummary:
-    revenue = (
-        db.query(func.coalesce(func.sum(Order.total_amount), 0))
-        .filter(Order.status == "confirmed")
-        .scalar()
-    )
-    return InventorySummary(
-        customers=db.query(Customer).count(),
-        products=db.query(Product).count(),
-        orders=db.query(Order).count(),
-        active_products=db.query(Product).filter(Product.status == "active").count(),
-        low_stock_products=db.query(Product).filter(Product.stock <= 5).count(),
-        revenue=Decimal(str(revenue)),
-    )
+    return InventorySummary(**build_inventory_summary(db))
+
+
+@app.get("/insights", response_model=InventoryInsights, tags=["dashboard"])
+def insights(db: Session = Depends(get_db)) -> InventoryInsights:
+    return InventoryInsights(**build_inventory_insights(db))
+
+
+@app.get("/metrics", response_class=PlainTextResponse, tags=["observability"])
+def metrics(db: Session = Depends(get_db)) -> PlainTextResponse:
+    summary_snapshot = build_inventory_summary(db)
+    insights_snapshot = build_inventory_insights(db)
+    return PlainTextResponse(render_prometheus_metrics(summary_snapshot, insights_snapshot))
 
 
 @app.post("/customers", response_model=CustomerRead, status_code=status.HTTP_201_CREATED, tags=["customers"])
@@ -311,8 +351,15 @@ def create_customer(payload: CustomerCreate, db: Session = Depends(get_db)) -> C
 
 
 @app.get("/customers", response_model=list[CustomerRead], tags=["customers"])
-def list_customers(db: Session = Depends(get_db)) -> list[Customer]:
-    return db.query(Customer).order_by(Customer.created_at.desc()).all()
+def list_customers(
+    status_filter: str | None = Query(default=None, alias="status"),
+    limit: int = Query(default=100, ge=1, le=200),
+    db: Session = Depends(get_db),
+) -> list[Customer]:
+    query = db.query(Customer).order_by(Customer.created_at.desc())
+    if status_filter:
+        query = query.filter(Customer.status == status_filter)
+    return query.limit(limit).all()
 
 
 @app.post("/products", response_model=ProductRead, status_code=status.HTTP_201_CREATED, tags=["products"])
@@ -340,12 +387,16 @@ def create_product(payload: ProductCreate, db: Session = Depends(get_db)) -> Pro
 @app.get("/products", response_model=list[ProductRead], tags=["products"])
 def list_products(
     low_stock_only: bool = Query(default=False),
+    status_filter: str | None = Query(default=None, alias="status"),
+    limit: int = Query(default=100, ge=1, le=200),
     db: Session = Depends(get_db),
 ) -> list[Product]:
     query = db.query(Product).order_by(Product.created_at.desc())
     if low_stock_only:
         query = query.filter(Product.stock <= 5)
-    return query.all()
+    if status_filter:
+        query = query.filter(Product.status == status_filter)
+    return query.limit(limit).all()
 
 
 @app.post("/orders", response_model=OrderRead, status_code=status.HTTP_201_CREATED, tags=["orders"])
@@ -354,17 +405,12 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> Order:
     if customer is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found.")
 
-    order = Order(customer_id=payload.customer_id, status="confirmed", total_amount=0)
+    order = Order(customer_id=payload.customer_id, status=payload.status, total_amount=0)
     db.add(order)
 
     total_amount = Decimal("0")
     product_ids = [item.product_id for item in payload.items]
-    products = (
-        db.query(Product)
-        .filter(Product.id.in_(product_ids))
-        .with_for_update()
-        .all()
-    )
+    products = db.query(Product).filter(Product.id.in_(product_ids)).all()
     products_by_id = {product.id: product for product in products}
 
     try:
@@ -375,13 +421,6 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> Order:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Product {item.product_id} not found.",
                 )
-            if product.stock < item.quantity:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail=f"Insufficient stock for product {product.sku}.",
-                )
-
-            product.stock -= item.quantity
             line_total = Decimal(str(product.price)) * item.quantity
             total_amount += line_total
             db.add(
@@ -395,6 +434,15 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> Order:
             )
 
         order.total_amount = total_amount
+        db.flush()
+        if order.status == "confirmed":
+            order = (
+                db.query(Order)
+                .options(joinedload(Order.lines))
+                .filter(Order.id == order.id)
+                .one()
+            )
+            reserve_stock_for_order(order, db)
         db.commit()
         db.refresh(order)
     except HTTPException:
@@ -409,13 +457,19 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> Order:
 
 
 @app.get("/orders", response_model=list[OrderRead], tags=["orders"])
-def list_orders(db: Session = Depends(get_db)) -> list[Order]:
-    return (
+def list_orders(
+    status_filter: str | None = Query(default=None, alias="status"),
+    limit: int = Query(default=100, ge=1, le=200),
+    db: Session = Depends(get_db),
+) -> list[Order]:
+    query = (
         db.query(Order)
         .options(joinedload(Order.lines))
         .order_by(Order.created_at.desc())
-        .all()
     )
+    if status_filter:
+        query = query.filter(Order.status == status_filter)
+    return query.limit(limit).all()
 
 
 @app.patch("/orders/{order_id}", response_model=OrderRead, tags=["orders"])
@@ -432,6 +486,24 @@ def update_order_status(
     )
     if order is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found.")
+
+    if order.status == payload.status:
+        return order
+
+    if order.status == "cancelled":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cancelled orders cannot transition to another status.",
+        )
+
+    if order.status == "confirmed" and payload.status == "draft":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Confirmed orders cannot move back to draft.",
+        )
+
+    if order.status == "draft" and payload.status == "confirmed":
+        reserve_stock_for_order(order, db)
 
     if order.status != "cancelled" and payload.status == "cancelled":
         for line in order.lines:

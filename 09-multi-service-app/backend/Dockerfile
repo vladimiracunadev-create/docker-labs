@@ -1,8 +1,8 @@
 FROM node:20-alpine
 
 WORKDIR /app
-COPY package.json ./
-RUN npm install --omit=dev
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 COPY . .
 EXPOSE 3000
 HEALTHCHECK --interval=15s --timeout=3s --retries=10 \
