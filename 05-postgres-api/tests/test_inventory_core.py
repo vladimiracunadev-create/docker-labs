@@ -1,18 +1,18 @@
-import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 
-TEST_DB_PATH = Path("test_inventory_core.sqlite")
 APP_ROOT = Path(__file__).resolve().parents[1]
 if str(APP_ROOT) not in sys.path:
     sys.path.insert(0, str(APP_ROOT))
 
-os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DB_PATH.as_posix()}"
+import os
+
+os.environ["DATABASE_URL"] = "sqlite+pysqlite:///:memory:"
 
 from app.database import Base, engine  # noqa: E402
 from app.main import app  # noqa: E402
@@ -27,8 +27,6 @@ def reset_database():
         seed_initial_data(db)
     yield
     Base.metadata.drop_all(bind=engine)
-    if TEST_DB_PATH.exists():
-        TEST_DB_PATH.unlink()
 
 
 @pytest.fixture
