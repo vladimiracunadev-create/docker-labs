@@ -6,7 +6,7 @@ if (process.platform === "win32") {
   args.push("--test-isolation=none");
 }
 
-args.push("./test/**/*.test.js");
+args.push("./test/app.test.js");
 
 const result = spawnSync(process.execPath, args, {
   stdio: "inherit",
