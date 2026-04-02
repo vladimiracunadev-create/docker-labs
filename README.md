@@ -112,6 +112,30 @@ Entradas principales:
 | **Skills Claude Code** | 🟢 Activos | `docker-labs-release` y `docker-labs-status` — automatizan el flujo de release y el diagnostico del sistema |
 | Estándar editorial en los 12 labs | 🟡 En evolución | La columna vertebral ya está elevada; aún faltan mejoras en algunos labs secundarios |
 
+## 🗺️ Referencia rápida — los 12 labs
+
+Estado y puertos de cada lab. Todos tienen health check definido.
+
+| Lab | Descripcion | Puerto(s) host | Estado |
+|---|---|---|---|
+| `dashboard-control` | Control Center del workspace | `9090` | 🟢 Plataforma |
+| `05-postgres-api` | Core transaccional — FastAPI + PostgreSQL | `8000`, `5432` | 🟢 Plataforma |
+| `09-multi-service-app` | Portal operativo — Node.js + MongoDB | `8083` (UI), `3003` (API), `27017` | 🟢 Plataforma |
+| `06-nginx-proxy` | Gateway unificado — Nginx | `8085` | 🟢 Plataforma |
+| `04-redis-cache` | Cache y performance — Node.js + Redis | `3001` (API), `6379` | 🟡 Complementario |
+| `07-rabbitmq-messaging` | Mensajeria asincrona — RabbitMQ | `5672` (AMQP), `15672` (UI) | 🟡 Complementario |
+| `08-prometheus-grafana` | Observabilidad — Prometheus + Grafana | `9091`, `3002` | 🟡 Complementario |
+| `11-elasticsearch-search` | Busqueda — Python + Elasticsearch | `8001` (API), `9200` | 🟡 Complementario |
+| `12-jenkins-ci` | CI/CD — Jenkins LTS | `8080` (UI), `50000` | 🟡 Complementario |
+| `01-node-api` | Starter — API REST Node.js | `3000` | 🔵 Starter |
+| `02-php-lamp` | Starter — PHP + Apache + MariaDB | `8081` (web), `8082` (phpMyAdmin), `3306` | 🔵 Starter |
+| `03-python-api` | Starter — API REST Python Flask | `5000` | 🔵 Starter |
+| `10-go-api` | Starter — API REST Go | `8084` | 🔵 Starter |
+
+> **Conflictos resueltos**: `08` usa `9091` (no `9090`) y `11` usa `8001` (no `8000`) para evitar colision con la plataforma principal.
+
+---
+
 ## 🧭 Ruta recomendada por perfil
 
 | Perfil | Documento o entrada | Objetivo |
