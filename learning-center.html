@@ -92,21 +92,22 @@
               <th>Version en repo</th>
               <th>Tamano ref.</th>
               <th>RAM min.</th>
+              <th>Health check</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>01</td><td>API inicial</td><td>node</td><td>node:20-alpine</td><td>~46 MB</td><td>1.5 GB</td></tr>
-            <tr><td>02</td><td>LAMP clasico</td><td>php + mariadb + phpmyadmin</td><td>8.3 / 10.6 / latest</td><td>~800 MB stack</td><td>3 GB</td></tr>
-            <tr><td>03</td><td>API Python</td><td>python</td><td>python:3.12-slim</td><td>~41 MB</td><td>1.5 GB</td></tr>
-            <tr><td>04</td><td>Cache</td><td>node + redis</td><td>20-alpine / 7-alpine</td><td>~96 MB base</td><td>2 GB</td></tr>
-            <tr><td>05</td><td>Core transaccional</td><td>python + postgres</td><td>3.12-slim / 15</td><td>~674 MB</td><td>3 GB</td></tr>
-            <tr><td>06</td><td>Gateway</td><td>nginx</td><td>nginx:alpine</td><td>~34.5 MB</td><td>1 GB</td></tr>
-            <tr><td>07</td><td>Mensajeria</td><td>rabbitmq + node</td><td>3-management / 20-alpine</td><td>~158 MB</td><td>2.5 GB</td></tr>
-            <tr><td>08</td><td>Observabilidad</td><td>prometheus + grafana</td><td>latest / latest</td><td>~346 MB</td><td>4 GB</td></tr>
-            <tr><td>09</td><td>Portal operativo</td><td>nginx + mongo + node</td><td>alpine / 7 / 20-alpine</td><td>~1.26 GB</td><td>4 GB</td></tr>
-            <tr><td>10</td><td>Servicio rapido</td><td>golang + alpine</td><td>1.21-alpine / latest</td><td>runtime ~3.7 MB</td><td>1 GB</td></tr>
-            <tr><td>11</td><td>Busqueda</td><td>python + elasticsearch</td><td>3.12-slim / 8.11.0</td><td>~782 MB</td><td>6 GB</td></tr>
-            <tr><td>12</td><td>CI</td><td>jenkins/jenkins</td><td>lts</td><td>~278 MB + volumen</td><td>4 GB</td></tr>
+            <tr><td>01</td><td>API inicial</td><td>node</td><td>node:20-alpine</td><td>~46 MB</td><td>1.5 GB</td><td>wget /health</td></tr>
+            <tr><td>02</td><td>LAMP clasico</td><td>php + mariadb + phpmyadmin</td><td>8.3 / 10.6 / latest</td><td>~800 MB stack</td><td>3 GB</td><td>mysqladmin ping + curl</td></tr>
+            <tr><td>03</td><td>API Python</td><td>python</td><td>python:3.12-slim</td><td>~41 MB</td><td>1.5 GB</td><td>curl /health</td></tr>
+            <tr><td>04</td><td>Cache</td><td>node + redis</td><td>20-alpine / 7-alpine</td><td>~96 MB base</td><td>2 GB</td><td>redis-cli ping + wget</td></tr>
+            <tr><td>05</td><td>Core transaccional</td><td>python + postgres</td><td>3.12-slim / 15</td><td>~674 MB</td><td>3 GB</td><td>pg_isready + curl</td></tr>
+            <tr><td>06</td><td>Gateway</td><td>nginx</td><td>nginx:alpine</td><td>~34.5 MB</td><td>1 GB</td><td>curl /gateway-health</td></tr>
+            <tr><td>07</td><td>Mensajeria</td><td>rabbitmq + node</td><td>3-management / 20-alpine</td><td>~158 MB</td><td>2.5 GB</td><td>rabbitmq-diagnostics ping</td></tr>
+            <tr><td>08</td><td>Observabilidad</td><td>prometheus + grafana</td><td>latest / latest</td><td>~346 MB</td><td>4 GB</td><td>wget /-/healthy</td></tr>
+            <tr><td>09</td><td>Portal operativo</td><td>nginx + mongo + node</td><td>alpine / 7 / 20-alpine</td><td>~1.26 GB</td><td>4 GB</td><td>mongosh ping + wget</td></tr>
+            <tr><td>10</td><td>Servicio rapido</td><td>golang + alpine</td><td>1.21-alpine / latest</td><td>runtime ~3.7 MB</td><td>1 GB</td><td>wget /health</td></tr>
+            <tr><td>11</td><td>Busqueda</td><td>python + elasticsearch</td><td>3.12-slim / 8.11.0</td><td>~782 MB</td><td>6 GB</td><td>curl /_cluster/health</td></tr>
+            <tr><td>12</td><td>CI</td><td>jenkins/jenkins</td><td>lts</td><td>~278 MB + volumen</td><td>4 GB</td><td>curl /login</td></tr>
           </tbody>
         </table>
       </div>
