@@ -19,4 +19,10 @@ services:
     volumes:
       - ..:/workspace
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9090/api/overview"]
+      interval: 15s
+      timeout: 15s
+      start_period: 20s
+      retries: 5
     restart: unless-stopped
