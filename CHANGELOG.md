@@ -6,7 +6,17 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 
 ## [Unreleased]
 
-_Sin cambios pendientes al momento._
+### Added — Cobertura de health checks completa (12/12 labs)
+
+- **02-php-lamp**: healthcheck `mysqladmin ping` para MariaDB + `curl` para Apache; `web` y `phpmyadmin` ahora esperan `service_healthy` de `db`
+- **04-redis-cache**: healthcheck `redis-cli ping` para Redis + `wget /health` para la API Node; `api` espera `service_healthy` de `redis`
+- **07-rabbitmq-messaging**: healthcheck `rabbitmq-diagnostics -q ping` con `start_period: 30s`
+
+### Added — Smoke test cross-service en CI
+
+- Nuevo job `smoke-platform` en `.github/workflows/ci.yml`: levanta `05-postgres-api`, `09-multi-service-app` y `06-nginx-proxy` en secuencia y valida el flujo completo Core → Portal → Gateway
+- Verifica: `Core summary`, `Core insights`, `Portal health`, `Portal-Core integration` (`inventory: reachable`), `Portal overview` y `Gateway health`
+- Corre en paralelo con la matriz de tests individuales; requiere que `quality-python` y `quality-node` pasen primero
 
 ---
 

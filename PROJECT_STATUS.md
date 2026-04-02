@@ -3,7 +3,7 @@
 > **Versión**: v1.4.0
 > **Estado general**: 🟢 Operativo — plataforma completa con instalador Windows
 > **Alcance actual**: 🧩 Panel dockerizado, core transaccional, portal operativo, gateway y distribución Windows
-> **Última actualización**: 2026-03-15
+> **Última actualización**: 2026-04-02
 
 ---
 
@@ -47,7 +47,7 @@
 | Skills de automatización | 🟢 Disponibles | Release y status automatizados con Claude Code |
 | Diagnóstico de capacidad del host | 🟢 Consolidado | El panel ayuda a decidir qué levantar |
 | Estilo editorial de los 12 labs | 🟡 En evolución | Algunos README secundarios por elevar |
-| Automatización profunda de pruebas | 🟡 En evolución | CI base existe, cobertura total pendiente |
+| Automatización profunda de pruebas | 🟢 Consolidada | Health checks 12/12 labs + smoke test cross-service en CI |
 | Kubernetes / despliegue avanzado | 🟡 En evolución | Base documental presente, operación completa pendiente |
 
 ---
@@ -61,6 +61,8 @@
 - Instalador Windows generado y publicado automáticamente en GitHub Releases
 - Skills de Claude Code para automatizar releases y consultar el estado del sistema
 - Documentación por audiencia y por objetivo
+- Health checks en los **12/12 labs** — el dashboard puede monitorear todos
+- Smoke test cross-service en CI: valida el flujo completo Core → Portal → Gateway en cada push
 
 ---
 
@@ -68,8 +70,7 @@
 
 - Estandarización editorial de los labs secundarios
 - Mayor profundidad funcional en algunos stacks complementarios
-- Pruebas integradas más fuertes entre servicios
-- Endurecimiento de despliegue y observabilidad
+- Endurecimiento de despliegue y observabilidad (integrar labs secundarios con Prometheus)
 - Firma digital del instalador (planificado para v2.x)
 
 ---

@@ -13,6 +13,12 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   web:
     build: ./docker/php
@@ -21,7 +27,8 @@ services:
     ports:
       - "8081:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./src:/var/www/html
     environment:
@@ -29,6 +36,12 @@ services:
       DB_NAME: ${DB_NAME:-appdb}
       DB_USER: ${DB_USER:-appuser}
       DB_PASS: ${DB_PASS:-apppass}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -41,7 +54,8 @@ services:
       PMA_USER: ${DB_USER:-appuser}
       PMA_PASSWORD: ${DB_PASS:-apppass}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:

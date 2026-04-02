@@ -145,3 +145,99 @@ jobs:
         run: |
           set -euo pipefail
           scripts/ci-compose-test.sh "${{ matrix.target.path }}"
+
+  smoke-platform:
+    name: Smoke — plataforma core (05 + 09 + 06)
+    needs:
+      - quality-python
+      - quality-node
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Arrancar Inventory Core (05-postgres-api)
+        run: |
+          docker compose -p smoke-05 \
+            --project-directory 05-postgres-api \
+            -f 05-postgres-api/docker-compose.yml \
+            up -d --build
+
+      - name: Esperar Inventory Core listo
+        run: |
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:8000/ready > /dev/null 2>&1; then
+              echo "Inventory Core listo."
+              break
+            fi
+            echo "Intento $i/36..."
+            sleep 5
+          done
+          curl -sf http://localhost:8000/health
+          curl -sf http://localhost:8000/ready
+          curl -sf http://localhost:8000/summary | grep -q '"total_customers"'
+
+      - name: Arrancar Operations Portal (09-multi-service-app)
+        run: |
+          docker compose -p smoke-09 \
+            --project-directory 09-multi-service-app \
+            -f 09-multi-service-app/docker-compose.yml \
+            up -d --build
+
+      - name: Esperar Operations Portal y verificar integracion con Core
+        run: |
+          for i in $(seq 1 36); do
+            if curl -sf http://localhost:3003/api/health 2>/dev/null | grep -q '"status"'; then
+              echo "Operations Portal listo."
+              break
+            fi
+            echo "Intento $i/36..."
+            sleep 5
+          done
+          health=$(curl -sf http://localhost:3003/api/health)
+          echo "Portal health: $health"
+          echo "$health" | grep -q '"inventory":"reachable"' \
+            || { echo "Error: Core no alcanzable desde el portal"; exit 1; }
+
+      - name: Arrancar Platform Gateway (06-nginx-proxy)
+        run: |
+          docker compose -p smoke-06 \
+            --project-directory 06-nginx-proxy \
+            -f 06-nginx-proxy/docker-compose.yml \
+            up -d --build
+
+      - name: Esperar Gateway listo
+        run: |
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:8085/gateway-health > /dev/null 2>&1; then
+              echo "Gateway listo."
+              break
+            fi
+            echo "Intento $i/20..."
+            sleep 3
+          done
+          curl -sf http://localhost:8085/gateway-health
+
+      - name: Smoke test — flujo completo Core → Portal → Gateway
+        run: |
+          echo "--- Inventory Core (05) ---"
+          curl -sf http://localhost:8000/summary  | grep -q '"total_customers"'  && echo "Core summary OK"
+          curl -sf http://localhost:8000/insights | grep -q '"restock_recommendations"' && echo "Core insights OK"
+
+          echo "--- Operations Portal (09) ---"
+          curl -sf http://localhost:3003/api/health   | grep -q '"status"'                 && echo "Portal health OK"
+          curl -sf http://localhost:3003/api/health   | grep -q '"inventory":"reachable"'  && echo "Portal-Core integration OK"
+          curl -sf http://localhost:3003/api/overview | grep -q '"summary"'                && echo "Portal overview OK"
+
+          echo "--- Platform Gateway (06) ---"
+          curl -sf http://localhost:8085/gateway-health && echo "Gateway OK"
+
+          echo "Todos los smoke checks pasaron."
+
+      - name: Teardown
+        if: always()
+        run: |
+          docker compose -p smoke-05 --project-directory 05-postgres-api  -f 05-postgres-api/docker-compose.yml  down -v --remove-orphans || true
+          docker compose -p smoke-09 --project-directory 09-multi-service-app -f 09-multi-service-app/docker-compose.yml down -v --remove-orphans || true
+          docker compose -p smoke-06 --project-directory 06-nginx-proxy    -f 06-nginx-proxy/docker-compose.yml   down -v --remove-orphans || true
