@@ -10,6 +10,19 @@ _Sin cambios pendientes al momento._
 
 ---
 
+## [1.4.2] - 2026-04-02
+
+### Fixed — Healthcheck timeouts en Windows
+
+- **09-multi-service-app**: timeout de MongoDB aumentado de 5s a 15s e intervalo de 10s a 15s; `mongosh` tarda >5s en iniciar en Windows aunque la base responde correctamente
+- **dashboard-control**: override de healthcheck con `timeout: 15s` y `start_period: 20s`; `/api/overview` hace llamadas al Docker daemon que pueden exceder 5s en Windows
+
+### Changed — Interfaz Learning Center
+
+- `learning-center.html`: columna "Health check" agregada a la tabla Runtime Matrix — muestra el comando exacto de cada uno de los 12 labs (refleja cobertura 12/12)
+
+---
+
 ## [1.4.1] - 2026-04-02
 
 ### Added — Cobertura de health checks completa (12/12 labs)
