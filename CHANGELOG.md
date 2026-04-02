@@ -6,6 +6,12 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 
 ## [Unreleased]
 
+_Sin cambios pendientes al momento._
+
+---
+
+## [1.4.1] - 2026-04-02
+
 ### Added — Cobertura de health checks completa (12/12 labs)
 
 - **02-php-lamp**: healthcheck `mysqladmin ping` para MariaDB + `curl` para Apache; `web` y `phpmyadmin` ahora esperan `service_healthy` de `db`
@@ -14,9 +20,17 @@ El formato sigue la idea de [Keep a Changelog](https://keepachangelog.com/es-ES/
 
 ### Added — Smoke test cross-service en CI
 
-- Nuevo job `smoke-platform` en `.github/workflows/ci.yml`: levanta `05-postgres-api`, `09-multi-service-app` y `06-nginx-proxy` en secuencia y valida el flujo completo Core → Portal → Gateway
+- Nuevo job `smoke-platform` en `.github/workflows/ci.yml`: levanta `05-postgres-api`, `09-multi-service-app` y `06-nginx-proxy` con sus `docker-compose.yml` propios y valida el flujo completo Core → Portal → Gateway
 - Verifica: `Core summary`, `Core insights`, `Portal health`, `Portal-Core integration` (`inventory: reachable`), `Portal overview` y `Gateway health`
 - Corre en paralelo con la matriz de tests individuales; requiere que `quality-python` y `quality-node` pasen primero
+
+### Changed — Documentacion
+
+- `README.md`: tabla de referencia rápida con los 13 componentes (12 labs + dashboard), puertos host y estado visible desde el inicio
+- `docs/TECHNICAL_SPECS.md`: tabla completa 23 servicios/puertos, health checks 12/12, tabla CI completa; tabla de conflictos stale eliminada
+- `01/02/03/04/07/10/12`: READMEs reescritos con tabla de servicios, health checks, comandos `docker compose` y verificacion
+- `10-go-api/README.md`: puerto corregido (`8080` → `8084`)
+- `.markdownlint.json`: config base del proyecto (MD013/MD060 desactivados)
 
 ---
 
