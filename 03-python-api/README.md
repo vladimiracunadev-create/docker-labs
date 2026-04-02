@@ -1,34 +1,53 @@
 # 03-python-api
 
-API REST básica construida con Python y Flask.
+> API REST basica con Python 3.12 y Flask. Punto de entrada para explorar APIs Python containerizadas.
 
-## 🚀 Inicio Rápido
+---
 
-```bash
-cd 03-python-api
-docker-compose up
-```
+## Servicios y puertos
 
-Accede a http://localhost:5000
+| Servicio | Puerto host | Descripcion |
+|---|---:|---|
+| API Python | `5000` | API REST con Flask |
 
-## 📡 Endpoints
+---
 
-- `GET /` - Mensaje de bienvenida
-- `GET /health` - Health check (JSON)
-
-## 🏗️ Arquitectura
-
-- **Python 3.12** con slim image
-- **Flask** para el servidor
-- **pip** para dependencias
-
-## ☸️ Despliegue en Kubernetes
+## Inicio rapido
 
 ```bash
-cd k8s
-kubectl apply -f deployment.yaml
+docker compose up -d --build
 ```
 
-## 🧪 Tests
+URL: <http://localhost:5000>
 
-Ejecuta health checks con Docker o Kubernetes.
+---
+
+## Endpoints
+
+| Metodo | Ruta | Descripcion |
+|---|---|---|
+| `GET` | `/` | Mensaje de bienvenida |
+| `GET` | `/health` | Health check — devuelve estado del servicio |
+
+---
+
+## Health check
+
+El contenedor tiene healthcheck definido sobre `GET /health` con `curl`. Docker reporta el estado real del servicio.
+
+---
+
+## Despliegue en Kubernetes
+
+```bash
+kubectl apply -f k8s/deployment.yaml
+```
+
+---
+
+## Verificacion
+
+```bash
+docker compose ps
+curl http://localhost:5000/health
+```

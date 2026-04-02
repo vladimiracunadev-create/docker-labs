@@ -46,7 +46,7 @@ Descarga el instalador desde GitHub Releases y sigue el asistente:
 
 Si quieres ver el repo funcionando sin perderte, sigue este orden exacto:
 
-**Paso 1 — Levantar el Control Center**
+### Paso 1 — Levantar el Control Center
 
 ```bash
 # Windows
@@ -56,7 +56,7 @@ scripts\start-control-center.cmd
 ./scripts/start-control-center.sh
 ```
 
-**Paso 2 — Levantar los labs de la experiencia principal**
+### Paso 2 — Levantar los labs de la experiencia principal
 
 ```bash
 docker compose -f 05-postgres-api/docker-compose.yml up -d --build
@@ -66,7 +66,7 @@ docker compose -f 06-nginx-proxy/docker-compose.yml up -d --build
 
 > Los labs toman ~30-60 segundos en quedar listos. Puedes monitorear su estado desde el Control Center.
 
-**Paso 3 — Explorar**
+### Paso 3 — Explorar
 
 1. Abre [http://localhost:9090](http://localhost:9090) → Control Center
 2. Revisa el diagnóstico del host y de Docker
@@ -103,7 +103,9 @@ Entradas principales:
 | Gateway integrado | 🟢 Activo | `06` enruta a panel, core y portal |
 | Core documentado | 🟢 Activo | `05` tiene portada HTML, `health`, `ready`, `summary` y Swagger |
 | Portal conectado | 🟢 Activo | `09` consume el core y agrega capa operativa |
-| CI base | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) |
+| CI — tests por lab | 🟢 Activo | Pipeline Compose en [.github/workflows/ci.yml](.github/workflows/ci.yml) — valida los 10 labs soportados en cada push |
+| CI — smoke test cross-service | 🟢 Activo | Job `smoke-platform` valida el flujo completo Core → Portal → Gateway en cada push |
+| Health checks 12/12 labs | 🟢 Activo | Todos los labs tienen healthcheck definido; el dashboard puede monitorear el estado real de cada uno |
 | **Instalador Windows** | 🟢 Activo | `docker-labs-setup-{v}.exe` generado y publicado automáticamente en [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest) |
 | **Launcher Go** | 🟢 Activo | Levanta los 4 servicios core en paralelo, calcula rutas dinamicamente y abre el browser |
 | **CI Windows** | 🟢 Activo | `build-windows.yml` compila y publica el installer al pushear un tag `v*.*.*` |
