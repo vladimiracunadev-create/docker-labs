@@ -40,25 +40,19 @@
 flowchart LR
     U([Usuario])
 
-    subgraph Plataforma
-        CC[Control Center\n9090]
-        GW[Gateway\n8085]
-        IC[Inventory Core\n8000]
-        OP[Operations Portal\n8083]
-        PG[(PostgreSQL\n5432)]
-        MG[(MongoDB\n27017)]
+    subgraph P["Plataforma — 4 servicios activos"]
+        CC["Control Center<br/>:9090"]
+        GW["Gateway<br/>:8085"]
+        IC["Inventory Core<br/>:8000"]
+        OP["Operations Portal<br/>:8083"]
+        PG[("PostgreSQL<br/>:5432")]
+        MG[("MongoDB<br/>:27017")]
     end
 
-    subgraph Labs
-        L01[01 Node\n3000]
-        L02[02 LAMP\n8081]
-        L03[03 Python\n5000]
-        L04[04 Redis\n3001]
-        L07[07 RabbitMQ\n15672]
-        L08[08 Prometheus\n9091]
-        L10[10 Go\n8084]
-        L11[11 Elastic\n8001]
-        L12[12 Jenkins\n8080]
+    subgraph L["9 labs independientes — levantar a voluntad"]
+        LA["01 Node :3000<br/>02 LAMP :8081<br/>03 Python :5000"]
+        LB["04 Redis :3001<br/>07 RabbitMQ :15672<br/>08 Prometheus :9091"]
+        LC["10 Go :8084<br/>11 Elastic :8001<br/>12 Jenkins :8080"]
     end
 
     U --> CC & GW
