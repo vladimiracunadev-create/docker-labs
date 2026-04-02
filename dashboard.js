@@ -51,13 +51,31 @@ function formatTimestamp(value) {
 
 function statusLabel(status) {
   const labels = {
-    healthy: "Saludable",
-    running: "Corriendo",
-    degraded: "Degradado",
-    partial: "Parcial",
-    stopped: "Detenido"
+    healthy: "✅ Saludable",
+    running: "🔄 Corriendo",
+    degraded: "⚠️ Degradado",
+    partial: "⚠️ Parcial",
+    stopped: "⏹ Detenido"
   };
   return labels[status] || status;
+}
+
+function ramFeasibilityBadge(lab) {
+  const docker = state.diagnostics?.docker;
+  if (!docker || !lab.recommendedRamGb) return "";
+
+  const totalGb = docker.memoryTotalGb;
+  const usedGb = docker.usage?.memoryUsedGb || 0;
+  const freeGb = Number((totalGb - usedGb).toFixed(1));
+  const needed = Number(lab.recommendedRamGb);
+
+  if (needed > totalGb) {
+    return `<span class="tag tag-danger ram-indicator" title="Docker tiene ${totalGb} GB totales — este lab requiere ${needed} GB">⛔ Requiere ${needed} GB (Docker tiene ${totalGb} GB)</span>`;
+  }
+  if (needed > freeGb) {
+    return `<span class="tag tag-warn ram-indicator" title="${freeGb} GB libres ahora, lab necesita ${needed} GB — detén otros entornos antes">⚠️ RAM ajustada — baja otros labs (${needed} GB / ${freeGb} GB libres)</span>`;
+  }
+  return `<span class="tag tag-ok ram-indicator" title="${freeGb} GB disponibles, lab necesita ${needed} GB">✅ Listo para iniciar (${needed} GB / ${freeGb} GB libres)</span>`;
 }
 
 function categoryLabel(category) {
@@ -120,6 +138,7 @@ function renderFeatured(labs) {
         <span class="tag">${lab.stack}</span>
         <span class="tag">${categoryLabel(lab.category)}</span>
       </div>
+      ${ramFeasibilityBadge(lab)}
       <div class="card-actions">
         <button class="btn btn-secondary" data-select="${lab.id}">Ver detalle</button>
         ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${primaryUrl(lab).url}" target="_blank" rel="noreferrer">Abrir ${lab.primaryEntryLabel || primaryUrl(lab).label}</a>` : ""}
@@ -339,11 +358,11 @@ function renderLinks(urls) {
 
 function renderActions(lab) {
   return `
-    <button class="btn btn-primary" data-action="start" data-lab="${lab.id}">Levantar entorno</button>
-    <button class="btn btn-secondary" data-action="restart" data-lab="${lab.id}">Reiniciar</button>
-    <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">Detener</button>
-    <button class="btn btn-ghost" data-action="logs" data-lab="${lab.id}">Ver logs</button>
-    <button class="btn btn-secondary" data-action="rebuild" data-lab="${lab.id}">Reconstruir</button>
+    <button class="btn btn-primary" data-action="start" data-lab="${lab.id}">▶ Levantar entorno</button>
+    <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">⏹ Detener</button>
+    <button class="btn btn-secondary" data-action="restart" data-lab="${lab.id}">🔄 Reiniciar</button>
+    <button class="btn btn-ghost" data-action="logs" data-lab="${lab.id}">📋 Ver logs</button>
+    <button class="btn btn-secondary" data-action="rebuild" data-lab="${lab.id}">🔧 Reconstruir</button>
   `;
 }
 
@@ -387,20 +406,19 @@ function renderLabCards() {
       <div class="tag-row">
         <span class="tag">${lab.stack}</span>
         <span class="tag">${categoryLabel(lab.category)}</span>
+        <span class="tag">💾 ${lab.recommendedRamGb} GB</span>
       </div>
+      ${ramFeasibilityBadge(lab)}
       <div class="mini-summary">
         <div><span>Docker</span><strong>${statusLabel(lab.summary.status)}</strong></div>
         <div><span>Saludables</span><strong>${lab.summary.healthy}</strong></div>
         <div><span>Activos</span><strong>${lab.summary.running}</strong></div>
       </div>
-      <div class="tag-row">
-        ${lab.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
-      </div>
       <div class="card-actions">
         <button class="btn btn-secondary" data-select="${lab.id}">Ver detalle</button>
-        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${primaryUrl(lab).url}" target="_blank" rel="noreferrer">Abrir sistema</a>` : ""}
-        <button class="btn btn-secondary" data-action="start" data-lab="${lab.id}">Levantar</button>
-        <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">Detener</button>
+        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${primaryUrl(lab).url}" target="_blank" rel="noreferrer">🔗 Abrir sistema</a>` : ""}
+        <button class="btn btn-primary" data-action="start" data-lab="${lab.id}">▶ Levantar</button>
+        <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">⏹ Detener</button>
       </div>
     </article>
   `).join("");

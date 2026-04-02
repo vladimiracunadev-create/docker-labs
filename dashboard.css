@@ -365,6 +365,31 @@ body {
   font-size: 0.88rem;
 }
 
+.tag-ok {
+  background: rgba(31, 122, 79, 0.12);
+  border-color: rgba(31, 122, 79, 0.28);
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.tag-warn {
+  background: rgba(176, 106, 18, 0.12);
+  border-color: rgba(176, 106, 18, 0.28);
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.tag-danger {
+  background: rgba(178, 49, 49, 0.12);
+  border-color: rgba(178, 49, 49, 0.28);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.ram-indicator {
+  margin-top: 10px;
+}
+
 @media (max-width: 980px) {
   .layout,
   .toolbar,

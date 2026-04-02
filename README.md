@@ -8,7 +8,7 @@
 
 ---
 
-## Estado — v1.4.2
+## Estado — v1.5.0
 
 **Todos los labs están operativos.** Se levantan y bajan con `docker compose up / down` a voluntad. Los 4 de la plataforma arrancan juntos con el launcher Windows.
 

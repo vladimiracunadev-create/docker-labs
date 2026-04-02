@@ -10,6 +10,27 @@ _Sin cambios pendientes al momento._
 
 ---
 
+## [1.5.0] - 2026-04-02
+
+### Added — Indicador de factibilidad RAM por lab
+
+- **`dashboard.js`**: función `ramFeasibilityBadge(lab)` que compara `recommendedRamGb` del lab contra la RAM libre real de Docker en tiempo real:
+  - ✅ Verde — RAM disponible suficiente para iniciar
+  - ⚠️ Amarillo — RAM ajustada, conviene bajar otros labs primero
+  - ⛔ Rojo — Docker no tiene suficiente RAM total para este lab
+- El badge aparece en cada tarjeta de lab y en los sistemas destacados de la plataforma
+- Cada tarjeta muestra el requierimiento RAM del lab (`💾 X GB`) junto al stack
+- El indicador se actualiza en tiempo real al refrescar el panel
+
+### Changed — Visual e iconos
+
+- Botones globales del hero con iconos: ▶ Levantar, ⏹ Bajar todos, 🗑 Eliminar, 📚 Centro de aprendizaje
+- Botones de acción por lab con iconos: ▶ Levantar, ⏹ Detener, 🔄 Reiniciar, 📋 Ver logs, 🔧 Reconstruir
+- Estados de Docker con iconos: ✅ Saludable, 🔄 Corriendo, ⚠️ Degradado/Parcial, ⏹ Detenido
+- Nuevas clases CSS: `.tag-ok`, `.tag-warn`, `.tag-danger` para badges coloreados consistentes con el design system
+
+---
+
 ## [1.4.2] - 2026-04-02
 
 ### Fixed — Healthcheck timeouts en Windows
