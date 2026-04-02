@@ -176,7 +176,7 @@ jobs:
           done
           curl -sf http://localhost:8000/health
           curl -sf http://localhost:8000/ready
-          curl -sf http://localhost:8000/summary | grep -q '"total_customers"'
+          curl -sf http://localhost:8000/summary | grep -q '"customers"'
 
       - name: Arrancar Operations Portal (09-multi-service-app)
         run: |
@@ -222,7 +222,7 @@ jobs:
       - name: Smoke test — flujo completo Core → Portal → Gateway
         run: |
           echo "--- Inventory Core (05) ---"
-          curl -sf http://localhost:8000/summary  | grep -q '"total_customers"'  && echo "Core summary OK"
+          curl -sf http://localhost:8000/summary  | grep -q '"customers"'         && echo "Core summary OK"
           curl -sf http://localhost:8000/insights | grep -q '"restock_recommendations"' && echo "Core insights OK"
 
           echo "--- Operations Portal (09) ---"
