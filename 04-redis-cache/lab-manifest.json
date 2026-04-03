@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "infra",
+  "goal": "Demostrar como una capa de cache con Redis reduce latencia en una API Node.js.",
+  "primaryEntryLabel": "API",
+  "recommendedActions": [
+    "Llamar al endpoint /health para ver el estado del servicio.",
+    "Comparar tiempos de respuesta con y sin cache usando /cached vs /uncached.",
+    "Revisar como el API depende del healthcheck de Redis antes de arrancar."
+  ],
+  "relatedLabs": ["01-node-api", "07-rabbitmq-messaging"],
+  "systemRole": "Capa de cache"
+}

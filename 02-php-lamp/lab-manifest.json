@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "starter",
+  "goal": "Reproducir el stack LAMP clasico con PHP, Apache y MariaDB en contenedores separados.",
+  "primaryEntryLabel": "Web",
+  "recommendedActions": [
+    "Abrir phpMyAdmin para explorar la base de datos.",
+    "Revisar el docker-compose para entender la separacion de servicios.",
+    "Observar como depends_on y el healthcheck coordinan el arranque."
+  ],
+  "relatedLabs": ["05-postgres-api", "03-python-api"],
+  "systemRole": "Stack web clasico"
+}

@@ -1,0 +1,15 @@
+{
+  "featured": false,
+  "category": "infra",
+  "goal": "Implementar un servidor Jenkins LTS para automatizar pipelines de build, test y despliegue.",
+  "primaryEntryLabel": "Jenkins",
+  "recommendedActions": [
+    "Abrir Jenkins UI y completar la configuracion inicial con el password del log.",
+    "Crear un pipeline simple que ejecute un script de build.",
+    "Revisar el volumen persistente para entender como Jenkins guarda su estado."
+  ],
+  "relatedLabs": ["05-postgres-api", "08-prometheus-grafana"],
+  "systemRole": "CI/CD pipeline",
+  "ciExcluded": true,
+  "ciExclusionReason": "Arranque Jenkins > 3 min — supera el timeout del runner de CI"
+}

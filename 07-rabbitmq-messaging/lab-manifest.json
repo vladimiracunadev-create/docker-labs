@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "infra",
+  "goal": "Implementar mensajeria asincrona con RabbitMQ usando un producer y un consumer desacoplados.",
+  "primaryEntryLabel": "Management UI",
+  "recommendedActions": [
+    "Entrar al Management UI para ver exchanges, queues y mensajes.",
+    "Publicar mensajes desde el producer y observar el consumer procesarlos.",
+    "Revisar el docker-compose para entender la dependencia de healthcheck sobre RabbitMQ."
+  ],
+  "relatedLabs": ["04-redis-cache", "05-postgres-api"],
+  "systemRole": "Mensajeria asincrona"
+}

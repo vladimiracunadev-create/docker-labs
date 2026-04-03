@@ -62,18 +62,18 @@
 | `02-php-lamp` | Apache + PHP | `curl -f http://localhost/` |
 | `03-python-api` | API | `curl -f http://localhost:5000/health` |
 | `04-redis-cache` | Redis | `redis-cli ping` |
-| `04-redis-cache` | API | `wget -qO- http://localhost:3000/health` |
+| `04-redis-cache` | API | `wget -qO- http://localhost:3001/health` |
 | `05-postgres-api` | API | `curl -f http://localhost:8000/health` |
 | `05-postgres-api` | PostgreSQL | `pg_isready` |
 | `06-nginx-proxy` | Gateway | `wget -qO- http://127.0.0.1/gateway-health` |
 | `07-rabbitmq-messaging` | RabbitMQ | `rabbitmq-diagnostics -q ping` |
-| `08-prometheus-grafana` | Prometheus | `wget -qO- http://localhost:9090/-/ready` |
-| `08-prometheus-grafana` | Grafana | `wget -qO- http://localhost:3000/api/health` |
+| `08-prometheus-grafana` | Prometheus | `wget -qO- http://localhost:9091/-/ready` |
+| `08-prometheus-grafana` | Grafana | `wget -qO- http://localhost:3002/api/health` |
 | `09-multi-service-app` | MongoDB | `mongosh --eval "db.adminCommand('ping').ok"` |
-| `09-multi-service-app` | Backend | `wget -qO- http://localhost:3000/api/health` |
-| `10-go-api` | API | `wget -qO- http://localhost:8080/health` |
+| `09-multi-service-app` | Backend | `wget -qO- http://localhost:3003/api/health` |
+| `10-go-api` | API | `wget -qO- http://localhost:8084/health` |
 | `11-elasticsearch-search` | Elasticsearch | `wget -qO- http://localhost:9200/_cluster/health` |
-| `11-elasticsearch-search` | API | `curl -f http://localhost:8000/health` |
+| `11-elasticsearch-search` | API | `curl -f http://localhost:8001/health` |
 | `12-jenkins-ci` | Jenkins | `curl -f http://localhost:8080/login` |
 | `dashboard-control` | Control Center | `curl -f http://localhost:9090/api/overview` |
 

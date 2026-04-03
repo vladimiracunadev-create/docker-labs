@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "starter",
+  "goal": "Aprender a servir una API Python con Flask dentro de un contenedor Docker.",
+  "primaryEntryLabel": "API",
+  "recommendedActions": [
+    "Llamar al endpoint /health para validar que el servicio responde.",
+    "Revisar el Dockerfile para entender el proceso de instalacion de dependencias.",
+    "Comparar este starter con 01-node-api para ver diferencias entre stacks."
+  ],
+  "relatedLabs": ["01-node-api", "05-postgres-api"],
+  "systemRole": "Starter API Python"
+}

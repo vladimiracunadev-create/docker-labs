@@ -1,0 +1,15 @@
+{
+  "featured": false,
+  "category": "infra",
+  "goal": "Explorar busqueda full-text con Elasticsearch como motor de indexacion y recuperacion de documentos.",
+  "primaryEntryLabel": "API",
+  "recommendedActions": [
+    "Revisar el Swagger en /docs para entender los endpoints de indexacion y busqueda.",
+    "Indexar documentos de ejemplo y ejecutar queries para ver el scoring por relevancia.",
+    "Verificar el estado del cluster en localhost:9200/_cluster/health."
+  ],
+  "relatedLabs": ["05-postgres-api", "08-prometheus-grafana"],
+  "systemRole": "Motor de busqueda",
+  "ciExcluded": true,
+  "ciExclusionReason": "Requiere >= 6 GB RAM asignados a Docker — fuera del limite del runner de CI"
+}

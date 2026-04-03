@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "infra",
+  "goal": "Agregar una capa de observabilidad al workspace con recoleccion de metricas y dashboards operativos.",
+  "primaryEntryLabel": "Grafana",
+  "recommendedActions": [
+    "Entrar a Grafana con admin/admin y explorar los dashboards disponibles.",
+    "Revisar la UI de Prometheus para ver las metricas recolectadas.",
+    "Agregar metricas del Inventory Core configurando un nuevo scrape target."
+  ],
+  "relatedLabs": ["05-postgres-api", "09-multi-service-app"],
+  "systemRole": "Observabilidad"
+}

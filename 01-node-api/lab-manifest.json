@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "starter",
+  "goal": "Aprender a levantar una API REST basica con Node.js y Express dentro de Docker.",
+  "primaryEntryLabel": "API",
+  "recommendedActions": [
+    "Explorar los endpoints desde el browser o curl.",
+    "Leer el Dockerfile para entender la imagen base y el proceso de build.",
+    "Observar como el healthcheck informa el estado del servicio."
+  ],
+  "relatedLabs": ["03-python-api", "04-redis-cache"],
+  "systemRole": "Starter API"
+}

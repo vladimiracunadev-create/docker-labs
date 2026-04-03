@@ -1,0 +1,13 @@
+{
+  "featured": false,
+  "category": "starter",
+  "goal": "Demostrar un servicio HTTP de alto rendimiento y arranque rapido compilado con Go.",
+  "primaryEntryLabel": "API",
+  "recommendedActions": [
+    "Comparar el tamano de imagen y tiempo de arranque con 01-node-api o 03-python-api.",
+    "Revisar el Dockerfile para entender la compilacion en dos etapas (builder + runtime).",
+    "Llamar a /health para confirmar que el servicio responde."
+  ],
+  "relatedLabs": ["01-node-api", "03-python-api"],
+  "systemRole": "Servicio ligero Go"
+}
