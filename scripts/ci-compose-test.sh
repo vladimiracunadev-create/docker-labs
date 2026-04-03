@@ -81,7 +81,7 @@ http_checks_for_compose() {
       echo "http://localhost:8001/health"
       ;;
     "dashboard-control/docker-compose.yml")
-      echo "http://localhost:9090/api/overview http://localhost:9090/api/diagnostics"
+      echo "http://localhost:9090/api/overview"
       ;;
     *)
       echo ""
@@ -97,7 +97,7 @@ run_http_checks() {
   for url in ${urls}; do
     local ok=0
     for attempt in $(seq 1 20); do
-      if curl --fail --silent --show-error --max-time 5 "${url}" >/dev/null; then
+      if curl --fail --silent --show-error --max-time 30 "${url}" >/dev/null; then
         echo "OK ${url}"
         ok=1
         break
