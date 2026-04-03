@@ -1,6 +1,6 @@
 # 🏗️ Arquitectura — Docker Labs
 
-> **Versión**: 1.4.0
+> **Versión**: 1.5.0
 > **Estado**: 🟢 Activo
 > **Audiencia**: 👥 Técnico, DevOps, full stack
 > **Objetivo**: Visión técnica del workspace y relación entre sus componentes
@@ -51,6 +51,7 @@ flowchart LR
 | Tecnología | Node.js + Express |
 
 **Responsabilidades:**
+
 - Listar y diagnosticar labs
 - Ejecutar `docker compose` (start / stop / restart / rebuild / logs)
 - Exponer `overview` y `diagnostics`
@@ -67,6 +68,7 @@ flowchart LR
 | Tecnología | FastAPI + PostgreSQL 15 |
 
 **Responsabilidades:**
+
 - Clientes, productos, pedidos y stock
 - Resumen operativo para dashboards
 - Contratos REST documentados en Swagger
@@ -82,6 +84,7 @@ flowchart LR
 | Tecnología | Express.js + MongoDB + Nginx |
 
 **Responsabilidades:**
+
 - Mostrar datos operativos del core
 - Ofrecer una cara más cercana al usuario operativo
 - Persistir watchlist y contexto auxiliar
@@ -97,6 +100,7 @@ flowchart LR
 | Tecnología | Nginx |
 
 **Responsabilidades:**
+
 - Unificar entrada al panel, core y portal
 - Evitar experiencia fragmentada por puertos
 

@@ -1,6 +1,6 @@
 # 📦 Guía de Instalación — Docker Labs
 
-> **Versión**: 1.4.0
+> **Versión**: 1.5.0
 > **Estado**: 🟢 Activo
 > **Audiencia**: 👥 Todos
 > **Objetivo**: Instalar y operar `docker-labs` tanto desde fuente como desde el instalador Windows

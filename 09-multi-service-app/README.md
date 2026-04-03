@@ -1,6 +1,6 @@
 # 09-multi-service-app — Operations Portal
 
-> **Versión**: 1.4.0
+> **Versión**: 1.5.0
 > **Estado**: 🟢 Operativo
 > **Audiencia**: 👥 Full stack, producto, reclutadores
 > **Rol en la plataforma**: Portal operativo sobre el Inventory Core

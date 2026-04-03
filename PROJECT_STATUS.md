@@ -1,6 +1,6 @@
 # 📊 Project Status
 
-> **Versión**: v1.4.0
+> **Versión**: v1.5.0
 > **Estado general**: 🟢 Operativo — plataforma completa con instalador Windows
 > **Alcance actual**: 🧩 Panel dockerizado, core transaccional, portal operativo, gateway y distribución Windows
 > **Última actualización**: 2026-04-02
@@ -87,7 +87,7 @@
 
 ## 📥 Instalación rápida (Windows)
 
-1. Descarga `docker-labs-setup-1.4.0.exe` desde [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases)
+1. Descarga `docker-labs-setup-1.5.0.exe` desde [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases)
 2. Ejecuta el instalador (acepta la advertencia de SmartScreen si aparece)
 3. Doble clic en `docker-labs-launcher.exe` — levanta toda la plataforma automáticamente
 4. El browser abre en `http://localhost:9090` (Control Center)

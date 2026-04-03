@@ -1,64 +1,71 @@
-# 06-nginx-proxy
+# 🔀 Lab 06 — Nginx Proxy Gateway
 
-## Platform Gateway
+Puerta de entrada unificada a todos los servicios principales del repositorio mediante un reverse proxy Nginx.
 
-`06-nginx-proxy` deja de ser un reverse proxy de ejemplo y pasa a cumplir un rol concreto dentro del repositorio: actuar como puerta de entrada a los sistemas principales.
+---
 
-## Problema que resuelve
+## 🧩 Rol en el repositorio
 
-Cuando el repositorio empieza a tener varios sistemas activos, recordar puertos y diferenciar panel, core y portal se vuelve innecesariamente confuso.
+Este laboratorio transforma un reverse proxy básico en un componente transversal de la plataforma. En lugar de recordar puertos individuales, el gateway centraliza el acceso a los sistemas activos bajo una sola URL base en el puerto `8085`.
 
-Este gateway existe para ordenar esa experiencia:
+Demuestra cómo una capa de entrada reduce la fricción operativa y prepara la plataforma para una integración más amplia. Es especialmente relevante cuando los labs `05-postgres-api` y `09-multi-service-app` están activos y se quieren usar como un sistema relacionado.
 
-- concentra accesos
-- presenta una entrada comun
-- prepara la plataforma para una integracion mayor
+## 📦 Servicios y puertos
 
-## Implementacion entregada
+| Servicio | Imagen | Puerto host | Puerto contenedor | Descripción |
+|---|---|---|---|---|
+| `platform_gateway` | `nginx:alpine` (build local) | `8085` | `80` | Reverse proxy principal y landing page |
 
-El gateway expone:
+## ⚡ Inicio rápido
 
-- portada propia en `http://localhost:8085`
-- acceso al control center en `/control/`
-- acceso al Inventory Core en `/core/`
-- acceso al Operations Portal en `/portal/`
-- acceso a Swagger del core en `/docs`
-- healthcheck propio en `/gateway-health`
-
-## Como funciona
-
-El contenedor Nginx usa `host.docker.internal` para enrutar hacia los servicios activos del workspace:
-
-- panel principal en `9090`
-- Inventory Core en `8000`
-- Operations Portal en `8083`
-
-Con eso no necesita acoplarse a las redes internas de cada compose y puede funcionar como punto de entrada comun del repositorio.
-
-## Inicio rapido
-
-```powershell
-cd 06-nginx-proxy
+```bash
 docker compose up -d --build
 ```
 
-## Entradas principales
+## 🔗 Accesos
 
-- Gateway: [http://localhost:8085](http://localhost:8085)
-- Control center: [http://localhost:8085/control/](http://localhost:8085/control/)
-- Inventory Core: [http://localhost:8085/core/](http://localhost:8085/core/)
-- Swagger del core: [http://localhost:8085/docs](http://localhost:8085/docs)
-- Operations Portal: [http://localhost:8085/portal/](http://localhost:8085/portal/)
+| Destino | URL |
+|---|---|
+| Gateway (landing page) | <http://localhost:8085> |
+| Control Center | <http://localhost:8085/control/> |
+| Inventory Core | <http://localhost:8085/core/> |
+| Swagger — Inventory Core | <http://localhost:8085/docs> |
+| Operations Portal | <http://localhost:8085/portal/> |
+| Health del gateway | <http://localhost:8085/gateway-health> |
 
-## Verificacion
+> Las rutas `/control/`, `/core/` y `/portal/` se resuelven mediante `host.docker.internal` hacia los puertos `9090`, `8000` y `8083` respectivamente, sin acoplarse a las redes internas de otros compose.
 
-```powershell
-docker compose ps
-curl http://localhost:8085/gateway-health
+## ✅ Health check
+
+El contenedor `platform_gateway` verifica su propio estado con:
+
+```text
+wget -qO- http://127.0.0.1/gateway-health
 ```
 
-## Justificacion de su existencia
+| Parámetro | Valor |
+|---|---|
+| Intervalo | 10 s |
+| Timeout | 5 s |
+| Reintentos | 5 |
+| Start period | 20 s |
 
-Este laboratorio suma valor porque representa una capacidad transversal real de cualquier plataforma: una capa de entrada que organiza accesos y reduce friccion operativa.
+## 🔍 Verificación
 
-Dentro de este repositorio, su existencia se justifica especialmente cuando `05` y `09` ya estan arriba y quieres usarlos como un sistema relacionado, no como puertos aislados.
+```bash
+# Estado del contenedor
+docker compose ps
+
+# Confirmar que el gateway responde
+curl http://localhost:8085/gateway-health
+
+# Ver los logs del proxy
+docker compose logs platform_gateway
+```
+
+## 📚 Documentos relacionados
+
+- [Repositorio principal](../README.md)
+- [05-postgres-api](../05-postgres-api/README.md) — Inventory Core (`:8000`)
+- [dashboard-control](../dashboard-control/server.js) — Control Center (`:9090`)
+- [09-multi-service-app](../09-multi-service-app/README.md) — Operations Portal (`:8083`)

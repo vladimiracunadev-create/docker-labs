@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ls -la \"C:\\\\docker-labs\\\\docker-labs\\\\dashboard-control\"\" | grep -i \"readme \")",
+      "Bash(grep \"\\\\.md$\")",
+      "Bash(python C:/portfolio-pages/scripts/fix-md-lint.py)",
+      "Bash(npx markdownlint-cli2:*)",
+      "Bash(find C:/docker-labs/docker-labs -name CLAUDE.md -o -name *.skill -o -name docker-labs-release*)",
+      "Bash(gh run:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker ps:*)",
+      "Bash(curl -sf http://localhost:9090/api/overview)",
+      "Bash(curl -sf http://localhost:8085/gateway-health)",
+      "Bash(python -c \"import sys,json; h=json.load\\(sys.stdin\\); print\\(h[''''Status'''']\\); [print\\(l[''''Output'''']\\) for l in h[''''Log''''][-2:]]\")",
+      "Bash(python -c \"import sys,json; logs=json.load\\(sys.stdin\\); [print\\(l[''''Output'''']\\) for l in logs[-2:]]\")",
+      "Bash(docker exec:*)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''healthy:'''', d[''''totals''''][''''healthy''''], ''''| running:'''', d[''''totals''''][''''running''''], ''''| total labs:'''', d[''''totals''''][''''total'''']\\)\" echo \"=== Inventory Core - health ===\")",
+      "Bash(curl -sf http://localhost:8000/health echo \"=== Inventory Core - ready ===\")",
+      "Bash(curl -sf http://localhost:8000/ready echo \"=== Inventory Core - summary ===\")",
+      "Bash(curl -sf http://localhost:8000/summary)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d\\)\" echo \"=== Operations Portal - health ===\")",
+      "Bash(curl -sf http://localhost:3003/api/health echo \"=== Operations Portal - overview ===\")",
+      "Bash(curl -sf http://localhost:3003/api/overview)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''summary:'''', d[''''summary''''], ''''| watchlist:'''', len\\(d[''''watchlist'''']\\), ''''| attention:'''', len\\(d[''''attentionBoard'''']\\)\\)\" echo \"=== Platform Gateway ===\")",
+      "Bash(git tag:*)",
+      "Bash(python C:/portfolio-pages/scripts/fix-md-lint.py --dry-run)"
+    ]
+  }
+}

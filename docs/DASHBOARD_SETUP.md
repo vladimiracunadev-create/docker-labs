@@ -1,21 +1,21 @@
-# Dashboard Setup
+# 🖥️ Dashboard Setup
 
-> **Version**: 1.5  
-> **Estado**: Activo  
+> **Version**: 1.5.0
+> **Estado**: 🟢 Activo
 > **Objetivo**: Explicar como arranca y opera el Control Center actual
 
 ---
 
-## Rol del componente
+## 🧩 Rol del componente
 
 El Control Center en `9090` existe para:
 
 - mostrar el estado real del workspace
 - ejecutar acciones sobre los labs desde Docker Compose
-- diagnosticar capacidad del runtime
+- diagnosticar capacidad del runtime y RAM disponible por lab
 - guiar al usuario hacia la entrada correcta
 
-## Entrada soportada
+## ⚡ Entrada soportada
 
 ### Windows
 
@@ -29,11 +29,21 @@ scripts\start-control-center.cmd
 ./scripts/start-control-center.sh
 ```
 
-## Por que ya no se recomienda el compose directo sin wrapper
+## ℹ️ Por que ya no se recomienda el compose directo sin wrapper
 
 El contenedor del panel necesita conocer la ruta real del workspace en el host para poder operar otros `compose`. Por eso el flujo soportado ahora usa wrappers que resuelven el path correcto y evitan depender de `C:\docker-labs\docker-labs`.
 
-## Arquitectura
+## 💾 Indicador de RAM por lab
+
+Cada tarjeta muestra un badge calculado en tiempo real contra la RAM libre de Docker:
+
+| Badge | Condición |
+|---|---|
+| ✅ Verde | RAM libre suficiente para iniciar el lab |
+| ⚠️ Amarillo | RAM ajustada — bajar otros labs ayuda |
+| ⛔ Rojo | Docker no tiene suficiente RAM total para este lab |
+
+## 🏗️ Arquitectura
 
 - `dashboard-control/docker-compose.yml`
 - `dashboard-control/Dockerfile`
@@ -42,7 +52,7 @@ El contenedor del panel necesita conocer la ruta real del workspace en el host p
 - `dashboard.js`
 - `dashboard.css`
 
-## URLs utiles
+## 🔗 URLs útiles
 
 - [http://localhost:9090](http://localhost:9090)
 - [http://localhost:9090/api/overview](http://localhost:9090/api/overview)
@@ -50,13 +60,13 @@ El contenedor del panel necesita conocer la ruta real del workspace en el host p
 - [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 - [http://localhost:8085/control/](http://localhost:8085/control/)
 
-## Notas operativas
+## 📝 Notas operativas
 
 - el panel no reemplaza Docker Desktop; lo usa como prerequisito
 - el launcher Windows usa el mismo `dashboard-control/docker-compose.yml`
 - los compose legacy de raiz ya no forman parte del flujo soportado
 
-## Documentos relacionados
+## 📚 Documentos relacionados
 
 - [INSTALL.md](INSTALL.md)
 - [../RUNBOOK.md](../RUNBOOK.md)

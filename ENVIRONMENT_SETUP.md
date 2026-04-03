@@ -1,12 +1,12 @@
-# Environment Setup
+# ⚙️ Environment Setup
 
-> **Version**: 1.4  
-> **Estado**: Activo  
+> **Version**: 1.5.0
+> **Estado**: Activo
 > **Uso recomendado**: Lee este documento antes de levantar varios labs o si quieres preparar tu equipo de forma profesional
 
 ---
 
-## Objetivo
+## 🎯 Objetivo
 
 Este documento responde una pregunta concreta:
 
@@ -15,7 +15,7 @@ Este documento responde una pregunta concreta:
 Si solo quieres instalar y correr el proyecto, empieza por [docs/INSTALL.md](docs/INSTALL.md).  
 Si quieres preparar bien el host, Docker y el orden de trabajo, esta es la guia correcta.
 
-## Checklist rapido
+## ✅ Checklist rapido
 
 | Item | Estado esperado | Abrir |
 |---|---|---|

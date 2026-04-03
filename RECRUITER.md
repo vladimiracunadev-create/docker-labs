@@ -1,6 +1,6 @@
 # 👀 Guía Estratégica para Reclutadores (RECRUITER)
 
-> **Versión**: 1.4
+> **Versión**: 1.5
 > **Estado**: 🟢 Operativo
 > **Audiencia**: 👥 Reclutadores, hiring managers, líderes técnicos
 > **Executive Summary**: `docker-labs` demuestra criterio para transformar laboratorios Docker en una plataforma modular con control centralizado, backend transaccional, portal operativo y gateway común.
@@ -38,7 +38,6 @@ Si quieres evaluar el repo rápido, este es el recorrido recomendado:
 7. Revisa [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases) — el `.exe` publicado automáticamente
 
 Con ese recorrido se entiende la historia principal del repositorio y la capa de producto completa sin necesidad de revisar los 12 labs.
-
 
 ## 🏗️ Decisiones arquitectónicas que vale la pena notar
 

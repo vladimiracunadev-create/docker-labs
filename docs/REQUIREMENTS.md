@@ -1,6 +1,6 @@
 # Requirements
 
-> **Version**: 1.4  
+> **Version**: 1.5  
 > **Estado**: Activo  
 > **Uso recomendado**: Revisa este documento antes de levantar varios servicios o si quieres saber hasta donde conviene cargar Docker en tu equipo
 

@@ -1,18 +1,95 @@
-# 08-prometheus-grafana
+# 📊 Lab 08 — Prometheus + Grafana
 
-Monitoreo con Prometheus y Grafana para el workspace.
+Capa de observabilidad del workspace: recolección de métricas con Prometheus y visualización mediante dashboards en Grafana.
 
-## Inicio rapido
+---
+
+## 🧩 Rol en el repositorio
+
+Este laboratorio introduce la capa de monitoreo de la plataforma. Prometheus recolecta métricas de los servicios activos; Grafana las expone en dashboards interactivos. Juntos representan el estándar de facto para observabilidad en entornos contenerizados.
+
+> **Requisito de recursos:** se recomienda al menos **4 GB de RAM** asignados a Docker. Prometheus y Grafana juntos tienen una huella considerablemente mayor que el resto de los labs.
+
+## 📦 Servicios y puertos
+
+| Servicio | Imagen | Puerto host | Puerto contenedor | Descripción |
+|---|---|---|---|---|
+| `prometheus_monitoring` | `prom/prometheus` | `9091` | `9090` | Motor de recolección y almacenamiento de métricas |
+| `grafana_monitoring` | `grafana/grafana` | `3002` | `3000` | Interfaz de dashboards y visualización |
+
+La configuración de scraping de Prometheus se define en `prometheus.yml` dentro de este directorio.
+
+## ⚡ Inicio rápido
 
 ```bash
 docker compose up -d
 ```
 
-## Accesos
+## 🔗 Accesos
 
-- Prometheus: http://localhost:9091
-- Grafana: http://localhost:3002
+| Servicio | URL | Credenciales |
+|---|---|---|
+| Prometheus | <http://localhost:9091> | — |
+| Grafana | <http://localhost:3002> | `admin` / `admin` |
 
-## Nota importante
+> Grafana solicita cambio de contraseña en el primer inicio de sesión.
 
-Este lab usa `9091` para evitar conflicto con `dashboard-control` en `9090`. Puedes correr ambos al mismo tiempo sin pisar el Control Center.
+## ✅ Health checks
+
+### prometheus_monitoring
+
+```text
+wget -qO- http://127.0.0.1:9090/-/healthy
+```
+
+| Parámetro | Valor |
+|---|---|
+| Intervalo | 15 s |
+| Timeout | 5 s |
+| Reintentos | 3 |
+| Start period | 20 s |
+
+### grafana_monitoring
+
+```text
+wget -qO- http://127.0.0.1:3000/api/health
+```
+
+| Parámetro | Valor |
+|---|---|
+| Intervalo | 15 s |
+| Timeout | 5 s |
+| Reintentos | 3 |
+| Start period | 30 s |
+
+## 🔍 Verificación
+
+```bash
+# Estado de ambos contenedores
+docker compose ps
+
+# Confirmar que Prometheus está activo
+curl http://localhost:9091/-/healthy
+
+# Confirmar que Grafana está activa
+curl http://localhost:3002/api/health
+
+# Ver logs
+docker compose logs prometheus_monitoring
+docker compose logs grafana_monitoring
+```
+
+## ⚠️ Notas
+
+| Puerto | Razón del cambio |
+|---|---|
+| `9091` (en lugar de `9090`) | Evita conflicto con **Control Center** (`dashboard-control`) que ocupa `9090` |
+| `3002` (en lugar de `3000`) | Evita conflicto con el backend de **09-multi-service-app** que utiliza `3003` en su stack interno |
+
+Ambos labs pueden ejecutarse simultáneamente sin pisarse.
+
+## 📚 Documentos relacionados
+
+- [Repositorio principal](../README.md)
+- [Documentación oficial de Prometheus](https://prometheus.io/docs/)
+- [Documentación oficial de Grafana](https://grafana.com/docs/)

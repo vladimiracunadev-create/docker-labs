@@ -1,6 +1,6 @@
 # 🎓 Beginner Guide
 
-Guia pensada para personas que estan empezando con Docker, Docker Compose y este repositorio.
+> **Versión**: 1.5.0 · Guia pensada para personas que estan empezando con Docker, Docker Compose y este repositorio.
 
 ## 🧭 Si solo lees una cosa
 
@@ -146,6 +146,20 @@ Labs sugeridos:
 | Basico | 4 nucleos | 8 GB | 15 GB | Panel + 1 lab |
 | Comodo | 6-8 nucleos | 16 GB | 30 GB SSD | `05 + 06 + 09 + 9090` |
 | Avanzado | 8+ nucleos | 24 GB+ | 40 GB SSD | Plataforma + labs pesados |
+
+## 💾 Indicador de RAM por lab
+
+Cada tarjeta de lab en el panel muestra un badge de color calculado contra la RAM libre real de Docker:
+
+| Badge | Significado |
+|---|---|
+| ✅ Verde | RAM disponible suficiente — puedes levantar ahora mismo |
+| ⚠️ Amarillo | RAM ajustada — conviene bajar otros labs primero |
+| ⛔ Rojo | Docker no tiene suficiente RAM total para este lab |
+
+Este indicador se actualiza cada vez que refrescas el panel.
+
+---
 
 ## ⚠️ Errores comunes
 

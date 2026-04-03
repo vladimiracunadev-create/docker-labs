@@ -1,6 +1,6 @@
 # 05-postgres-api — Inventory Core
 
-> **Versión**: 1.4.0
+> **Versión**: 1.5.0
 > **Estado**: 🟢 Operativo
 > **Audiencia**: 👥 Backend, full stack, reclutadores
 > **Rol en la plataforma**: Core transaccional del workspace

@@ -1,6 +1,6 @@
 # Operating Modes
 
-> **Version**: 1.4  
+> **Version**: 1.5  
 > **Estado**: Activo  
 > **Uso recomendado**: Abre este documento si no sabes si conviene levantar todo o solo una parte del repositorio
 

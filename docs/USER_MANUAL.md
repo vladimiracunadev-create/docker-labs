@@ -1,6 +1,6 @@
 # 📘 Manual de Usuario — Docker Labs
 
-> **Versión**: 1.4.0
+> **Versión**: 1.5.0
 > **Estado**: 🟢 Operativo
 > **Audiencia**: 👥 Usuarios del workspace, operadores
 > **Objetivo**: Operación diaria del panel y de los sistemas activos
