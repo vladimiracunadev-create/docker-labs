@@ -8,8 +8,68 @@ const repoRoot = process.env.APP_REPO_ROOT
   ? path.resolve(process.env.APP_REPO_ROOT)
   : path.resolve(__dirname, "..");
 
+// Logging estructurado — nivel controlado por LOG_LEVEL (info|debug|warn|error)
+const LOG_LEVEL = process.env.LOG_LEVEL || "info";
+const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 };
+
+function log(level, message, extra = {}) {
+  if (LOG_LEVELS[level] < LOG_LEVELS[LOG_LEVEL]) return;
+  const entry = {
+    ts: new Date().toISOString(),
+    level,
+    msg: message,
+    ...extra
+  };
+  const out = level === "error" || level === "warn" ? process.stderr : process.stdout;
+  out.write(JSON.stringify(entry) + "\n");
+}
+
 const labs = require("./labs");
 const port = Number(process.env.DASHBOARD_PORT || 9090);
+
+// Rate limiting nativo — protege endpoints POST contra abuso
+// Límite: 30 requests por IP en ventana de 60 segundos
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 30;
+const rateLimitMap = new Map(); // ip -> { count, resetAt }
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+
+  record.count += 1;
+  if (record.count > RATE_LIMIT_MAX) {
+    return true;
+  }
+  return false;
+}
+
+// Limpieza periódica para evitar crecimiento indefinido del Map
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) rateLimitMap.delete(ip);
+  }
+}, RATE_LIMIT_WINDOW_MS * 2);
+
+// Autenticación por token de sesión — activa solo si DASHBOARD_TOKEN está definido
+// En desarrollo local sin la variable el acceso es abierto (comportamiento previo).
+// Para activar: export DASHBOARD_TOKEN=tu-token-secreto antes de levantar.
+const DASHBOARD_TOKEN = process.env.DASHBOARD_TOKEN || null;
+
+function isAuthenticated(request) {
+  if (!DASHBOARD_TOKEN) return true; // Sin token configurado: acceso abierto (modo dev)
+  const authHeader = request.headers["authorization"] || "";
+  const cookieHeader = request.headers["cookie"] || "";
+  const tokenFromHeader = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  const tokenFromCookie = (cookieHeader.match(/(?:^|;\s*)dashboard_token=([^;]+)/) || [])[1] || null;
+  return tokenFromHeader === DASHBOARD_TOKEN || tokenFromCookie === DASHBOARD_TOKEN;
+}
 
 const staticFiles = new Map([
   ["/", { file: path.join(repoRoot, "index.html"), type: "text/html; charset=utf-8" }],
@@ -25,16 +85,24 @@ const staticFiles = new Map([
   ["/CHANGELOG.md", { file: path.join(repoRoot, "CHANGELOG.md"), type: "text/markdown; charset=utf-8" }]
 ]);
 
+// Timeouts por tipo de comando Docker — en milisegundos
+const EXEC_TIMEOUTS = {
+  default:  15_000,   // docker info, ps, inspect
+  action:   120_000,  // up, down, restart (pueden tardar en pull de imágenes)
+  logs:     10_000    // logs --tail
+};
+
 function execCommand(command, args, options = {}) {
+  const timeout = options.timeout || EXEC_TIMEOUTS.default;
   return new Promise((resolve, reject) => {
     execFile(
       command,
       args,
-      { cwd: repoRoot, maxBuffer: 1024 * 1024 * 4, ...options },
+      { cwd: repoRoot, maxBuffer: 1024 * 1024 * 4, timeout, ...options },
       (error, stdout, stderr) => {
         if (error) {
           reject({
-            message: error.message,
+            message: error.killed ? `Comando cancelado por timeout (${timeout}ms)` : error.message,
             stdout: stdout || "",
             stderr: stderr || "",
             code: error.code || 1
@@ -51,16 +119,35 @@ function execCommand(command, args, options = {}) {
   });
 }
 
-async function dockerCompose(composeFile, composeArgs) {
-  return execCommand("docker", ["compose", "-f", composeFile, ...composeArgs]);
+async function dockerCompose(composeFile, composeArgs, timeoutMs) {
+  const isAction = composeArgs[0] === "up" || composeArgs[0] === "down" || composeArgs[0] === "restart";
+  const isLogs = composeArgs[0] === "logs";
+  const timeout = timeoutMs || (isAction ? EXEC_TIMEOUTS.action : isLogs ? EXEC_TIMEOUTS.logs : EXEC_TIMEOUTS.default);
+  return execCommand("docker", ["compose", "-f", composeFile, ...composeArgs], { timeout });
 }
 
-function sendJson(response, statusCode, payload) {
+
+// CORS restringido a localhost — el dashboard solo debe ser accesible localmente
+const ALLOWED_ORIGINS = new Set([
+  `http://localhost:${port}`,
+  `http://127.0.0.1:${port}`
+]);
+
+function corsHeaders(request) {
+  const origin = request.headers.origin || "";
+  const allowed = ALLOWED_ORIGINS.has(origin) ? origin : `http://localhost:${port}`;
+  return {
+    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin"
+  };
+}
+
+function sendJson(response, statusCode, payload, request = null) {
   response.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
+    ...(request ? corsHeaders(request) : { "Access-Control-Allow-Origin": `http://localhost:${port}` })
   });
   response.end(JSON.stringify(payload));
 }
@@ -80,9 +167,17 @@ function sendFile(response, file, type) {
   });
 }
 
+const MAX_BODY_BYTES = 10 * 1024; // 10 KB — suficiente para cualquier payload del dashboard
+
 async function readRequestBody(request) {
   const chunks = [];
+  let totalBytes = 0;
+
   for await (const chunk of request) {
+    totalBytes += chunk.length;
+    if (totalBytes > MAX_BODY_BYTES) {
+      throw new Error("Request body demasiado grande.");
+    }
     chunks.push(chunk);
   }
 
@@ -90,7 +185,11 @@ async function readRequestBody(request) {
     return {};
   }
 
-  return JSON.parse(Buffer.concat(chunks).toString("utf-8"));
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf-8"));
+  } catch {
+    throw new Error("Request body no es JSON válido.");
+  }
 }
 
 function safeParseComposePs(output) {
@@ -373,7 +472,8 @@ async function handleLabAction(lab, action, payload = {}) {
   }
 
   if (action === "logs") {
-    const tail = String(payload.tail || 120);
+    const tailRaw = Number(payload.tail);
+    const tail = String(Number.isFinite(tailRaw) && tailRaw > 0 && tailRaw <= 500 ? tailRaw : 120);
     return dockerCompose(lab.composeFile, ["logs", "--no-color", "--tail", tail]);
   }
 
@@ -411,14 +511,65 @@ async function handleWorkspaceAction(action) {
   };
 }
 
+// Contadores de métricas internas — expuestos en /metrics para Prometheus
+const metrics = {
+  requestsTotal: 0,
+  requestErrors: 0,
+  labActionsTotal: 0,
+  labActionErrors: 0,
+  startedAt: Date.now()
+};
+
+function renderPrometheusMetrics() {
+  const uptimeSeconds = Math.floor((Date.now() - metrics.startedAt) / 1000);
+  return [
+    "# HELP docker_labs_requests_total Total de requests recibidos",
+    "# TYPE docker_labs_requests_total counter",
+    `docker_labs_requests_total ${metrics.requestsTotal}`,
+    "",
+    "# HELP docker_labs_request_errors_total Total de errores en requests",
+    "# TYPE docker_labs_request_errors_total counter",
+    `docker_labs_request_errors_total ${metrics.requestErrors}`,
+    "",
+    "# HELP docker_labs_lab_actions_total Total de acciones ejecutadas sobre labs",
+    "# TYPE docker_labs_lab_actions_total counter",
+    `docker_labs_lab_actions_total ${metrics.labActionsTotal}`,
+    "",
+    "# HELP docker_labs_lab_action_errors_total Errores en acciones sobre labs",
+    "# TYPE docker_labs_lab_action_errors_total counter",
+    `docker_labs_lab_action_errors_total ${metrics.labActionErrors}`,
+    "",
+    "# HELP docker_labs_uptime_seconds Tiempo de actividad del servidor en segundos",
+    "# TYPE docker_labs_uptime_seconds gauge",
+    `docker_labs_uptime_seconds ${uptimeSeconds}`,
+    "",
+    "# HELP docker_labs_known_labs Total de labs configurados",
+    "# TYPE docker_labs_known_labs gauge",
+    `docker_labs_known_labs ${labs.length}`,
+    ""
+  ].join("\n");
+}
+
+// Acciones permitidas — allowlist explícita para evitar acciones arbitrarias
+const ALLOWED_LAB_ACTIONS = new Set(["start", "stop", "restart", "logs"]);
+
 async function handleApi(request, response, pathname) {
+  metrics.requestsTotal += 1;
+
+  // Endpoint /metrics en formato Prometheus text — no requiere auth (estándar scraping)
+  if (pathname === "/metrics" && request.method === "GET") {
+    response.writeHead(200, { "Content-Type": "text/plain; version=0.0.4; charset=utf-8" });
+    response.end(renderPrometheusMetrics());
+    return;
+  }
+
   if (pathname === "/api/overview" && request.method === "GET") {
-    sendJson(response, 200, await getOverview());
+    sendJson(response, 200, await getOverview(), request);
     return;
   }
 
   if (pathname === "/api/diagnostics" && request.method === "GET") {
-    sendJson(response, 200, await getDiagnostics());
+    sendJson(response, 200, await getDiagnostics(), request);
     return;
   }
 
@@ -427,7 +578,7 @@ async function handleApi(request, response, pathname) {
     sendJson(response, 200, {
       ...result,
       overview: await getOverview()
-    });
+    }, request);
     return;
   }
 
@@ -436,13 +587,13 @@ async function handleApi(request, response, pathname) {
     sendJson(response, 200, {
       ...result,
       overview: await getOverview()
-    });
+    }, request);
     return;
   }
 
   if (pathname === "/api/labs" && request.method === "GET") {
     const overview = await getOverview();
-    sendJson(response, 200, overview.labs);
+    sendJson(response, 200, overview.labs, request);
     return;
   }
 
@@ -450,15 +601,22 @@ async function handleApi(request, response, pathname) {
     const parts = pathname.split("/").filter(Boolean);
     const labId = parts[2];
     const action = parts[3] || null;
+
+    // Validar labId contra lista conocida — previene path traversal e inyección
+    if (!labId || !/^[\w-]+$/.test(labId)) {
+      sendJson(response, 400, { error: "Lab ID inválido." }, request);
+      return;
+    }
+
     const lab = findLab(labId);
 
     if (!lab) {
-      sendJson(response, 404, { error: "Lab not found." });
+      sendJson(response, 404, { error: "Lab not found." }, request);
       return;
     }
 
     if (!action && request.method === "GET") {
-      sendJson(response, 200, await inspectLab(lab));
+      sendJson(response, 200, await inspectLab(lab), request);
       return;
     }
 
@@ -478,13 +636,20 @@ async function handleApi(request, response, pathname) {
           health:  c.health
         })),
         checkedAt: new Date().toISOString()
-      });
+      }, request);
       return;
     }
 
-    if (request.method === "POST" && ["start", "stop", "restart", "logs"].includes(action)) {
+    if (request.method === "POST" && ALLOWED_LAB_ACTIONS.has(action)) {
+      metrics.labActionsTotal += 1;
       const body = await readRequestBody(request);
-      const result = await handleLabAction(lab, action, body);
+      let result;
+      try {
+        result = await handleLabAction(lab, action, body);
+      } catch (err) {
+        metrics.labActionErrors += 1;
+        throw err;
+      }
       const detailed = action === "logs" ? null : await inspectLab(lab);
 
       sendJson(response, 200, {
@@ -493,12 +658,12 @@ async function handleApi(request, response, pathname) {
         action,
         output: (result.stdout || result.stderr || "").trim(),
         lab: detailed
-      });
+      }, request);
       return;
     }
   }
 
-  sendJson(response, 404, { error: "Route not found." });
+  sendJson(response, 404, { error: "Route not found." }, request);
 }
 
 const server = http.createServer(async (request, response) => {
@@ -509,9 +674,8 @@ const server = http.createServer(async (request, response) => {
 
   if (request.method === "OPTIONS") {
     response.writeHead(204, {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
+      ...corsHeaders(request),
+      "Content-Length": "0"
     });
     response.end();
     return;
@@ -519,10 +683,26 @@ const server = http.createServer(async (request, response) => {
 
   const requestUrl = new URL(request.url, `http://${request.headers.host}`);
   const pathname = requestUrl.pathname;
+  const startMs = Date.now();
+  const clientIp = request.socket.remoteAddress || "unknown";
 
   try {
     if (pathname.startsWith("/api/")) {
+      if (!isAuthenticated(request)) {
+        log("warn", "Unauthorized request", { method: request.method, pathname, ip: clientIp });
+        sendJson(response, 401, { error: "No autorizado. Incluye el token en Authorization: Bearer <token> o cookie dashboard_token." }, request);
+        return;
+      }
+
+      // Rate limiting solo en endpoints de acción (POST)
+      if (request.method === "POST" && isRateLimited(clientIp)) {
+        log("warn", "Rate limit exceeded", { ip: clientIp, pathname });
+        sendJson(response, 429, { error: "Demasiadas solicitudes. Espera un momento antes de reintentar." }, request);
+        return;
+      }
+      log("debug", "API request", { method: request.method, pathname });
       await handleApi(request, response, pathname);
+      log("debug", "API response", { method: request.method, pathname, ms: Date.now() - startMs });
       return;
     }
 
@@ -534,14 +714,24 @@ const server = http.createServer(async (request, response) => {
 
     sendJson(response, 404, { error: "Not found." });
   } catch (error) {
-    sendJson(response, 500, {
-      error: "Dashboard request failed.",
-      details: error.stderr || error.message || String(error),
-      stdout: error.stdout || ""
+    metrics.requestErrors += 1;
+    log("error", "Request failed", {
+      method: request.method,
+      url: request.url,
+      message: error.message || String(error),
+      stderr: error.stderr || undefined
     });
+
+    const isDockerError = Boolean(error.stderr);
+    sendJson(response, 500, {
+      error: isDockerError
+        ? "Docker command failed. Revisa que Docker esté activo y el lab exista."
+        : "Error interno del servidor.",
+      output: isDockerError ? (error.stdout || error.stderr || "").trim() : ""
+    }, request);
   }
 });
 
 server.listen(port, () => {
-  process.stdout.write(`Docker Labs Control Center running on http://localhost:${port}\n`);
+  log("info", "Docker Labs Control Center started", { port, repoRoot, auth: Boolean(DASHBOARD_TOKEN) });
 });

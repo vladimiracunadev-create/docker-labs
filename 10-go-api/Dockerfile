@@ -4,8 +4,10 @@ COPY . .
 RUN go build -o main .
 
 FROM alpine:latest
-RUN apk add --no-cache curl
-COPY --from=build /app/main .
+RUN apk add --no-cache curl && \
+    addgroup -S appuser && adduser -S -G appuser appuser
+COPY --from=build --chown=appuser:appuser /app/main .
+USER appuser
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1

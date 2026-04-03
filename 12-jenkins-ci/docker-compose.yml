@@ -13,6 +13,12 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
 
 volumes:
   jenkins_home:

@@ -1,14 +1,67 @@
 const express = require("express");
 const { randomUUID } = require("crypto");
 
+// Circuit breaker para Inventory API
+// Estados: closed (normal) → open (fallando) → half-open (probando recuperación)
+function createCircuitBreaker({ failureThreshold = 3, recoveryMs = 30_000 } = {}) {
+  let failures = 0;
+  let state = "closed"; // closed | open | half-open
+  let openedAt = null;
+
+  return {
+    async call(fn) {
+      if (state === "open") {
+        if (Date.now() - openedAt >= recoveryMs) {
+          state = "half-open";
+        } else {
+          throw new Error("Inventory API no disponible (circuit open). Reintentando en breve.");
+        }
+      }
+
+      try {
+        const result = await fn();
+        if (state === "half-open") {
+          failures = 0;
+          state = "closed";
+        }
+        return result;
+      } catch (error) {
+        failures += 1;
+        if (failures >= failureThreshold || state === "half-open") {
+          state = "open";
+          openedAt = Date.now();
+        }
+        throw error;
+      }
+    },
+    getState: () => state
+  };
+}
+
 function createHttpInventoryClient(baseUrl) {
+  const breaker = createCircuitBreaker({ failureThreshold: 3, recoveryMs: 30_000 });
+  const FETCH_TIMEOUT_MS = 8_000;
+
   async function fetchInventory(pathname) {
-    const response = await fetch(`${baseUrl}${pathname}`);
-    if (!response.ok) {
-      const message = await response.text();
-      throw new Error(`Inventory API error (${response.status}): ${message}`);
-    }
-    return response.json();
+    return breaker.call(async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      try {
+        const response = await fetch(`${baseUrl}${pathname}`, { signal: controller.signal });
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(`Inventory API error (${response.status}): ${message}`);
+        }
+        return response.json();
+      } catch (error) {
+        if (error.name === "AbortError") {
+          throw new Error(`Inventory API timeout (${FETCH_TIMEOUT_MS}ms): ${pathname}`);
+        }
+        throw error;
+      } finally {
+        clearTimeout(timer);
+      }
+    });
   }
 
   return {
@@ -18,6 +71,7 @@ function createHttpInventoryClient(baseUrl) {
     orders: () => fetchInventory("/orders?limit=8"),
     insights: () => fetchInventory("/insights"),
     health: () => fetchInventory("/health"),
+    circuitState: () => breaker.getState(),
   };
 }
 

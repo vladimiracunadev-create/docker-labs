@@ -60,6 +60,24 @@ Cada tarjeta muestra un badge calculado en tiempo real contra la RAM libre de Do
 - [http://localhost:9090/learning-center.html](http://localhost:9090/learning-center.html)
 - [http://localhost:8085/control/](http://localhost:8085/control/)
 
+## 🔐 Seguridad
+
+El servidor aplica:
+
+- CORS restringido a `localhost:{puerto}` — no acepta origen externo
+- Validación de `labId` contra lista conocida antes de ejecutar Docker
+- Límite de 10 KB en el body de requests POST
+- Errores internos logueados en `stderr` pero no expuestos al cliente
+
+Para activar autenticación por token:
+
+```bash
+export DASHBOARD_TOKEN=tu-token-secreto
+./scripts/start-control-center.sh
+```
+
+Ver [docs/SECURITY.md](SECURITY.md) para documentación completa.
+
 ## 📝 Notas operativas
 
 - el panel no reemplaza Docker Desktop; lo usa como prerequisito

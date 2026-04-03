@@ -1,10 +1,51 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
 scrape_configs:
+  # Labs que exponen /metrics nativamente
   - job_name: 'node-api'
     static_configs:
-      - targets: ['node-api:3000']
+      - targets: ['host.docker.internal:3000']
+        labels:
+          lab: '01-node-api'
+
   - job_name: 'python-api'
     static_configs:
-      - targets: ['python-api:5000']
+      - targets: ['host.docker.internal:5000']
+        labels:
+          lab: '03-python-api'
+
+  - job_name: 'inventory-core'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
+        labels:
+          lab: '05-postgres-api'
+
+  - job_name: 'operations-portal'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:3003']
+        labels:
+          lab: '09-multi-service-app'
+
+  - job_name: 'go-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:8084']
+        labels:
+          lab: '10-go-api'
+
+  # Control Center — expone métricas propias en /metrics
+  - job_name: 'docker-labs-control-center'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['host.docker.internal:9090']
+        labels:
+          component: 'control-center'
+
+  # Prometheus self-scrape
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

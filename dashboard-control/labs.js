@@ -42,6 +42,40 @@ function loadConfig() {
   }
 }
 
+// Validación de schema — campos requeridos y tipos básicos
+const REQUIRED_LAB_FIELDS = ["id", "name", "description", "stack", "category", "ports", "urls"];
+
+function validateLab(lab, index) {
+  const errors = [];
+
+  for (const field of REQUIRED_LAB_FIELDS) {
+    if (lab[field] == null || lab[field] === "") {
+      errors.push(`campo '${field}' faltante o vacío`);
+    }
+  }
+
+  if (lab.id && !/^[\w-]+$/.test(lab.id)) {
+    errors.push(`id '${lab.id}' contiene caracteres inválidos (solo [a-z0-9_-])`);
+  }
+
+  if (lab.urls && !Array.isArray(lab.urls)) {
+    errors.push("urls debe ser un array");
+  }
+
+  if (lab.ports && !Array.isArray(lab.ports)) {
+    errors.push("ports debe ser un array");
+  }
+
+  if (errors.length > 0) {
+    process.stderr.write(
+      `[labs.js] WARN: Lab[${index}] (id: ${lab.id || "desconocido"}) tiene problemas de schema:\n` +
+      errors.map((e) => `  - ${e}`).join("\n") + "\n"
+    );
+  }
+
+  return errors.length === 0;
+}
+
 // Agrega rutas de runtime a cada entrada del JSON
 function addRuntimePaths(labConfig) {
   return {
@@ -82,6 +116,13 @@ function mergeLab(labWithPaths) {
 
 const config = loadConfig();
 
-module.exports = config.labs
+// Validar y filtrar labs con schema inválido para no exponer datos corruptos
+const validLabs = config.labs.filter((lab, i) => validateLab(lab, i));
+
+if (validLabs.length < config.labs.length) {
+  process.stderr.write(`[labs.js] WARN: ${config.labs.length - validLabs.length} lab(s) excluidos por schema inválido.\n`);
+}
+
+module.exports = validLabs
   .map(addRuntimePaths)
   .map(mergeLab);

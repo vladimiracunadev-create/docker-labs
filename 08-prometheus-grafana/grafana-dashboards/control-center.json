@@ -1,0 +1,115 @@
+{
+  "__inputs": [],
+  "__requires": [
+    { "type": "grafana", "id": "grafana", "name": "Grafana", "version": "10.0.0" },
+    { "type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0" }
+  ],
+  "annotations": { "list": [] },
+  "description": "Docker Labs Control Center — métricas del servidor de control",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requests totales",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "targets": [{ "expr": "docker_labs_requests_total", "legendFormat": "Requests" }]
+    },
+    {
+      "id": 2,
+      "title": "Errores totales",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "thresholds": { "steps": [{ "value": 0, "color": "green" }, { "value": 1, "color": "red" }] }
+      },
+      "targets": [{ "expr": "docker_labs_request_errors_total", "legendFormat": "Errores" }]
+    },
+    {
+      "id": 3,
+      "title": "Acciones Docker ejecutadas",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "area" },
+      "targets": [{ "expr": "docker_labs_lab_actions_total", "legendFormat": "Acciones" }]
+    },
+    {
+      "id": 4,
+      "title": "Errores en acciones",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "thresholds": { "steps": [{ "value": 0, "color": "green" }, { "value": 1, "color": "yellow" }] }
+      },
+      "targets": [{ "expr": "docker_labs_lab_action_errors_total", "legendFormat": "Errores acción" }]
+    },
+    {
+      "id": 5,
+      "title": "Uptime del servidor",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "unit": "s",
+        "colorMode": "background"
+      },
+      "targets": [{ "expr": "docker_labs_uptime_seconds", "legendFormat": "Uptime" }]
+    },
+    {
+      "id": 6,
+      "title": "Labs conocidos",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
+      "datasource": { "type": "prometheus" },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value" },
+      "targets": [{ "expr": "docker_labs_known_labs", "legendFormat": "Labs" }]
+    },
+    {
+      "id": 7,
+      "title": "Requests por minuto",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "prometheus" },
+      "options": { "legend": { "displayMode": "list" } },
+      "targets": [
+        { "expr": "rate(docker_labs_requests_total[1m]) * 60", "legendFormat": "Requests/min" },
+        { "expr": "rate(docker_labs_request_errors_total[1m]) * 60", "legendFormat": "Errores/min" }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Acciones Docker por minuto",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus" },
+      "options": { "legend": { "displayMode": "list" } },
+      "targets": [
+        { "expr": "rate(docker_labs_lab_actions_total[1m]) * 60", "legendFormat": "Acciones/min" },
+        { "expr": "rate(docker_labs_lab_action_errors_total[1m]) * 60", "legendFormat": "Errores acción/min" }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "tags": ["docker-labs", "control-center"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Docker Labs — Control Center",
+  "uid": "docker-labs-control-center",
+  "version": 1
+}

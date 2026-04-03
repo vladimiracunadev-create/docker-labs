@@ -32,6 +32,25 @@ const els = {
   removeAll: document.getElementById("remove-all")
 };
 
+// Escapa caracteres HTML para prevenir XSS al insertar datos en innerHTML
+function sanitizeText(str) {
+  if (str == null) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
+// Solo permite URLs http:// y https:// para prevenir javascript: y data: URIs
+function sanitizeUrl(url) {
+  if (!url || typeof url !== "string") return "#";
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return "#";
+}
+
 function formatNumber(value, digits = 1) {
   return typeof value === "number" && Number.isFinite(value) ? value.toFixed(digits) : "n/d";
 }
@@ -125,23 +144,23 @@ function renderFeatured(labs) {
     <article class="featured-card ${lab.summary.status}">
       <div class="featured-head">
         <div>
-          <span class="tag">${lab.systemRole || categoryLabel(lab.category)}</span>
-          <h3>${lab.name}</h3>
+          <span class="tag">${sanitizeText(lab.systemRole || categoryLabel(lab.category))}</span>
+          <h3>${sanitizeText(lab.name)}</h3>
         </div>
         <span class="status-badge ${lab.summary.status}">
           <span class="status-dot"></span>
           <span>${statusLabel(lab.summary.status)}</span>
         </span>
       </div>
-      <p class="lab-copy">${lab.goal || lab.description}</p>
+      <p class="lab-copy">${sanitizeText(lab.goal || lab.description)}</p>
       <div class="tag-row">
-        <span class="tag">${lab.stack}</span>
+        <span class="tag">${sanitizeText(lab.stack)}</span>
         <span class="tag">${categoryLabel(lab.category)}</span>
       </div>
       ${ramFeasibilityBadge(lab)}
       <div class="card-actions">
-        <button class="btn btn-secondary" data-select="${lab.id}">Ver detalle</button>
-        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${primaryUrl(lab).url}" target="_blank" rel="noreferrer">Abrir ${lab.primaryEntryLabel || primaryUrl(lab).label}</a>` : ""}
+        <button class="btn btn-secondary" data-select="${sanitizeText(lab.id)}">Ver detalle</button>
+        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${sanitizeUrl(primaryUrl(lab).url)}" target="_blank" rel="noreferrer">Abrir ${sanitizeText(lab.primaryEntryLabel || primaryUrl(lab).label)}</a>` : ""}
       </div>
     </article>
   `).join("");
@@ -282,7 +301,7 @@ function renderStatusSummary(lab) {
         </div>
         <div>
           <span class="summary-label">Rol</span>
-          <strong>${lab.systemRole || "No definido"}</strong>
+          <strong>${sanitizeText(lab.systemRole || "No definido")}</strong>
         </div>
         <div>
           <span class="summary-label">Contenedores activos</span>
@@ -290,7 +309,7 @@ function renderStatusSummary(lab) {
         </div>
         <div>
           <span class="summary-label">Entrada principal</span>
-          <strong>${primary ? primary.label : "Sin URL"}</strong>
+          <strong>${primary ? sanitizeText(primary.label) : "Sin URL"}</strong>
         </div>
       </div>
     </div>
@@ -299,12 +318,12 @@ function renderStatusSummary(lab) {
 
 function renderGoal(lab) {
   const blocks = [
-    `<div class="guidance-item"><strong>Objetivo</strong><div>${lab.goal || lab.description}</div></div>`
+    `<div class="guidance-item"><strong>Objetivo</strong><div>${sanitizeText(lab.goal || lab.description)}</div></div>`
   ];
 
   if ((lab.relatedLabs || []).length) {
     blocks.push(
-      `<div class="guidance-item"><strong>Relacion con otros labs</strong><div>${lab.relatedLabs.join(" -> ")}</div></div>`
+      `<div class="guidance-item"><strong>Relacion con otros labs</strong><div>${lab.relatedLabs.map(sanitizeText).join(" → ")}</div></div>`
     );
   }
 
@@ -317,12 +336,12 @@ function renderGuidance(lab) {
     : [
         "Usa Levantar entorno cuando quieras iniciar este stack en Docker.",
         primaryUrl(lab)
-          ? `Usa Abrir sistema para entrar directamente a ${primaryUrl(lab).label} y ver la aplicacion real.`
+          ? `Usa Abrir sistema para entrar directamente a ${sanitizeText(primaryUrl(lab).label)} y ver la aplicacion real.`
           : "Este lab no expone una URL principal, asi que debes operarlo desde logs o servicios internos.",
         "Usa Ver logs si algo no responde, queda parcial o parece caido."
       ];
 
-  return items.map((item) => `<div class="guidance-item">${item}</div>`).join("");
+  return items.map((item) => `<div class="guidance-item">${sanitizeText(item)}</div>`).join("");
 }
 
 function renderServices(services) {
@@ -333,12 +352,12 @@ function renderServices(services) {
   return services.map((service) => `
     <div class="service-row">
       <div>
-        <strong>${service.service}</strong>
-        <div class="service-meta">${service.name} · ${service.status}</div>
+        <strong>${sanitizeText(service.service)}</strong>
+        <div class="service-meta">${sanitizeText(service.name)} · ${sanitizeText(service.status)}</div>
       </div>
       <div class="service-pill ${service.health === "healthy" ? "healthy" : service.state}">
         <span class="status-dot"></span>
-        <span>${service.health !== "none" ? service.health : service.state}</span>
+        <span>${sanitizeText(service.health !== "none" ? service.health : service.state)}</span>
       </div>
     </div>
   `).join("");
@@ -350,19 +369,20 @@ function renderLinks(urls) {
   }
 
   return urls.map((item, index) => `
-    <a class="btn ${index === 0 ? "btn-primary" : "btn-secondary"}" href="${item.url}" target="_blank" rel="noreferrer">
-      ${index === 0 ? `Abrir sistema · ${item.label}` : `Abrir ${item.label}`}
+    <a class="btn ${index === 0 ? "btn-primary" : "btn-secondary"}" href="${sanitizeUrl(item.url)}" target="_blank" rel="noreferrer">
+      ${index === 0 ? `Abrir sistema · ${sanitizeText(item.label)}` : `Abrir ${sanitizeText(item.label)}`}
     </a>
   `).join("");
 }
 
 function renderActions(lab) {
+  const id = sanitizeText(lab.id);
   return `
-    <button class="btn btn-primary" data-action="start" data-lab="${lab.id}">▶ Levantar entorno</button>
-    <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">⏹ Detener</button>
-    <button class="btn btn-secondary" data-action="restart" data-lab="${lab.id}">🔄 Reiniciar</button>
-    <button class="btn btn-ghost" data-action="logs" data-lab="${lab.id}">📋 Ver logs</button>
-    <button class="btn btn-secondary" data-action="rebuild" data-lab="${lab.id}">🔧 Reconstruir</button>
+    <button class="btn btn-primary" data-action="start" data-lab="${id}">▶ Levantar entorno</button>
+    <button class="btn btn-danger" data-action="stop" data-lab="${id}">⏹ Detener</button>
+    <button class="btn btn-secondary" data-action="restart" data-lab="${id}">🔄 Reiniciar</button>
+    <button class="btn btn-ghost" data-action="logs" data-lab="${id}">📋 Ver logs</button>
+    <button class="btn btn-secondary" data-action="rebuild" data-lab="${id}">🔧 Reconstruir</button>
   `;
 }
 
@@ -390,21 +410,23 @@ function renderLabCards() {
     return;
   }
 
-  els.labGrid.innerHTML = state.filteredLabs.map((lab) => `
+  els.labGrid.innerHTML = state.filteredLabs.map((lab) => {
+    const id = sanitizeText(lab.id);
+    return `
     <article class="lab-card">
       <div class="lab-head">
         <div>
-          <div class="lab-id">${lab.id}</div>
-          <h3 class="lab-title">${lab.name}</h3>
+          <div class="lab-id">${id}</div>
+          <h3 class="lab-title">${sanitizeText(lab.name)}</h3>
         </div>
         <div class="status-badge ${lab.summary.status}">
           <span class="status-dot"></span>
           <span>${statusLabel(lab.summary.status)}</span>
         </div>
       </div>
-      <p class="lab-copy">${lab.description}</p>
+      <p class="lab-copy">${sanitizeText(lab.description)}</p>
       <div class="tag-row">
-        <span class="tag">${lab.stack}</span>
+        <span class="tag">${sanitizeText(lab.stack)}</span>
         <span class="tag">${categoryLabel(lab.category)}</span>
         <span class="tag">💾 ${lab.recommendedRamGb} GB</span>
       </div>
@@ -415,13 +437,14 @@ function renderLabCards() {
         <div><span>Activos</span><strong>${lab.summary.running}</strong></div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary" data-select="${lab.id}">Ver detalle</button>
-        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${primaryUrl(lab).url}" target="_blank" rel="noreferrer">🔗 Abrir sistema</a>` : ""}
-        <button class="btn btn-primary" data-action="start" data-lab="${lab.id}">▶ Levantar</button>
-        <button class="btn btn-danger" data-action="stop" data-lab="${lab.id}">⏹ Detener</button>
+        <button class="btn btn-secondary" data-select="${id}">Ver detalle</button>
+        ${primaryUrl(lab) ? `<a class="btn btn-primary" href="${sanitizeUrl(primaryUrl(lab).url)}" target="_blank" rel="noreferrer">🔗 Abrir sistema</a>` : ""}
+        <button class="btn btn-primary" data-action="start" data-lab="${id}">▶ Levantar</button>
+        <button class="btn btn-danger" data-action="stop" data-lab="${id}">⏹ Detener</button>
       </div>
     </article>
-  `).join("");
+  `;
+  }).join("");
 }
 
 function applyFilter() {
@@ -442,12 +465,27 @@ function applyFilter() {
 }
 
 async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload.details || payload.error || "Request failed");
+  // Timeout diferenciado: acciones Docker pueden tardar hasta 120s; lecturas 15s
+  const isAction = options.method === "POST";
+  const timeoutMs = isAction ? 130_000 : 15_000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload.error || "Request failed");
+    }
+    return payload;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error(`Timeout: el servidor no respondió en ${timeoutMs / 1000}s. Revisa que Docker esté activo.`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
   }
-  return payload;
 }
 
 async function loadOverview(preferredLabId = state.selectedLabId) {

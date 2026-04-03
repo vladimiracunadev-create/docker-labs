@@ -19,6 +19,31 @@ Este laboratorio introduce la capa de monitoreo de la plataforma. Prometheus rec
 
 La configuración de scraping de Prometheus se define en `prometheus.yml` dentro de este directorio.
 
+## 📡 Targets de scraping
+
+`prometheus.yml` incluye los siguientes jobs de scraping:
+
+| Job | Target | Lab |
+|---|---|---|
+| `node-api` | `host.docker.internal:3000` | `01-node-api` |
+| `python-api` | `host.docker.internal:5000` | `03-python-api` |
+| `inventory-core` | `host.docker.internal:8000` | `05-postgres-api` |
+| `operations-portal` | `host.docker.internal:3003` | `09-multi-service-app` |
+| `go-api` | `host.docker.internal:8084` | `10-go-api` |
+| `docker-labs-control-center` | `host.docker.internal:9090` | `dashboard-control` |
+| `prometheus` | `localhost:9090` | self-scrape |
+
+> El Control Center expone sus propias métricas en `GET /metrics` en formato
+> Prometheus Text Exposition. Ver sección **Dashboards** a continuación.
+
+## 📊 Dashboards incluidos
+
+| Archivo | UID | Descripción |
+|---|---|---|
+| `grafana-dashboards/control-center.json` | `docker-labs-control-center` | Métricas del Control Center: requests, errores, acciones Docker, uptime, labs conocidos |
+
+Para importar en Grafana: **Dashboards → Import → Upload JSON file**.
+
 ## ⚡ Inicio rápido
 
 ```bash
@@ -30,9 +55,10 @@ docker compose up -d
 | Servicio | URL | Credenciales |
 |---|---|---|
 | Prometheus | <http://localhost:9091> | — |
-| Grafana | <http://localhost:3002> | `admin` / `admin` |
+| Grafana | <http://localhost:3002> | `admin` / ver `.env` |
 
 > Grafana solicita cambio de contraseña en el primer inicio de sesión.
+> Las credenciales se configuran en `.env` (ver `.env.example`).
 
 ## ✅ Health checks
 

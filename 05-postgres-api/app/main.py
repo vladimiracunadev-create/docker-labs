@@ -13,6 +13,9 @@ from app.analytics import (
     build_inventory_summary,
     render_prometheus_metrics,
 )
+from alembic import command as alembic_command
+from alembic.config import Config as AlembicConfig
+
 from app.database import Base, engine, get_db
 from app.models import Customer, Order, OrderLine, Product
 from app.schemas import (
@@ -55,7 +58,17 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.on_event("startup")
 def startup() -> None:
-    Base.metadata.create_all(bind=engine)
+    # Ejecuta migraciones Alembic al arrancar
+    # Si alembic.ini no está disponible (tests con SQLite), cae a create_all como fallback
+    import os
+    alembic_ini = os.path.join(os.path.dirname(__file__), "..", "alembic.ini")
+    if os.path.exists(alembic_ini):
+        cfg = AlembicConfig(alembic_ini)
+        alembic_command.upgrade(cfg, "head")
+    else:
+        # Fallback para entornos de test que usan SQLite en memoria
+        Base.metadata.create_all(bind=engine)
+
     with Session(engine) as db:
         seed_initial_data(db)
 

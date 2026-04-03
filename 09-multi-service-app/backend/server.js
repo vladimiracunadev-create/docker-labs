@@ -44,8 +44,22 @@ function createMongoWatchlistStore(model) {
   };
 }
 
+async function connectWithRetry(url, retries = 5, delayMs = 3000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await mongoose.connect(url, { serverSelectionTimeoutMS: 5000 });
+      console.log("MongoDB connected");
+      return;
+    } catch (error) {
+      if (attempt === retries) throw error;
+      console.warn(`MongoDB connect attempt ${attempt}/${retries} failed: ${error.message}. Retry in ${delayMs}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+}
+
 async function start() {
-  await mongoose.connect(mongoUrl);
+  await connectWithRetry(mongoUrl);
 
   const app = createApp({
     inventoryClient: createHttpInventoryClient(inventoryApiBaseUrl),

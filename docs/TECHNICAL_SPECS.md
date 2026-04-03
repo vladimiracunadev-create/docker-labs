@@ -1,6 +1,6 @@
 # ⚙️ Especificaciones Técnicas — Docker Labs
 
-> **Versión**: 1.4.0
+> **Versión**: 1.6.0
 > **Estado**: 🟢 Activo
 > **Audiencia**: 👥 Técnico, DevOps, reclutadores
 > **Objetivo**: Stacks, puertos, endpoints, CI y capa de distribución Windows
@@ -131,9 +131,84 @@
 
 ---
 
+## 📡 Observabilidad (v1.6.0+)
+
+### Control Center — endpoint `/metrics`
+
+El servidor `dashboard-control/server.js` expone métricas propias en
+`GET /metrics` en formato **Prometheus Text Exposition**:
+
+| Métrica | Tipo | Descripción |
+|---|---|---|
+| `docker_labs_requests_total` | counter | Requests HTTP totales recibidos |
+| `docker_labs_request_errors_total` | counter | Requests con respuesta de error |
+| `docker_labs_lab_actions_total` | counter | Acciones Docker ejecutadas (`up`, `down`, etc.) |
+| `docker_labs_lab_action_errors_total` | counter | Acciones Docker que terminaron con error |
+| `docker_labs_uptime_seconds` | gauge | Segundos desde inicio del proceso |
+| `docker_labs_known_labs` | gauge | Labs cargados desde `labs.config.json` |
+
+El endpoint no requiere autenticación para permitir scraping desde Prometheus
+aunque `DASHBOARD_TOKEN` esté configurado.
+
+### Prometheus — scrape targets
+
+`08-prometheus-grafana/prometheus.yml` define los siguientes jobs:
+
+| Job | Target | Descripción |
+|---|---|---|
+| `node-api` | `host.docker.internal:3000` | Lab 01 |
+| `python-api` | `host.docker.internal:5000` | Lab 03 |
+| `inventory-core` | `host.docker.internal:8000` | Lab 05 |
+| `operations-portal` | `host.docker.internal:3003` | Lab 09 |
+| `go-api` | `host.docker.internal:8084` | Lab 10 |
+| `docker-labs-control-center` | `host.docker.internal:9090` | Control Center |
+| `prometheus` | `localhost:9090` | Self-scrape |
+
+### Grafana — dashboards incluidos
+
+| Archivo | UID | Paneles |
+|---|---|---|
+| `08-prometheus-grafana/grafana-dashboards/control-center.json` | `docker-labs-control-center` | 8 (6 stat + 2 timeseries) |
+
+---
+
+## 🔒 Seguridad y robustez (v1.6.0+)
+
+### Control Center
+
+| Aspecto | Implementación |
+|---|---|
+| CORS | Restringido a `http://localhost:{DASHBOARD_PORT}` — no comodín |
+| Autenticación | Token Bearer/Cookie opcional via `DASHBOARD_TOKEN` env var |
+| Validación de inputs | `labId` validado con regex `[\w-]+` contra lista conocida antes de ejecutar Docker |
+| Body limit | 10 KB máximo en requests POST |
+| Rate limiting | 30 requests POST / IP / 60 s (en memoria, sin dependencias externas) |
+| Timeouts | `docker compose` up/down: 120 s · ps/inspect: 15 s · logs: 10 s |
+| Error handling | Errores internos logueados en `stderr` JSON — respuesta al cliente sin internals |
+| Logging | Estructurado JSON con niveles (debug/info/warn/error) — controlado por `LOG_LEVEL` |
+
+### Labs
+
+| Aspecto | Implementación |
+|---|---|
+| Credenciales | Todas via `${VAR:-default}` en env · `.env` en `.gitignore` · `.env.example` en cada lab |
+| Resource limits | `deploy.resources.limits.memory` en todos los `docker-compose.yml` |
+| XSS | `sanitizeText()` y `sanitizeUrl()` aplicados en todo `innerHTML` de `dashboard.js` |
+
+### 09-multi-service-app
+
+| Aspecto | Implementación |
+|---|---|
+| Circuit breaker | 3 fallos consecutivos abren el circuito hacia Inventory API · recuperación a 30 s |
+| Fetch timeout | 8 s por request a Inventory API |
+| MongoDB retry | 5 intentos con backoff de 3 s antes de abortar el proceso |
+
+---
+
 ## 📚 Documentos relacionados
 
 - [windows-installer.md](windows-installer.md)
 - [github-releases-distribution.md](github-releases-distribution.md)
+- [SECURITY.md](SECURITY.md)
 - [technical-audit.md](technical-audit.md)
 - [LABS_CATALOG.md](LABS_CATALOG.md)
