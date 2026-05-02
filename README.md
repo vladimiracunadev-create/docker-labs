@@ -106,6 +106,7 @@ docker compose -f 04-redis-cache/docker-compose.yml up -d --build
 | [User Manual](docs/USER_MANUAL.md) | Uso diario del panel y los sistemas |
 | [Technical Specs](docs/TECHNICAL_SPECS.md) | Puertos, stacks, endpoints y health checks completos |
 | [Windows Installer](docs/windows-installer.md) | Instalación, build y distribución del `.exe` |
+| [AWS Migration](docs/AWS_MIGRATION.md) | Llevar la plataforma a AWS — opciones, costos y paso a paso |
 | [Changelog](CHANGELOG.md) | Historial de cambios por versión |
 | [Project Status](PROJECT_STATUS.md) | Qué está consolidado y qué sigue en evolución |
 | [Recruiter Guide](RECRUITER.md) | Recorrido rápido del valor del repo |
