@@ -5,5 +5,9 @@
   "description": "Local control center for Docker Labs",
   "scripts": {
     "start": "node dashboard-control/server.js"
+  },
+  "packageManager": "pnpm@11.0.0",
+  "pnpm": {
+    "onlyBuiltDependencies": []
   }
 }
