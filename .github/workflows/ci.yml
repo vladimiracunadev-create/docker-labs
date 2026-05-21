@@ -40,10 +40,11 @@ jobs:
       # pnpm v11: postinstall bloqueado + minimumReleaseAge=1d por defecto.
       # Defensa frente a Shai-Hulud. Ver:
       # https://github.com/vladimiracunadev-create/claude-skills-toolkit/blob/main/docs/supply-chain-security.md
+      # La versión se toma de "packageManager" en package.json (single source
+      # of truth). NO duplicar con "version:" aquí — el action lo rechaza
+      # con ERR_PNPM_BAD_PM_VERSION.
       - name: Setup pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
-        with:
-          version: 11
 
       - name: Set up Node
         uses: actions/setup-node@v4
