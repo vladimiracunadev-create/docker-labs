@@ -99,3 +99,4 @@ launcher/*.py
 launcher/tests/
 launcher/requirements-build.txt
 launcher/__pycache__/
+.claude/
