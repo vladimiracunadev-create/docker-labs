@@ -89,7 +89,7 @@ Razon principal: el objetivo de esta version es validar la experiencia de
 instalacion y el launcher, no invertir en infraestructura de firma digital
 antes de que el modelo de distribucion este validado.
 
-Ver la explicacion completa en [docs/windows-installer.md](docs/windows-installer.md#why-code-signing-is-not-used-in-this-phase).
+Ver la explicacion completa en [docs/windows-installer.md](docs/windows-installer.md#por-qué-no-se-usa-firma-digital-en-esta-fase).
 
 ---
 

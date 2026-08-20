@@ -36,7 +36,7 @@ presencia y guía al usuario si no está instalado.
 
 1. Descarga `docker-labs-setup-{version}.exe` desde [GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases)
 2. Ejecuta el instalador
-3. Si Windows SmartScreen muestra una advertencia — consulta la sección [¿Por qué no se usa firma digital?](#por-que-no-se-usa-firma-digital-en-esta-fase)
+3. Si Windows SmartScreen muestra una advertencia — consulta la sección [¿Por qué no se usa firma digital?](#por-qué-no-se-usa-firma-digital-en-esta-fase)
 4. Acepta el directorio de instalación (`%LOCALAPPDATA%\DockerLabs` por defecto)
 5. Opcionalmente marca "Crear acceso directo en el escritorio"
 6. Clic en "Instalar" → "Iniciar Docker Labs"

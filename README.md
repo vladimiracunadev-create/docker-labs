@@ -5,6 +5,9 @@
 [![CI](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/vladimiracunadev-create/docker-labs)](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Pages](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/pages.yml/badge.svg)](https://github.com/vladimiracunadev-create/docker-labs/actions/workflows/pages.yml)
+
+🌐 **[Sitio del proyecto](https://vladimiracunadev-create.github.io/docker-labs/)** — catálogo de los 12 labs, arquitectura y toda la documentación navegable como páginas web.
 
 ---
 
@@ -66,7 +69,7 @@ flowchart LR
 ## Instalación en Windows
 
 1. Descarga `docker-labs-setup-{version}.exe` desde **[GitHub Releases](https://github.com/vladimiracunadev-create/docker-labs/releases/latest)**
-2. Ejecuta el instalador — acepta SmartScreen si aparece (ver [nota](docs/windows-installer.md#por-que-no-se-usa-firma-digital-en-esta-fase))
+2. Ejecuta el instalador — acepta SmartScreen si aparece (ver [nota](docs/windows-installer.md#por-qué-no-se-usa-firma-digital-en-esta-fase))
 3. Usa el acceso directo **Docker Labs** del escritorio o menú de inicio
 4. El launcher levanta los 4 servicios de plataforma y abre el browser automáticamente
 

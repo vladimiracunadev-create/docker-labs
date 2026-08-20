@@ -1,0 +1,165 @@
+<section class="hero">
+  <span class="eyebrow">Docker · Compose · v<!--VERSION--></span>
+  <h1>Trece entornos Docker que se encienden y se apagan cuando tú quieres</h1>
+  <p class="lead">
+    <b>docker-labs</b> no es una carpeta de demos sueltas. Es un workspace con un panel de control propio:
+    levantas el laboratorio que necesitas, lo usas, y lo bajas para recuperar la RAM. Cuatro de esos entornos
+    funcionan juntos como una plataforma real —gateway, core transaccional y portal operativo— y los otros nueve
+    se levantan solos, cada uno con su stack.
+  </p>
+
+  <div class="cta">
+    <a class="btn primary" href="docs/beginners-guide.html">Empezar desde cero</a>
+    <a class="btn" href="labs/index.html">Ver los <!--LABS_COUNT--> laboratorios</a>
+    <a class="btn" href="https://github.com/vladimiracunadev-create/docker-labs/releases/latest" target="_blank" rel="noreferrer noopener">Instalador para Windows ↗</a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b><!--LABS_COUNT--></b><span>laboratorios operativos</span></div>
+    <div class="stat"><b><!--PLATFORM_COUNT--></b><span>servicios de plataforma</span></div>
+    <div class="stat"><b><!--STACKS_COUNT--></b><span>tecnologías distintas</span></div>
+    <div class="stat"><b><!--DOCS_COUNT--></b><span>documentos publicados</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>El problema que resuelve</h2>
+  <p class="sub">
+    Un repositorio de laboratorios Docker suele terminar igual: veinte carpetas, veinte <code>docker compose up</code>,
+    puertos que chocan entre sí y un equipo que se queda sin memoria porque todo quedó encendido. Aquí eso se ataca
+    de frente.
+  </p>
+
+  <div class="split">
+    <div class="panelbox">
+      <h3>🎛️ Un panel, no una lista de comandos</h3>
+      <p>
+        El Control Center corre dockerizado en <code>localhost:9090</code> y habla con el daemon de Docker.
+        Desde ahí levantas, reinicias, detienes y lees los logs de cualquier lab sin memorizar rutas ni puertos.
+      </p>
+      <ul>
+        <li>Estado real de cada stack: detenido, corriendo o saludable.</li>
+        <li>Los enlaces de entrada de cada sistema, ya resueltos.</li>
+        <li>Diagnóstico de la capacidad asignada a Docker.</li>
+      </ul>
+    </div>
+    <div class="panelbox">
+      <h3>💾 Tu RAM decide qué se enciende</h3>
+      <p>
+        Cada laboratorio declara la memoria que necesita. El panel la compara con la que Docker tiene libre en ese
+        momento y te dice si conviene arrancarlo ahora o bajar otra cosa primero.
+      </p>
+      <ul>
+        <li>Verde: hay memoria de sobra para arrancarlo.</li>
+        <li>Amarillo: entra justo, conviene liberar antes.</li>
+        <li>Rojo: Docker no tiene suficiente memoria total.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Cómo encaja todo</h2>
+  <p class="sub">
+    Los cuatro servicios de plataforma se levantan juntos y se hablan entre ellos. Los nueve laboratorios
+    independientes no dependen de nadie: son entornos de estudio de un stack concreto.
+  </p>
+
+<pre class="mermaid">flowchart LR
+    U([Usuario])
+
+    subgraph P["Plataforma — 4 servicios activos"]
+        CC["Control Center<br/>:9090"]
+        GW["Gateway<br/>:8085"]
+        IC["Inventory Core<br/>:8000"]
+        OP["Operations Portal<br/>:8083"]
+        PG[("PostgreSQL<br/>:5432")]
+        MG[("MongoDB<br/>:27017")]
+    end
+
+    subgraph L["9 labs independientes — levantar a voluntad"]
+        LA["01 Node :3000<br/>02 LAMP :8081<br/>03 Python :5000"]
+        LB["04 Redis :3001<br/>07 RabbitMQ :15672<br/>08 Prometheus :9091"]
+        LC["10 Go :8084<br/>11 Elastic :8001<br/>12 Jenkins :8080"]
+    end
+
+    U --> CC &amp; GW
+    GW --> CC &amp; IC &amp; OP
+    IC --> PG
+    OP --> IC &amp; MG
+</pre>
+
+  <p class="sub">
+    El detalle de puertos, endpoints y health checks está en
+    <a href="docs/technical-specs.html">Especificaciones técnicas</a>, y el razonamiento de diseño en
+    <a href="docs/architecture.html">Arquitectura</a>.
+  </p>
+</section>
+
+<section>
+  <h2>Arranca en tres pasos</h2>
+  <p class="sub">Con Docker Desktop instalado y corriendo. En Windows el instalador hace los tres de una vez.</p>
+
+  <div class="steps">
+    <div class="step">
+      <h3>Clona el repositorio</h3>
+      <p>No hay dependencias que instalar: todo corre dentro de contenedores.</p>
+      <code class="cmd">git clone https://github.com/vladimiracunadev-create/docker-labs.git</code>
+    </div>
+    <div class="step">
+      <h3>Levanta el panel de control</h3>
+      <p>Es la puerta de entrada. Desde ahí se gobierna el resto sin tocar la terminal.</p>
+      <code class="cmd">scripts\start-control-center.cmd    &#8250; Windows
+./scripts/start-control-center.sh   &#8250; Linux y macOS</code>
+    </div>
+    <div class="step">
+      <h3>Abre <code>localhost:9090</code> y elige qué encender</h3>
+      <p>Cada tarjeta trae su estado, su consumo estimado y sus enlaces de entrada.</p>
+      <code class="cmd">docker compose -f 04-redis-cache/docker-compose.yml up -d --build</code>
+    </div>
+  </div>
+
+  <p class="sub" style="margin-top:20px">
+    ¿Primera vez con Docker? La <a href="docs/beginners-guide.html">guía para principiantes</a> parte desde cero.
+    Si algo no levanta, <a href="docs/troubleshooting.html">solución de problemas</a> cubre los fallos habituales.
+  </p>
+</section>
+
+<section id="labs">
+  <h2>Los <!--LABS_COUNT--> laboratorios</h2>
+  <p class="sub">
+    Cada uno se levanta y se baja por su cuenta con <code>docker compose</code>. La memoria indicada es la
+    recomendada para que el stack arranque cómodo.
+  </p>
+  <div class="grid"><!--LABS--></div>
+</section>
+
+<section>
+  <h2>Documentación</h2>
+  <p class="sub">
+    Todo el material del repositorio, publicado como páginas web: nada de esta portada te manda a un archivo
+    <code>.md</code> crudo.
+  </p>
+  <div class="grid"><!--DOCS--></div>
+  <p class="sub" style="margin-top:18px">
+    Índice completo: <a href="docs/index.html">documentación técnica</a> ·
+    <a href="guias/index.html">guías del repositorio</a> ·
+    <a href="labs/index.html">fichas de los laboratorios</a>
+  </p>
+</section>
+
+<section>
+  <h2>Para quien evalúa el repositorio</h2>
+  <div class="split">
+    <a class="card" href="guias/recruiter.html">
+      <div class="card-top"><span class="num">Recorrido de 5 minutos</span><span class="chip platform">Perfil técnico</span></div>
+      <h3>Qué mirar y en qué orden</h3>
+      <p>Las decisiones de arquitectura, la evidencia que entrega cada capa y el recorrido corto para entender el proyecto sin abrir los doce labs.</p>
+    </a>
+    <a class="card" href="guias/project-status.html">
+      <div class="card-top"><span class="num">Estado real</span><span class="chip starter">Verificado</span></div>
+      <h3>Qué está consolidado y qué no</h3>
+      <p>Lo que ya funciona, lo que sigue en evolución y lo que se descartó a propósito. Sin promesas que el repositorio no cumple.</p>
+    </a>
+  </div>
+</section>

@@ -100,3 +100,7 @@ launcher/tests/
 launcher/requirements-build.txt
 launcher/__pycache__/
 .claude/
+
+# Sitio de GitHub Pages: se genera con scripts/build-site.mjs en cada despliegue.
+# Versionar el HTML permitiria que la web contradijera al repositorio.
+site/

@@ -83,7 +83,7 @@ Con ese recorrido se entiende la historia principal del repositorio y la capa de
 | `09-multi-service-app` | 🟢 Operativo | [09-multi-service-app/README.md](09-multi-service-app/README.md) |
 | `06-nginx-proxy` | 🟢 Operativo | [06-nginx-proxy/README.md](06-nginx-proxy/README.md) |
 | **Instalador Windows** | 🟢 Operativo | [docs/windows-installer.md](docs/windows-installer.md) |
-| **Skills Claude Code** | 🟢 Activos | [DEVELOPING.md](DEVELOPING.md#skills-de-automatizacion-claude-code) |
+| **Skills Claude Code** | 🟢 Activos | [DEVELOPING.md](DEVELOPING.md#skills-de-automatización-claude-code) |
 | Labs secundarios | 🟡 En evolución | [docs/LABS_CATALOG.md](docs/LABS_CATALOG.md) |
 
 ## ✅ Lo que el proyecto sí es hoy

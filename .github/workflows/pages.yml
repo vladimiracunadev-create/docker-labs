@@ -1,0 +1,135 @@
+name: Pages
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Publica la portada estatica de `site-src/` —mas las paginas generadas desde
+# los .md del repositorio— en GitHub Pages.
+#
+# El Control Center (`index.html` de la raiz) NO se publica: escucha en
+# localhost, habla con el daemon de Docker y no tiene autenticacion. Lo que sale
+# a internet es solo presentacion.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Todo lo que el generador lee. Si algo de esto cambia y no vuelve a
+      # publicarse, la web pasa a contar una version del repositorio que ya no
+      # existe: es el modo de fallo silencioso de un sitio generado.
+      - "site-src/**"
+      - "docs/**/*.md"
+      - "*.md"
+      - "*/README.md"
+      - "*/lab-manifest.json"
+      - "labs.config.json"
+      - "version.txt"
+      - "scripts/build-site.mjs"
+      - "scripts/check-site-links.mjs"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# Permisos minimos a nivel de workflow; cada job amplia solo lo suyo.
+permissions:
+  contents: read
+
+# Un solo despliegue a la vez; no cancela uno en curso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Verificar la portada
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write # configure-pages con enablement lo necesita
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # El sitio se genera desde el propio repositorio: catalogo de labs,
+      # manifiestos y documentacion. Versionar el HTML permitiria que la web
+      # contradijera al repo, que es el fallo tipico de un sitio mantenido aparte.
+      - name: Generar el sitio
+        run: node scripts/build-site.mjs
+
+      # Un sitio a medias se publica igual de bien que uno completo, asi que
+      # conviene mirarlo antes de subirlo.
+      - name: Comprobar que el sitio salio entero
+        run: |
+          set -euo pipefail
+
+          for file in site/index.html site/labs/index.html site/docs/index.html site/guias/index.html; do
+            test -s "$file" || { echo "::error::falta o esta vacio: $file"; exit 1; }
+          done
+
+          # El catalogo manda: la portada tiene que mostrar todos los labs
+          # declarados. Si no, la web promete menos de lo que hay.
+          labs=$(node -p "require('./labs.config.json').labs.length")
+          tarjetas=$(grep -o 'href="labs/[0-9]' site/index.html | wc -l)
+          [ "$tarjetas" -eq "$labs" ] \
+            || { echo "::error::la portada muestra $tarjetas labs y el catalogo declara $labs"; exit 1; }
+
+          # Cada lab del catalogo tiene su ficha publicada.
+          for id in $(node -p "require('./labs.config.json').labs.map(l => l.id).join('\n')"); do
+            test -s "site/labs/$id.html" || { echo "::error::falta la ficha del lab: $id"; exit 1; }
+          done
+
+          # La version que se muestra es la que declara el repositorio.
+          version=$(cat version.txt)
+          grep -q "V$version\|v$version" site/index.html \
+            || { echo "::error::la portada no muestra la version $version"; exit 1; }
+
+          for needle in "docker-labs" "Control Center"; do
+            grep -q "$needle" site/index.html || { echo "::error::falta '$needle' en la portada"; exit 1; }
+          done
+
+          # Nada externo salvo el import dinamico de mermaid, pinneado a mayor.
+          if grep -REq '<(script|link)[^>]+(src|href)="https?://' site/; then
+            echo "::error::el sitio carga recursos externos"; exit 1
+          fi
+
+          # Un 404 no rompe el despliegue: se publica igual de bien que una
+          # pagina buena. Por eso los enlaces se revisan antes de subir.
+          node scripts/check-site-links.mjs
+
+          {
+            echo "### 🌐 Sitio publicado"
+            echo ""
+            echo "| Dato | Valor |"
+            echo "|---|---|"
+            echo "| Labs en portada | **$tarjetas** |"
+            echo "| Páginas | **$(find site -name '*.html' | wc -l)** |"
+            echo "| Versión | **$version** |"
+            echo "| Portada | **$(wc -c < site/index.html) bytes** |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
